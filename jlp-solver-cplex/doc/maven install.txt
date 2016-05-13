@@ -1,0 +1,19 @@
+locate cplex-concert-12.2.jar
+#loc="..."
+mvn install:install-file -Dfile="$loc/cplex-concert-12.2.jar" -DgroupId=com.ilog -DartifactId=cplex-concert -Dversion=12.2 -DgeneratePom=true -Dpackaging=jar
+
+#put license file in /usr/ilog/ilm/access.ilm
+
+#12.3
+mvn install:install-file -Dfile="/usr/local/share/cplex-12.3/cplex/lib/cplex.jar" -DgroupId=com.ilog -DartifactId=cplex-concert -Dversion=12.3 -DgeneratePom=true -Dpackaging=jar
+sudo ln -s /usr/local/share/cplex-12.3/cplex/bin/x86_sles10_4.1/libcplex123.so /usr/lib/jni/
+
+#12.4
+CPLEX_DIR=/usr/local/share/CPLEX_Studio124
+mvn install:install-file -Dfile="${CPLEX_DIR}/cplex/lib/cplex.jar" -DgroupId=com.ilog -DartifactId=cplex-concert -Dversion=12.4 -DgeneratePom=true -Dpackaging=jar
+sudo ln -s "${CPLEX_DIR}/cplex/bin/x86_sles10_4.1/libcplex124.so" /usr/lib/jni/
+
+#12.5
+CPLEX_DIR=/usr/local/share/cplex125
+mvn install:install-file -Dfile="${CPLEX_DIR}/cplex/lib/cplex.jar" -DgroupId=com.ilog -DartifactId=cplex-concert -Dversion=12.5 -DgeneratePom=true -Dpackaging=jar
+sudo ln -s "${CPLEX_DIR}/cplex/bin/x86_sles10_4.1/libcplex125.so" /usr/lib/jni/

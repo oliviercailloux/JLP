@@ -1,0 +1,162 @@
+<!-- Copyright © 2010-2012 Olivier Cailloux -->
+
+<!-- This file is part of JLP. -->
+
+<!-- JLP is free software: you can redistribute it and/or modify it under 
+	the terms of the GNU Lesser General Public License version 3 as published 
+	by the Free Software Foundation. -->
+
+<!-- JLP is distributed in the hope that it will be useful, but WITHOUT ANY 
+	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
+	details. -->
+
+<!-- You should have received a copy of the GNU Lesser General Public License 
+	along with JLP. If not, see <http://www.gnu.org/licenses/>. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.decision_deck.jlp</groupId>
+	<artifactId>jlp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>JLP</name>
+	<description>Java Linear Programming, a project to specify and solve linear programs from Java.</description>
+	<url>http://www.decision-deck.org/code/JLP</url>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
+	<scm>
+		<url>http://code.google.com/p/jlp-interface/source/browse/</url>
+		<connection>scm:hg:https://code.google.com/p/jlp-interface/</connection>
+		<developerConnection>scm:hg:https://code.google.com/p/jlp-interface/</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<name>Olivier Cailloux</name>
+			<email>olivier.cailloux@gmail.com</email>
+		</developer>
+		<developer>
+			<name>Martin Lukasiewycz</name>
+		</developer>
+	</developers>
+	<properties>
+		<builddir>${project.basedir}</builddir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<modules>
+		<module>jlp-main</module>
+		<module>jlp-solver-cplex</module>
+		<module>jlp-solver-lp-solve</module>
+		<module>jlp-solver-minisat-jni</module>
+		<module>jlp-solver-minisat</module>
+		<module>jlp-solver-cbc</module>
+	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<configuration>
+						</configuration>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<header>${builddir}/build/header.txt</header>
+					<aggregate>false</aggregate>
+					<!-- <failIfMissing>false</failIfMissing> -->
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>src/main/java/net/sf/javailp/minisat/MiniSat.java</exclude>
+						<exclude>src/main/java/net/sf/javailp/minisat/package-info.java</exclude>
+						<!-- <exclude>**/COPYING</exclude> -->
+						<!-- <exclude>**/COPYING.LESSER</exclude> -->
+						<!-- <exclude>java-ilp-cplex/mvn-install-cplex.txt</exclude> -->
+					</excludes>
+					<strictCheck>true</strictCheck>
+				</configuration>
+				<executions>
+					<execution>
+						<id>check-headers</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>0.9.28</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

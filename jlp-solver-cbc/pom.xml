@@ -1,0 +1,48 @@
+<!-- Copyright © 2010-2012 Olivier Cailloux -->
+
+<!-- This file is part of JLP. -->
+
+<!-- JLP is free software: you can redistribute it and/or modify it under 
+	the terms of the GNU Lesser General Public License version 3 as published 
+	by the Free Software Foundation. -->
+
+<!-- JLP is distributed in the hope that it will be useful, but WITHOUT ANY 
+	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
+	details. -->
+
+<!-- You should have received a copy of the GNU Lesser General Public License 
+	along with JLP. If not, see <http://www.gnu.org/licenses/>. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.decision_deck.jlp</groupId>
+		<artifactId>jlp</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>jlp-solver-cbc</artifactId>
+	<name>Java Linear Programming, CBC solver.</name>
+	<description>This module contains the wrapper class for instantiating the CBC solver. This module needs not be added as a compile time dependency, only a runtime dependency (if the CBC solver is to be used).</description>
+	<properties>
+		<builddir>${project.parent.basedir}</builddir>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>jlp-main</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sourceforge.swimp</groupId>
+			<artifactId>swimp</artifactId>
+			<version>0.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.swimp</groupId>
+			<artifactId>swimp-osicbc</artifactId>
+			<version>0.9.5</version>
+		</dependency>
+	</dependencies>
+</project>

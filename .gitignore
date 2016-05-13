@@ -1,0 +1,9 @@
+*.class
+
+*.jar
+
+*/detailed.log
+*/errors.log
+
+*/target/
+
