@@ -1,5 +1,5 @@
 \ENCODING=UTF-8
-\Problem name: ilog.cplex
+\Problem name: 
 
 Minimize
  obj: 0 λ

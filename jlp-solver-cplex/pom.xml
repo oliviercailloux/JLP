@@ -35,9 +35,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.ilog</groupId>
+			<groupId>com.ibm</groupId>
 			<artifactId>cplex-concert</artifactId>
-			<version>12.4</version>
+			<version>12.6.3</version>
 		</dependency>
 	</dependencies>
 </project>
