@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -50,8 +49,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
+import com.google.common.io.CharSink;
 import com.google.common.io.Files;
-import com.google.common.io.OutputSupplier;
 
 import ilog.concert.IloException;
 import ilog.concert.IloLPMatrix;
@@ -387,9 +386,7 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	 * exporting to a stream.
 	 * </p>
 	 */
-	@Override
-	public void writeProblem(LpFileFormat format, OutputSupplier<? extends Writer> destination)
-			throws LpSolverException, IOException {
+	public void writeProblem(LpFileFormat format, CharSink destination) throws LpSolverException, IOException {
 		/**
 		 * Note that cplex 12.2 writes in unknown default export format (perhaps
 		 * ISO 8859-1?) and this method assumes export is in UTF-8. Therefore,
@@ -432,7 +429,7 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 				throw new IllegalArgumentException();
 			}
 
-			Files.copy(tempFile, Charsets.UTF_8, destination);
+			Files.asCharSource(tempFile, Charsets.UTF_8).copyTo(destination);
 		} finally {
 			if (!tempFile.delete()) {
 				throw new IOException("Could not delete temporary file " + tempFile + ".");
