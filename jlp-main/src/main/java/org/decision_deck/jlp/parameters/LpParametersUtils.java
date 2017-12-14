@@ -26,10 +26,10 @@ import com.google.common.collect.Sets;
 public class LpParametersUtils {
 
 	/**
-	 * Retrieves all the parameters, including those that have a default value,
-	 * as a list of properties, using a reasonable format for export (with
-	 * English locale for numbers). Values that are <code>null</code> are
-	 * transformed to the string "null".
+	 * Retrieves all the parameters, including those that have a default value, as a
+	 * list of properties, using a reasonable format for export (with English locale
+	 * for numbers). Values that are <code>null</code> are transformed to the string
+	 * "null".
 	 *
 	 * @param parameters
 	 *            not <code>null</code>.
@@ -85,16 +85,16 @@ public class LpParametersUtils {
 	}
 
 	/**
-	 * Retrieves the preferred timing type according to the given parameters
-	 * values and the Java virtual machine capabilities.
+	 * Retrieves the preferred timing type according to the given parameters values
+	 * and the Java virtual machine capabilities.
 	 * </p>
 	 * <p>
 	 * This method considers the {@link LpDoubleParameter#MAX_WALL_SECONDS} and
 	 * {@link LpDoubleParameter#MAX_CPU_SECONDS} parameter values: each of these
 	 * parameters may be either set, meaning that they are associated with a
-	 * non-<code>null</code> value, or not set (the contrary case). The method
-	 * also considers whether CPU timing is supported by the Java virtual
-	 * machine for the current thread.
+	 * non-<code>null</code> value, or not set (the contrary case). The method also
+	 * considers whether CPU timing is supported by the Java virtual machine for the
+	 * current thread.
 	 * </p>
 	 *
 	 * @param parameters
@@ -103,8 +103,8 @@ public class LpParametersUtils {
 	 * @return not <code>null</code>.
 	 *         <p>
 	 *         The return value is either {@link LpTimingType#WALL_TIMING},
-	 *         {@link LpTimingType#CPU_TIMING}, or an exception. It is computed
-	 *         as follow.
+	 *         {@link LpTimingType#CPU_TIMING}, or an exception. It is computed as
+	 *         follow.
 	 *         <table>
 	 *         <thead>
 	 *         <tr>
@@ -135,18 +135,18 @@ public class LpParametersUtils {
 	 *         </tbody>
 	 *         </table>
 	 *         <p>
-	 *         Explanation of the rules are the following. If both the max wall
-	 *         time and max cpu time parameters are set, an exception is thrown.
-	 *         If the max cpu time parameter is set but cpu timing is not
-	 *         supported by the Java virtual machine, an exception is thrown.
-	 *         Otherwise, this method returns the timing type for which a time
-	 *         limit has been set as a parameter, or if none has been set,
-	 *         returns cpu timing if it is supported and wall timing otherwise.
+	 *         Explanation of the rules are the following. If both the max wall time
+	 *         and max cpu time parameters are set, an exception is thrown. If the
+	 *         max cpu time parameter is set but cpu timing is not supported by the
+	 *         Java virtual machine, an exception is thrown. Otherwise, this method
+	 *         returns the timing type for which a time limit has been set as a
+	 *         parameter, or if none has been set, returns cpu timing if it is
+	 *         supported and wall timing otherwise.
 	 *         </p>
 	 * @throws LpSolverException
-	 *             if both cpu and wall time limit parameters have a value; or
-	 *             if cpu time limit parameter is set but cpu timing is not
-	 *             supported by the Java virtual machine.
+	 *             if both cpu and wall time limit parameters have a value; or if
+	 *             cpu time limit parameter is set but cpu timing is not supported
+	 *             by the Java virtual machine.
 	 */
 	static public LpTimingType getPreferredTimingType(LpParameters parameters) throws LpSolverException {
 		final boolean hasMaxWall = parameters.getValue(LpDoubleParameter.MAX_WALL_SECONDS) != null;
@@ -314,8 +314,8 @@ public class LpParametersUtils {
 	 *            not <code>null</code>.
 	 *
 	 * @return <code>true</code> iff the state of the target object changed as a
-	 *         result of this call. Equivalently, <code>false</code> iff the
-	 *         given source equals the given target.
+	 *         result of this call. Equivalently, <code>false</code> iff the given
+	 *         source equals the given target.
 	 */
 	public static boolean setAllValues(LpParameters target, LpParameters source) {
 		checkNotNull(target);

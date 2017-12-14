@@ -8,8 +8,8 @@ public enum LpResultStatus {
 	 * 
 	 * 
 	 * 
-	 * An error happened, or an unknown status was returned from the solver, but
-	 * a feasible, non necessarily optimal, solution has been found.
+	 * An error happened, or an unknown status was returned from the solver, but a
+	 * feasible, non necessarily optimal, solution has been found.
 	 */
 	ERROR_WITH_SOLUTION, FEASIBLE, INFEASIBLE, INFEASIBLE_OR_UNBOUNDED,
 	/**
@@ -22,12 +22,12 @@ public enum LpResultStatus {
 	OPTIMAL, TIME_LIMIT_REACHED_NO_SOLUTION, TIME_LIMIT_REACHED_WITH_SOLUTION, UNBOUNDED_NO_SOLUTION;
 
 	/**
-	 * Tests whether this return status implies that a feasible solution has
-	 * been found.
+	 * Tests whether this return status implies that a feasible solution has been
+	 * found.
 	 * 
-	 * @return <code>false</code> iff no feasible solution has been found,
-	 *         including in the case the problem is unbounded (which implies
-	 *         that feasible solutions do exist).
+	 * @return <code>false</code> iff no feasible solution has been found, including
+	 *         in the case the problem is unbounded (which implies that feasible
+	 *         solutions do exist).
 	 */
 	public boolean foundFeasible() {
 		switch (this) {

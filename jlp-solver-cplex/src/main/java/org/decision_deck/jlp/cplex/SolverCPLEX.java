@@ -121,8 +121,8 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 			resultStatus = LpResultStatus.INFEASIBLE;
 		} else if (cplexStatus == CplexStatus.Optimal) {
 			/**
-			 * NB cplex possibly returns optimal (and an objective value of
-			 * zero) when no objective function is defined!
+			 * NB cplex possibly returns optimal (and an objective value of zero) when no
+			 * objective function is defined!
 			 */
 			if (getProblem().getObjective().isComplete()) {
 				resultStatus = LpResultStatus.OPTIMAL;
@@ -157,8 +157,8 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	}
 
 	/**
-	 * A method useful for debug which logs everly information that can be found
-	 * in the given solver instance.
+	 * A method useful for debug which logs everly information that can be found in
+	 * the given solver instance.
 	 *
 	 * @param cplex
 	 *            not <code>null</code>.
@@ -234,8 +234,7 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	 * @param value
 	 *            the value.
 	 * @throws LpSolverException
-	 *             if an {@link IloException} occurs while setting the
-	 *             parameter.
+	 *             if an {@link IloException} occurs while setting the parameter.
 	 */
 	public void setParam(IloCplex cplex, final DoubleParam param, final double value) throws LpSolverException {
 		Preconditions.checkNotNull(cplex);
@@ -258,8 +257,7 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	 * @param value
 	 *            the value.
 	 * @throws LpSolverException
-	 *             if an {@link IloException} occurs while setting the
-	 *             parameter.
+	 *             if an {@link IloException} occurs while setting the parameter.
 	 */
 	public void setParam(IloCplex cplex, final IntParam param, final int value) throws LpSolverException {
 		Preconditions.checkNotNull(cplex);
@@ -282,8 +280,7 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	 * @param value
 	 *            the value.
 	 * @throws LpSolverException
-	 *             if an {@link IloException} occurs while setting the
-	 *             parameter.
+	 *             if an {@link IloException} occurs while setting the parameter.
 	 */
 	public void setParam(IloCplex cplex, final StringParam param, final String value) throws LpSolverException {
 		Preconditions.checkNotNull(cplex);
@@ -296,16 +293,16 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	}
 
 	/**
-	 * Initializes the parameters, including logging parameters, of the given
-	 * solver instance to appropriate values considering the parameters set in
-	 * this object, or to default values.
+	 * Initializes the parameters, including logging parameters, of the given solver
+	 * instance to appropriate values considering the parameters set in this object,
+	 * or to default values.
 	 *
 	 * @param cplex
 	 *            not <code>null</code>.
 	 * @throws LpSolverException
-	 *             if an exception occurs while setting the parameters, or if
-	 *             some parameters have values that are impossible to satisfy
-	 *             (e.g. if both cpu and wall timings are set).
+	 *             if an exception occurs while setting the parameters, or if some
+	 *             parameters have values that are impossible to satisfy (e.g. if
+	 *             both cpu and wall timings are set).
 	 */
 	public void setParameters(IloCplex cplex) throws LpSolverException {
 		setDefaultParameters(cplex);
@@ -371,10 +368,9 @@ public class SolverCPLEX<T> extends AbstractLpSolver<T> {
 	 */
 	public void writeProblem(LpFileFormat format, CharSink destination) throws LpSolverException, IOException {
 		/**
-		 * Note that cplex 12.2 writes in unknown default export format (perhaps
-		 * ISO 8859-1?) and this method assumes export is in UTF-8. Therefore,
-		 * it might not work. However, oddly enough, tests show it seems to
-		 * work.
+		 * Note that cplex 12.2 writes in unknown default export format (perhaps ISO
+		 * 8859-1?) and this method assumes export is in UTF-8. Therefore, it might not
+		 * work. However, oddly enough, tests show it seems to work.
 		 */
 		final LpFileFormat effFormat = format == null ? LpFileFormat.SOLVER_PREFERRED : format;
 		final String ext;

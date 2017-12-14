@@ -1,5 +1,5 @@
 /**
- * Provides the classes for the MiniSat+ JNI. 
+ * Provides the classes for the MiniSat+ JNI.
  * 
  */
 package net.sf.javailp.minisat;

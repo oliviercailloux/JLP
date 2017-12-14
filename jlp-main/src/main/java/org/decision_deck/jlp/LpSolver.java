@@ -33,14 +33,14 @@ import com.google.common.io.CharSink;
  * underlying solver is retrieved by the user, this solver does not update its
  * content any more (to avoid erasing manually introduced changes). Hence,
  * calling {@link #getUnderlyingSolver()} then modifying the bound problem is
- * forbidden. Although this is currently not enforced, the user
- * <em>should not</em> modify this solver state through the parameters or the
- * problem views after a call to {@link #getUnderlyingSolver()}. The caller must
- * not forget to {@link #close()} the solver after use when using it manually,
- * except that the methods {@link #solve()} and {@link #writeProblem} close the
- * underlying solver after the job is done, thus it is not necessary to call
- * close again after these calls. After a call to {@link #solve()} or
- * {@link #writeProblem}, the underlying solver pointer is not valid any more.
+ * forbidden. Although this is currently not enforced, the user <em>should
+ * not</em> modify this solver state through the parameters or the problem views
+ * after a call to {@link #getUnderlyingSolver()}. The caller must not forget to
+ * {@link #close()} the solver after use when using it manually, except that the
+ * methods {@link #solve()} and {@link #writeProblem} close the underlying
+ * solver after the job is done, thus it is not necessary to call close again
+ * after these calls. After a call to {@link #solve()} or {@link #writeProblem},
+ * the underlying solver pointer is not valid any more.
  *
  * TODO make {@link #getUnderlyingSolver()} bring this object to an immutable
  * state.
@@ -119,10 +119,10 @@ public interface LpSolver<V> {
 
 	/**
 	 * In manual close mode, must be used after use in order to release possibly
-	 * acquired resources after a call that initialized the underlying solver.
-	 * In auto close mode, it is not necessary to call this method. If there is
-	 * nothing to close (e.g. because everything is closed already or no
-	 * resources have been acquired yet), this method has no effect.
+	 * acquired resources after a call that initialized the underlying solver. In
+	 * auto close mode, it is not necessary to call this method. If there is nothing
+	 * to close (e.g. because everything is closed already or no resources have been
+	 * acquired yet), this method has no effect.
 	 * 
 	 * @throws LpSolverException
 	 *             if a solver-specific exception is thrown.
@@ -133,25 +133,25 @@ public interface LpSolver<V> {
 	 * Retrieves a writable view that allow to query and set the values of the
 	 * parameters of this solver instance.
 	 * 
-	 * @return not <code>null</code>, a view that reads and writes through to
-	 *         this object.
+	 * @return not <code>null</code>, a view that reads and writes through to this
+	 *         object.
 	 */
 	public LpParameters getParameters();
 
 	/**
-	 * Retrieves the format this solver will use when asked to write a problem
-	 * file with a format of {@link LpFileFormat#SOLVER_PREFERRED}.
+	 * Retrieves the format this solver will use when asked to write a problem file
+	 * with a format of {@link LpFileFormat#SOLVER_PREFERRED}.
 	 * 
-	 * @return <code>null</code> if the solver preferred format is not in the
-	 *         set of enum constants in {@link LpFileFormat}.
+	 * @return <code>null</code> if the solver preferred format is not in the set of
+	 *         enum constants in {@link LpFileFormat}.
 	 * @throws LpSolverException
 	 *             if the solver does not implement writing problem files.
 	 */
 	public LpFileFormat getPreferredFormat() throws LpSolverException;
 
 	/**
-	 * Retrieves a writable view that allows to read and set the problem bound
-	 * to this solver instance.
+	 * Retrieves a writable view that allows to read and set the problem bound to
+	 * this solver instance.
 	 * 
 	 * @return not <code>null</code>.
 	 */
@@ -159,9 +159,9 @@ public interface LpSolver<V> {
 
 	/**
 	 * Retrieves the result of solving the bound problem (the last time it was
-	 * solved). This method may not be called before a solve has been attempted.
-	 * If a solve has been attempted, this method necessarily yields a valid
-	 * result object, even if the solve did not find any feasible solution.
+	 * solved). This method may not be called before a solve has been attempted. If
+	 * a solve has been attempted, this method necessarily yields a valid result
+	 * object, even if the solve did not find any feasible solution.
 	 * 
 	 * @return not <code>null</code>.
 	 * @see #hasResult()
@@ -169,26 +169,25 @@ public interface LpSolver<V> {
 	public LpResult<V> getResult();
 
 	/**
-	 * Retrieves one solution found to the last problem solved. If the result of
-	 * the solve is optimal, the returned solution is an optimal solution.
+	 * Retrieves one solution found to the last problem solved. If the result of the
+	 * solve is optimal, the returned solution is an optimal solution.
 	 * 
-	 * @return <code>null</code> iff no feasible solution to the problem have
-	 *         been found (yet). Immutable.
+	 * @return <code>null</code> iff no feasible solution to the problem have been
+	 *         found (yet). Immutable.
 	 */
 	public LpSolution<V> getSolution();
 
 	/**
-	 * Switches to manual close mode, initializes the underlying solver and
-	 * returns it. This is a writeable view to the solver underlying this
-	 * object, thus modifications from this object are reflected to the returned
-	 * solver, and conversely. Modifying the underlying solver through the
-	 * returned object may make this object behave in an unpredictable manner,
-	 * as it does not necessarily have a means to detect such changes.
-	 * Therefore, the user must choose between two possible uses: either only
-	 * use the underlying solver in read mode, not changing its state, or change
-	 * its state in which case this object should not be used any more
-	 * afterwards. Only the close method of this object should be called after
-	 * use of the underlying solver in such situation.
+	 * Switches to manual close mode, initializes the underlying solver and returns
+	 * it. This is a writeable view to the solver underlying this object, thus
+	 * modifications from this object are reflected to the returned solver, and
+	 * conversely. Modifying the underlying solver through the returned object may
+	 * make this object behave in an unpredictable manner, as it does not
+	 * necessarily have a means to detect such changes. Therefore, the user must
+	 * choose between two possible uses: either only use the underlying solver in
+	 * read mode, not changing its state, or change its state in which case this
+	 * object should not be used any more afterwards. Only the close method of this
+	 * object should be called after use of the underlying solver in such situation.
 	 * 
 	 * @return not <code>null</code>.
 	 * @throws LpSolverException
@@ -197,9 +196,9 @@ public interface LpSolver<V> {
 	public Object getUnderlyingSolver() throws LpSolverException;
 
 	/**
-	 * Indicates if this solver has a result object available, or equivalently,
-	 * if a solve has been attempted. The method {@link #getResult()} may be
-	 * called iff this method returns <code>true</code>.
+	 * Indicates if this solver has a result object available, or equivalently, if a
+	 * solve has been attempted. The method {@link #getResult()} may be called iff
+	 * this method returns <code>true</code>.
 	 * 
 	 * @return <code>true</code> iff {@link #solve()} has been called.
 	 */
@@ -207,20 +206,19 @@ public interface LpSolver<V> {
 
 	/**
 	 * <p>
-	 * Turns this object into auto close or manual close mode. When this object
-	 * auto closes (the default), the underlying solver is initialized when
-	 * needed and closed immediately afterwards, before the call that triggered
-	 * the initialization ends. This permits to shield the user from having to
-	 * think about closing the object after use. However, it renders certain
-	 * optimizations impossible, such as not having to rebuild the entire
-	 * problem each time a solve is asked. Turning the auto close off switches
-	 * to manual close mode, thus makes this object never close the underlying
-	 * solver automatically, which implies the user has to call {@link #close()}
-	 * after use.
+	 * Turns this object into auto close or manual close mode. When this object auto
+	 * closes (the default), the underlying solver is initialized when needed and
+	 * closed immediately afterwards, before the call that triggered the
+	 * initialization ends. This permits to shield the user from having to think
+	 * about closing the object after use. However, it renders certain optimizations
+	 * impossible, such as not having to rebuild the entire problem each time a
+	 * solve is asked. Turning the auto close off switches to manual close mode,
+	 * thus makes this object never close the underlying solver automatically, which
+	 * implies the user has to call {@link #close()} after use.
 	 * </p>
 	 * <p>
-	 * Turning the auto close on switches to auto close mode and immediately
-	 * close the underlying solver if it was intialized.
+	 * Turning the auto close on switches to auto close mode and immediately close
+	 * the underlying solver if it was intialized.
 	 * </p>
 	 * 
 	 * TODO implement this.
@@ -233,38 +231,37 @@ public interface LpSolver<V> {
 
 	/**
 	 * <p>
-	 * Sets the parameters this solver will use to the given parameters. Any
-	 * value already set in this object is lost. Thus if the given parameters
-	 * are set to the default value for some parameter p and that parameter has
-	 * a value set in this object before the method is called, the value of p
-	 * after the method returns is the default value.
+	 * Sets the parameters this solver will use to the given parameters. Any value
+	 * already set in this object is lost. Thus if the given parameters are set to
+	 * the default value for some parameter p and that parameter has a value set in
+	 * this object before the method is called, the value of p after the method
+	 * returns is the default value.
 	 * </p>
 	 * <p>
-	 * The given parameters values are copied in this object, no reference is
-	 * kept to the given object.
+	 * The given parameters values are copied in this object, no reference is kept
+	 * to the given object.
 	 * </p>
 	 * 
 	 * @param parameters
 	 *            not <code>null</code>.
-	 * @return <code>true</code> iff this object state changed as a result of
-	 *         this call. Equivalently, <code>false</code> iff the given
-	 *         parameter values are identical to the current values.
+	 * @return <code>true</code> iff this object state changed as a result of this
+	 *         call. Equivalently, <code>false</code> iff the given parameter values
+	 *         are identical to the current values.
 	 */
 	public boolean setParameters(LpParameters parameters);
 
 	/**
-	 * Copies the given problem data (including its name) into the problem bound
-	 * to this solver. Any information possibly existing in this object problem
-	 * is lost. This solver keeps a reference to the given problem, no defensive
-	 * copy is done. Changes to the given problem will change the problem in
-	 * this solver, and conversely. To obtain a defensive copy, use
-	 * {@link LpProblems#copyTo(LpProblem, LpProblem)} with
-	 * {@link #getProblem()}. This should be preferred because the latter method
-	 * allows this object to use any implementation it considers most suitable
-	 * for optimisation (in particular to track changes to the problem, useful
-	 * in manual close mode). Using this method may prevent this object from
-	 * applying certain optimisations in manual close mode when the problem is
-	 * solved several times.
+	 * Copies the given problem data (including its name) into the problem bound to
+	 * this solver. Any information possibly existing in this object problem is
+	 * lost. This solver keeps a reference to the given problem, no defensive copy
+	 * is done. Changes to the given problem will change the problem in this solver,
+	 * and conversely. To obtain a defensive copy, use
+	 * {@link LpProblems#copyTo(LpProblem, LpProblem)} with {@link #getProblem()}.
+	 * This should be preferred because the latter method allows this object to use
+	 * any implementation it considers most suitable for optimisation (in particular
+	 * to track changes to the problem, useful in manual close mode). Using this
+	 * method may prevent this object from applying certain optimisations in manual
+	 * close mode when the problem is solved several times.
 	 * 
 	 * @param problem
 	 *            not <code>null</code>.
@@ -272,22 +269,20 @@ public interface LpSolver<V> {
 	public void setProblem(LpProblem<V> problem);
 
 	/**
-	 * Solves the bound optimization problem. If the bound problem has an
-	 * objective function set, the optimization direction must be set as well,
-	 * and conversely.
+	 * Solves the bound optimization problem. If the bound problem has an objective
+	 * function set, the optimization direction must be set as well, and conversely.
 	 * 
 	 * @return not <code>null</code>.
 	 * 
 	 * @throws LpSolverException
-	 *             if some problem specific to the underlying solver occurs.
-	 *             Happens if some feature required for solving the bound
-	 *             problem with the bound parameters is missing in this
-	 *             implementation, e.g. a parameter value is not legal for this
-	 *             solver implementation (see {@link LpParameters}); or if the
-	 *             underlying solver throws a solver-dependent exception.
-	 *             Runtime exceptions thrown by a solver are not wrapped into a
-	 *             {@link LpSolverException}, except for exceptions known to be
-	 *             solver-specific.
+	 *             if some problem specific to the underlying solver occurs. Happens
+	 *             if some feature required for solving the bound problem with the
+	 *             bound parameters is missing in this implementation, e.g. a
+	 *             parameter value is not legal for this solver implementation (see
+	 *             {@link LpParameters}); or if the underlying solver throws a
+	 *             solver-dependent exception. Runtime exceptions thrown by a solver
+	 *             are not wrapped into a {@link LpSolverException}, except for
+	 *             exceptions known to be solver-specific.
 	 */
 	public LpResultStatus solve() throws LpSolverException;
 
@@ -318,8 +313,8 @@ public interface LpSolver<V> {
 	 * @param file
 	 *            not <code>null</code>.
 	 * @param addExtension
-	 *            <code>true</code> to automatically add an appropriate
-	 *            extension to the given path.
+	 *            <code>true</code> to automatically add an appropriate extension to
+	 *            the given path.
 	 * @throws LpSolverException
 	 *             if a solver-specific exception occurs, or the solver does not
 	 *             implement writing problem files, or does not support the

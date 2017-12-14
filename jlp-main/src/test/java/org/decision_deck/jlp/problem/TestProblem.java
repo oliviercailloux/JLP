@@ -9,15 +9,15 @@ import org.junit.Test;
 
 public class TestProblem {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testProblemMissingVar() throws Exception {
-	LpProblem<String> problem = new LpProblemImpl<String>();
+	@Test(expected = IllegalArgumentException.class)
+	public void testProblemMissingVar() throws Exception {
+		LpProblem<String> problem = new LpProblemImpl<String>();
 
-	LpLinear<String> linear = new LpLinearImpl<String>();
-	linear.addTerm(1, "x");
+		LpLinear<String> linear = new LpLinearImpl<String>();
+		linear.addTerm(1, "x");
 
-	problem.setObjective(linear, LpDirection.MAX);
+		problem.setObjective(linear, LpDirection.MAX);
 
-    }
+	}
 
 }

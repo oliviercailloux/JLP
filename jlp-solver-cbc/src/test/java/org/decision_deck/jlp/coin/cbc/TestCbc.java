@@ -15,34 +15,37 @@ import org.junit.Test;
 
 public class TestCbc {
 
-    @Test
-    public void testStart() throws Exception {
-	final OsiSolverInterface osiSolver = new OsiCbcSolverInterface();
-	// osiSolver.setColBounds(0, 0, 3);
-	try {
-	    final CoinPackedVector v = new CoinPackedVector();
-	    v.add(3);
-	    osiSolver.addRow(v, 0, 1);
-	    osiSolver.branchAndBound();
-	    final double objValue = osiSolver.getObjValue();
-	    final double[] solutions = osiSolver.getColSolutionVec();
-	} finally {
-	    osiSolver.delete();
+	@Test
+	public void testStart() throws Exception {
+		final OsiSolverInterface osiSolver = new OsiCbcSolverInterface();
+		// osiSolver.setColBounds(0, 0, 3);
+		try {
+			final CoinPackedVector v = new CoinPackedVector();
+			v.add(3);
+			osiSolver.addRow(v, 0, 1);
+			osiSolver.branchAndBound();
+			final double objValue = osiSolver.getObjValue();
+			final double[] solutions = osiSolver.getColSolutionVec();
+		} finally {
+			osiSolver.delete();
+		}
 	}
-    }
 
-    @Test
-    public void testWriteLp() throws Exception {
-        final LpProblem<String> problem = LpProblemExamples.getIntOneFourThree();
-    
-	final LpSolver<String> solver = new LpSolverFactory(LpSolverType.CBC).newSolver();
-	solver.setProblem(problem);
-	final StringWriter writer = new StringWriter();
-	// solver.writeProblem(LpFileFormat.SOLVER_PREFERRED, new StringWriterSupplier(writer));
-	// final String written = writer.toString();
-	//
-	// final String expected = Resources.toString(getClass().getResource("OneFourThree.lp"), Charsets.UTF_8);
-	// assertEquals(expected, written);
-    }
+	@Test
+	public void testWriteLp() throws Exception {
+		final LpProblem<String> problem = LpProblemExamples.getIntOneFourThree();
+
+		final LpSolver<String> solver = new LpSolverFactory(LpSolverType.CBC).newSolver();
+		solver.setProblem(problem);
+		final StringWriter writer = new StringWriter();
+		// solver.writeProblem(LpFileFormat.SOLVER_PREFERRED, new
+		// StringWriterSupplier(writer));
+		// final String written = writer.toString();
+		//
+		// final String expected =
+		// Resources.toString(getClass().getResource("OneFourThree.lp"),
+		// Charsets.UTF_8);
+		// assertEquals(expected, written);
+	}
 
 }

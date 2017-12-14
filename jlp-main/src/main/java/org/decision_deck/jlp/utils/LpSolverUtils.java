@@ -74,10 +74,10 @@ public class LpSolverUtils {
 	}
 
 	/**
-	 * Tests whether the given numbers correspond to boolean values, plus or
-	 * minus an allowed epsilon value. The predicate is <code>true</code>, for a
-	 * number n and a positive or nul epsilon value e, iff its double value is
-	 * in [-e, e] or in [1-e, 1+e].
+	 * Tests whether the given numbers correspond to boolean values, plus or minus
+	 * an allowed epsilon value. The predicate is <code>true</code>, for a number n
+	 * and a positive or nul epsilon value e, iff its double value is in [-e, e] or
+	 * in [1-e, 1+e].
 	 * 
 	 * @author Olivier Cailloux
 	 * 
@@ -114,16 +114,16 @@ public class LpSolverUtils {
 	}
 
 	/**
-	 * Ensures that the given parameters are conform to the given mandatory
-	 * values. That is, for each parameter value that is mandatory, ensures that
-	 * the given parameters have an associated value (which may be the default
-	 * value) that is equal to the mandatory value.
+	 * Ensures that the given parameters are conform to the given mandatory values.
+	 * That is, for each parameter value that is mandatory, ensures that the given
+	 * parameters have an associated value (which may be the default value) that is
+	 * equal to the mandatory value.
 	 * 
 	 * @param parameters
 	 *            not <code>null</code>.
 	 * @param mandatoryValues
-	 *            not <code>null</code>, no <code>null</code> key. The values
-	 *            must be meaningful.
+	 *            not <code>null</code>, no <code>null</code> key. The values must
+	 *            be meaningful.
 	 * @throws LpSolverException
 	 *             if the parameters are not conform.
 	 */
@@ -141,10 +141,10 @@ public class LpSolverUtils {
 	}
 
 	/**
-	 * Ensures that the given problem represents a zero-one problem, thus that
-	 * each variable in the problem either has type {@link LpVariableType#BOOL}
-	 * or has type {@link LpVariableType#INT} with bounds defined between 0 and
-	 * 1 (inclusive).
+	 * Ensures that the given problem represents a zero-one problem, thus that each
+	 * variable in the problem either has type {@link LpVariableType#BOOL} or has
+	 * type {@link LpVariableType#INT} with bounds defined between 0 and 1
+	 * (inclusive).
 	 * 
 	 * @param <V>
 	 *            the type of the variables in the problem.
@@ -466,17 +466,17 @@ public class LpSolverUtils {
 
 	/**
 	 * <p>
-	 * Retrieves the bound of the variable from the given problem, with a
-	 * possible modification if the variable type is {@link LpVariableType#BOOL}
-	 * : the bound is itself <em>bounded</em> to zero.
+	 * Retrieves the bound of the variable from the given problem, with a possible
+	 * modification if the variable type is {@link LpVariableType#BOOL} : the bound
+	 * is itself <em>bounded</em> to zero.
 	 * </p>
 	 * <p>
 	 * Consider a variable defined in the delegate problem having the type
-	 * {@link LpVariableType#BOOL} and a lower bound <em>l</em>. This method
-	 * will return as its lower bound 0 if l is <code>null</code>, 0 if
-	 * l.doubleValue() is lower than zero, and l otherwise. E.g. this method
-	 * returns zero as the lower bound of a {@link LpVariableType#BOOL} variable
-	 * having a lower bound of -1 in the given problem.
+	 * {@link LpVariableType#BOOL} and a lower bound <em>l</em>. This method will
+	 * return as its lower bound 0 if l is <code>null</code>, 0 if l.doubleValue()
+	 * is lower than zero, and l otherwise. E.g. this method returns zero as the
+	 * lower bound of a {@link LpVariableType#BOOL} variable having a lower bound of
+	 * -1 in the given problem.
 	 * </p>
 	 * 
 	 * @see #getViewWithTransformedBools(LpProblem)
@@ -488,9 +488,9 @@ public class LpSolverUtils {
 	 * @param variable
 	 *            must exist in the problem.
 	 * @return the bound of the variable according to the given problem, not
-	 *         <code>null</code>. The bound is greater than or equal to zero if
-	 *         the variable has the type {@link LpVariableType#BOOL} according
-	 *         to the given problem.
+	 *         <code>null</code>. The bound is greater than or equal to zero if the
+	 *         variable has the type {@link LpVariableType#BOOL} according to the
+	 *         given problem.
 	 */
 	static public <V> Number getVarLowerBoundBounded(LpProblem<V> problem, V variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
@@ -507,17 +507,17 @@ public class LpSolverUtils {
 
 	/**
 	 * <p>
-	 * Retrieves the bound of the variable from the given problem, with a
-	 * possible modification if the variable type is {@link LpVariableType#BOOL}
-	 * : the bound is itself <em>bounded</em> to one.
+	 * Retrieves the bound of the variable from the given problem, with a possible
+	 * modification if the variable type is {@link LpVariableType#BOOL} : the bound
+	 * is itself <em>bounded</em> to one.
 	 * </p>
 	 * <p>
 	 * Consider a variable defined in the delegate problem having the type
-	 * {@link LpVariableType#BOOL} and an upper bound <em>u</em>. This method
-	 * will return as its upper bound 1 if u.doubleValue() is greater than one
-	 * (including if it is positive infinity), and u otherwise. E.g. this method
-	 * returns 1 as the upper bound of a {@link LpVariableType#BOOL} variable
-	 * having an upper bound of 1.5 in the given problem.
+	 * {@link LpVariableType#BOOL} and an upper bound <em>u</em>. This method will
+	 * return as its upper bound 1 if u.doubleValue() is greater than one (including
+	 * if it is positive infinity), and u otherwise. E.g. this method returns 1 as
+	 * the upper bound of a {@link LpVariableType#BOOL} variable having an upper
+	 * bound of 1.5 in the given problem.
 	 * </p>
 	 * 
 	 * @see #getViewWithTransformedBools(LpProblem)
@@ -529,9 +529,9 @@ public class LpSolverUtils {
 	 * @param variable
 	 *            must exist in the problem.
 	 * @return the bound of the variable according to the given problem, not
-	 *         <code>null</code>. The bound is greater than or equal to zero if
-	 *         the variable has the type {@link LpVariableType#BOOL} according
-	 *         to the given problem.
+	 *         <code>null</code>. The bound is greater than or equal to zero if the
+	 *         variable has the type {@link LpVariableType#BOOL} according to the
+	 *         given problem.
 	 */
 	static public <V> Number getVarUpperBoundBounded(LpProblem<V> problem, V variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));

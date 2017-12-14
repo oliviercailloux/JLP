@@ -15,23 +15,23 @@ import org.decision_deck.jlp.LpSolver;
 public class LpSolverFactory {
 
 	private static final String CLASS_NAME_CBC = "org.decision_deck.jlp.coin.cbc.SolverCbc";
+
 	private static final String CLASS_NAME_CPLEX = "org.decision_deck.jlp.cplex.SolverCPLEX";
+
 	private static final String CLASS_NAME_LP_SOLVE = "org.decision_deck.jlp.lpsolve.SolverLpSolve";
 
 	/**
 	 * <p>
-	 * Creates a new solver instance corresponding to the chosen solver type.
-	 * This factory will search for the corresponding implementing class in the
-	 * classpath, using a class name dependent on the chosen solver type. This
-	 * will fail if the classpath does not contain the expected implementing
-	 * class.
+	 * Creates a new solver instance corresponding to the chosen solver type. This
+	 * factory will search for the corresponding implementing class in the
+	 * classpath, using a class name dependent on the chosen solver type. This will
+	 * fail if the classpath does not contain the expected implementing class.
 	 * </p>
 	 * 
 	 * @param impl
 	 *            not <code>null</code>.
 	 * @param <V>
-	 *            the type of the variables to be used in the new solver
-	 *            instance.
+	 *            the type of the variables to be used in the new solver instance.
 	 * 
 	 * @return a new solver instance.
 	 * 
@@ -68,16 +68,14 @@ public class LpSolverFactory {
 	 * A solver implementation must have been specified.
 	 * </p>
 	 * <p>
-	 * This method wraps exceptions that can be thrown because of an
-	 * instanciation problem in a higher-level exception.
+	 * This method wraps exceptions that can be thrown because of an instanciation
+	 * problem in a higher-level exception.
 	 * </p>
 	 * 
 	 * @param <V>
-	 *            the type of the variables to be used in the new solver
-	 *            instance.
+	 *            the type of the variables to be used in the new solver instance.
 	 * 
-	 * @return a new solver instance backed by the implementation previously
-	 *         chosen.
+	 * @return a new solver instance backed by the implementation previously chosen.
 	 * 
 	 * @throws LpSolverFactoryException
 	 *             if anything goes wrong when constructing the solver.
@@ -97,18 +95,16 @@ public class LpSolverFactory {
 	 * 
 	 * <p>
 	 * Note that this method propagates any exception thrown by the nullary
-	 * constructor, including a checked exception. Use of this method
-	 * effectively bypasses the compile-time exception checking that would
-	 * otherwise be performed by the compiler. However, the solver implementor
-	 * is forbidden to do that, thus it should not happen.
+	 * constructor, including a checked exception. Use of this method effectively
+	 * bypasses the compile-time exception checking that would otherwise be
+	 * performed by the compiler. However, the solver implementor is forbidden to do
+	 * that, thus it should not happen.
 	 * </p>
 	 * 
 	 * @param <V>
-	 *            the type of the variables to be used in the new solver
-	 *            instance.
+	 *            the type of the variables to be used in the new solver instance.
 	 * 
-	 * @return a new solver instance backed by the implementation previously
-	 *         chosen.
+	 * @return a new solver instance backed by the implementation previously chosen.
 	 * 
 	 * @throws ClassNotFoundException
 	 *             if the implementing class is not found. Try an other
@@ -124,13 +120,12 @@ public class LpSolverFactory {
 	 *             following conditions is met:
 	 *             <ul>
 	 *             <li>invocation of {@link SecurityManager#checkMemberAccess
-	 *             s.checkMemberAccess(this, Member.PUBLIC)} denies creation of
-	 *             new instances of this class
-	 *             <li>the caller's class loader is not the same as or an
-	 *             ancestor of the class loader for the current class and
-	 *             invocation of {@link SecurityManager#checkPackageAccess
-	 *             s.checkPackageAccess()} denies access to the package of this
-	 *             class
+	 *             s.checkMemberAccess(this, Member.PUBLIC)} denies creation of new
+	 *             instances of this class
+	 *             <li>the caller's class loader is not the same as or an ancestor
+	 *             of the class loader for the current class and invocation of
+	 *             {@link SecurityManager#checkPackageAccess s.checkPackageAccess()}
+	 *             denies access to the package of this class
 	 *             </ul>
 	 */
 	public <V> LpSolver<V> newSolverThrowing()
@@ -138,8 +133,8 @@ public class LpSolverFactory {
 		/**
 		 * Ideally we should prevent possible checked exceptions thrown by the
 		 * constructor to propagate. We could check using reflection that the
-		 * constructor does not do that (it should not!), but this is not
-		 * implemented yet.
+		 * constructor does not do that (it should not!), but this is not implemented
+		 * yet.
 		 */
 		if (m_solverImpl == null) {
 			throw new IllegalStateException("Solver implementation has not been specified.");

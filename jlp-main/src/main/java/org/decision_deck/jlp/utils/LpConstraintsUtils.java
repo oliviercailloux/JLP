@@ -23,10 +23,9 @@ public class LpConstraintsUtils {
 	 * whether the constraints it represents is satisfied.
 	 * </p>
 	 * <p>
-	 * Using this method requires particular caution when op is equality,
-	 * because this method allows for no tolerance and will thus consider two
-	 * double values as being unequal even if they differ by a very small
-	 * amount.
+	 * Using this method requires particular caution when op is equality, because
+	 * this method allows for no tolerance and will thus consider two double values
+	 * as being unequal even if they differ by a very small amount.
 	 * </p>
 	 *
 	 * @param lhs
@@ -35,8 +34,8 @@ public class LpConstraintsUtils {
 	 *            not <code>null</code>.
 	 * @param rhs
 	 *            a real number, or infinity.
-	 * @return <code>true</code> iff lhs compares to rhs in the way represented
-	 *         by the given operator.
+	 * @return <code>true</code> iff lhs compares to rhs in the way represented by
+	 *         the given operator.
 	 */
 	static public boolean satisfied(double lhs, LpOperator op, double rhs) {
 		checkNotNull(op);

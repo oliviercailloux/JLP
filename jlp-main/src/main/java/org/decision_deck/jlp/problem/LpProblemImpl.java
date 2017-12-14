@@ -52,7 +52,9 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	private LpLinear<V> m_objectiveFunction;
 
 	private LpDirection m_optType;
+
 	private final Multiset<LpVariableType> m_varCount = EnumMultiset.create(LpVariableType.class);
+
 	/**
 	 * Missing entries correspond to minus infinity bound.
 	 */
@@ -70,8 +72,8 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	private final Map<V, String> m_varNames = Maps.newHashMap();
 
 	/**
-	 * No <code>null</code> key or value. Each variable in this problem has a
-	 * type, thus this map contains all the variables in the problem.
+	 * No <code>null</code> key or value. Each variable in this problem has a type,
+	 * thus this map contains all the variables in the problem.
 	 */
 	private final Map<V, LpVariableType> m_varType = Maps.newLinkedHashMap();
 
@@ -89,8 +91,8 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	/**
-	 * A copy constructor, by value. No reference is shared between the new
-	 * problem and the given one.
+	 * A copy constructor, by value. No reference is shared between the new problem
+	 * and the given one.
 	 *
 	 * @param problem
 	 *            not <code>null</code>.
@@ -339,10 +341,9 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	/**
-	 * NB no defensive copy of the given constraint is done. Adds a constraint,
-	 * or does nothing if the given constraint is already in the problem. The
-	 * variables used in the objective must have been added to this problem
-	 * already.
+	 * NB no defensive copy of the given constraint is done. Adds a constraint, or
+	 * does nothing if the given constraint is already in the problem. The variables
+	 * used in the objective must have been added to this problem already.
 	 *
 	 * @param constraint
 	 *            the constraint to be added. Not <code>null</code>.

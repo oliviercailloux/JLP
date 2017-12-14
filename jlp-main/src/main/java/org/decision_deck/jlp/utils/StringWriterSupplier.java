@@ -14,21 +14,21 @@ import com.google.common.io.OutputSupplier;
  * 
  */
 public class StringWriterSupplier implements OutputSupplier<StringWriter> {
-    private final StringWriter m_stringWriter;
+	private final StringWriter m_stringWriter;
 
-    /**
-     * Creates a new supplier.
-     * 
-     * @param stringWriter
-     *            not <code>null</code>.
-     */
-    public StringWriterSupplier(StringWriter stringWriter) {
-	checkNotNull(stringWriter);
-	m_stringWriter = stringWriter;
-    }
+	/**
+	 * Creates a new supplier.
+	 * 
+	 * @param stringWriter
+	 *            not <code>null</code>.
+	 */
+	public StringWriterSupplier(StringWriter stringWriter) {
+		checkNotNull(stringWriter);
+		m_stringWriter = stringWriter;
+	}
 
-    @Override
-    public StringWriter getOutput() throws IOException {
-	return m_stringWriter;
-    }
+	@Override
+	public StringWriter getOutput() throws IOException {
+		return m_stringWriter;
+	}
 }

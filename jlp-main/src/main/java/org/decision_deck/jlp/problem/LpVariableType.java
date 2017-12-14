@@ -23,8 +23,8 @@ public enum LpVariableType {
 	REAL;
 
 	/**
-	 * Indicates whether this type represents an integer type
-	 * <em>in the large sense</em>.
+	 * Indicates whether this type represents an integer type <em>in the large
+	 * sense</em>.
 	 * 
 	 * @return <code>true</code> iff this type is {@link #BOOL} or {@link #INT}.
 	 */
