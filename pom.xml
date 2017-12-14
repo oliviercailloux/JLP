@@ -6,7 +6,7 @@
 		<version>7</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.decision_deck.jlp</groupId>
+	<groupId>io.github.oliviercailloux</groupId>
 	<artifactId>jlp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
