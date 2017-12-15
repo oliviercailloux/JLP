@@ -178,43 +178,6 @@ public class LpProblems {
 
 	/**
 	 * <p>
-	 * Retrieves a view of the given problem that has its own name. The name of the
-	 * underlying problem is ignored even if the provided new name is empty.
-	 * </p>
-	 * <p>
-	 * The provided view is writable, writing to it writes through to the underlying
-	 * problem except that changing its name change only its own name, not the name
-	 * of the delegate problem.
-	 * </p>
-	 * <p>
-	 * The method may be useful e.g. in case you have an immutable problem for which
-	 * you want to permit changing its name, but nothing else. Using such a view is
-	 * more efficient than copying the problem to a new problem in order to change
-	 * its name.
-	 * </p>
-	 * <p>
-	 * This is marked private because it is really too specialized to be useful and
-	 * will probably be deleted.
-	 * </p>
-	 * 
-	 * @param <T>
-	 *            the type of the variables in the problem.
-	 * @param problem
-	 *            the underlying problem.
-	 * @param problemName
-	 *            the new problem name, <code>null</code> or empty for no name.
-	 * @return not <code>null</code>.
-	 * @see LpProblemOwnName
-	 */
-	@SuppressWarnings("unused")
-	static private <T> LpProblem<T> getViewWithName(LpProblem<T> problem, String problemName) {
-		final LpProblemOwnName<T> view = new LpProblemOwnName<T>(problem);
-		view.setName(problemName);
-		return view;
-	}
-
-	/**
-	 * <p>
 	 * Restricts the bounds associated with the given variable in the given problem
 	 * to make sure the variable satisfies the given constraint. For example, if the
 	 * operator is less or equal to and the value is three, the variable will have

@@ -14,6 +14,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
+import com.google.common.collect.Iterables;
 
 import io.github.oliviercailloux.jlp.LpConstraint;
 import io.github.oliviercailloux.jlp.LpLinear;
@@ -27,8 +28,6 @@ import io.github.oliviercailloux.jlp.problem.LpProblems;
 import io.github.oliviercailloux.jlp.problem.LpVariableType;
 import io.github.oliviercailloux.jlp.result.LpSolution;
 import io.github.oliviercailloux.jlp.result.LpSolutionAlone;
-
-import com.google.common.collect.Iterables;
 
 /**
  * <p>
@@ -79,9 +78,9 @@ public class LpSolverUtils {
 	 * an allowed epsilon value. The predicate is <code>true</code>, for a number n
 	 * and a positive or nul epsilon value e, iff its double value is in [-e, e] or
 	 * in [1-e, 1+e].
-	 * 
+	 *
 	 * @author Olivier Cailloux
-	 * 
+	 *
 	 */
 	static public class IsBoolValue implements Predicate<Number> {
 		private final double m_epsilon;
@@ -119,7 +118,7 @@ public class LpSolverUtils {
 	 * That is, for each parameter value that is mandatory, ensures that the given
 	 * parameters have an associated value (which may be the default value) that is
 	 * equal to the mandatory value.
-	 * 
+	 *
 	 * @param parameters
 	 *            not <code>null</code>.
 	 * @param mandatoryValues
@@ -146,10 +145,10 @@ public class LpSolverUtils {
 	 * variable in the problem either has type {@link LpVariableType#BOOL} or has
 	 * type {@link LpVariableType#INT} with bounds defined between 0 and 1
 	 * (inclusive).
-	 * 
+	 *
 	 * @param <V>
 	 *            the type of the variables in the problem.
-	 * 
+	 *
 	 * @param problem
 	 *            not <code>null</code>.
 	 * @throws LpSolverException
@@ -203,9 +202,6 @@ public class LpSolverUtils {
 			return false;
 		}
 		for (T1 variable : a.getVariables()) {
-			if (!b.getVariables().contains(variable)) {
-				return false;
-			}
 			@SuppressWarnings("unchecked")
 			final T2 varTyped = (T2) variable;
 
@@ -214,9 +210,6 @@ public class LpSolverUtils {
 			}
 		}
 		for (LpConstraint<T1> constraint : a.getConstraints()) {
-			if (!b.getConstraints().contains(constraint)) {
-				return false;
-			}
 			@SuppressWarnings("unchecked")
 			final LpConstraint<T2> constraintTyped = (LpConstraint<T2>) constraint;
 
@@ -247,7 +240,7 @@ public class LpSolverUtils {
 
 	/**
 	 * Provides an implementation of toString for debugging use.
-	 * 
+	 *
 	 * @param <V>
 	 *            the type of variable.
 	 * @param constraint
@@ -264,7 +257,7 @@ public class LpSolverUtils {
 	/**
 	 * Provides an implementation of toString for debugging use. For a more user
 	 * friendly string description, see class {@link LpProblems}.
-	 * 
+	 *
 	 * @param <V>
 	 *            the type of variable.
 	 * @param problem
@@ -370,9 +363,6 @@ public class LpSolverUtils {
 					return false;
 				}
 				for (T1 variable : a.getVariables()) {
-					if (!b.getVariables().contains(variable)) {
-						return false;
-					}
 					@SuppressWarnings("unchecked")
 					final T2 varTyped = (T2) variable;
 
@@ -413,9 +403,6 @@ public class LpSolverUtils {
 					return false;
 				}
 				for (T1 variable : a.getVariables()) {
-					if (!b.getVariables().contains(variable)) {
-						return false;
-					}
 					@SuppressWarnings("unchecked")
 					final T2 varTyped = (T2) variable;
 
@@ -424,9 +411,6 @@ public class LpSolverUtils {
 					}
 				}
 				for (LpConstraint<T1> constraint : a.getConstraints()) {
-					if (!b.getConstraints().contains(constraint)) {
-						return false;
-					}
 					@SuppressWarnings("unchecked")
 					final LpConstraint<T2> constraintTyped = (LpConstraint<T2>) constraint;
 
@@ -479,9 +463,9 @@ public class LpSolverUtils {
 	 * lower bound of a {@link LpVariableType#BOOL} variable having a lower bound of
 	 * -1 in the given problem.
 	 * </p>
-	 * 
+	 *
 	 * @see #getViewWithTransformedBools(LpProblem)
-	 * 
+	 *
 	 * @param <V>
 	 *            the type of variables used in the problem.
 	 * @param problem
@@ -520,9 +504,9 @@ public class LpSolverUtils {
 	 * the upper bound of a {@link LpVariableType#BOOL} variable having an upper
 	 * bound of 1.5 in the given problem.
 	 * </p>
-	 * 
+	 *
 	 * @see #getViewWithTransformedBools(LpProblem)
-	 * 
+	 *
 	 * @param <V>
 	 *            the type of variables used in the problem.
 	 * @param problem
@@ -549,6 +533,6 @@ public class LpSolverUtils {
 	}
 
 	static public <V> LpProblem<V> getViewWithTransformedBools(LpProblem<V> problem) {
-		return new LpProblemWithTransformedBoolsView<V>(problem);
+		return new LpProblemWithTransformedBoolsView<>(problem);
 	}
 }

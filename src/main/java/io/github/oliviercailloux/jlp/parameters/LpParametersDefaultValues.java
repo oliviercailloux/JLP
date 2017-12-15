@@ -12,9 +12,11 @@ public class LpParametersDefaultValues {
 
 	private static Map<LpObjectParameter, Object> s_objects = null;
 
+	private static Map<LpStringParameter, String> s_strings = null;
+
 	/**
 	 * Retrieves the default double values.
-	 * 
+	 *
 	 * @return a (possibly read-only) copy of the default values as a map.
 	 */
 	static public Map<LpDoubleParameter, Double> getDefaultDoubleValues() {
@@ -24,7 +26,7 @@ public class LpParametersDefaultValues {
 
 	/**
 	 * Retrieves the default integer values.
-	 * 
+	 *
 	 * @return a (possibly read-only) copy of the default values as a map.
 	 */
 	static public Map<LpIntParameter, Integer> getDefaultIntValues() {
@@ -34,7 +36,7 @@ public class LpParametersDefaultValues {
 
 	/**
 	 * Retrieves the default object values.
-	 * 
+	 *
 	 * @return a (possibly read-only) copy of the default values as a map.
 	 */
 	static public Map<LpObjectParameter, Object> getDefaultObjectValues() {
@@ -43,8 +45,18 @@ public class LpParametersDefaultValues {
 	}
 
 	/**
+	 * Retrieves the default string values.
+	 *
+	 * @return a (possibly read-only) copy of the default values as a map.
+	 */
+	static public Map<LpStringParameter, String> getDefaultStringValues() {
+		lazyInit();
+		return s_strings;
+	}
+
+	/**
 	 * Retrieves the default value associated to the given parameter.
-	 * 
+	 *
 	 * @param parameter
 	 *            not <code>null</code>.
 	 * @return the default value, possibly <code>null</code> as this is a meaningful
@@ -57,7 +69,7 @@ public class LpParametersDefaultValues {
 
 	/**
 	 * Retrieves the default value associated to the given parameter.
-	 * 
+	 *
 	 * @param parameter
 	 *            not <code>null</code>.
 	 * @return the default value, possibly <code>null</code> as this is a meaningful
@@ -70,7 +82,7 @@ public class LpParametersDefaultValues {
 
 	/**
 	 * Retrieves the default value associated to the given parameter.
-	 * 
+	 *
 	 * @param parameter
 	 *            not <code>null</code>.
 	 * @return the default value, possibly <code>null</code> as this is a meaningful
@@ -82,12 +94,25 @@ public class LpParametersDefaultValues {
 	}
 
 	/**
+	 * Retrieves the default value associated to the given parameter.
+	 *
+	 * @param parameter
+	 *            not <code>null</code>.
+	 * @return the default value, possibly <code>null</code> as this is a meaningful
+	 *         value for some parameters.
+	 */
+	static public String getDefaultValue(LpStringParameter parameter) {
+		lazyInit();
+		return s_strings.get(parameter);
+	}
+
+	/**
 	 * Retrieves the default value associated to the given parameter. This method
 	 * allows for more flexible use as the caller does not have to distinguish the
 	 * type of the parameter. The type of the parameter argument must be
 	 * {@link LpIntParameter}, {@link LpDoubleParameter}, {@link LpStringParameter}
 	 * or {@link LpObjectParameter}, otherwise an exception is thrown.
-	 * 
+	 *
 	 * @param parameter
 	 *            not <code>null</code>.
 	 * @return the default value, possibly <code>null</code> as this is a meaningful
@@ -97,13 +122,17 @@ public class LpParametersDefaultValues {
 		lazyInit();
 		final Object value;
 		if (parameter instanceof LpIntParameter) {
-			value = s_ints.get(parameter);
+			final LpIntParameter paramTyped = (LpIntParameter) parameter;
+			value = s_ints.get(paramTyped);
 		} else if (parameter instanceof LpDoubleParameter) {
-			value = s_doubles.get(parameter);
+			final LpDoubleParameter paramTyped = (LpDoubleParameter) parameter;
+			value = s_doubles.get(paramTyped);
 		} else if (parameter instanceof LpStringParameter) {
-			value = s_strings.get(parameter);
+			final LpStringParameter paramTyped = (LpStringParameter) parameter;
+			value = s_strings.get(paramTyped);
 		} else if (parameter instanceof LpObjectParameter) {
-			value = s_objects.get(parameter);
+			final LpObjectParameter paramTyped = (LpObjectParameter) parameter;
+			value = s_objects.get(paramTyped);
 		} else {
 			throw new IllegalArgumentException("Unknown parameter type.");
 		}
@@ -159,32 +188,7 @@ public class LpParametersDefaultValues {
 		}
 	}
 
-	private static Map<LpStringParameter, String> s_strings = null;
-
 	private LpParametersDefaultValues() {
 		/** Non-instantiable. */
-	}
-
-	/**
-	 * Retrieves the default value associated to the given parameter.
-	 * 
-	 * @param parameter
-	 *            not <code>null</code>.
-	 * @return the default value, possibly <code>null</code> as this is a meaningful
-	 *         value for some parameters.
-	 */
-	static public String getDefaultValue(LpStringParameter parameter) {
-		lazyInit();
-		return s_strings.get(parameter);
-	}
-
-	/**
-	 * Retrieves the default string values.
-	 * 
-	 * @return a (possibly read-only) copy of the default values as a map.
-	 */
-	static public Map<LpStringParameter, String> getDefaultStringValues() {
-		lazyInit();
-		return s_strings;
 	}
 }
