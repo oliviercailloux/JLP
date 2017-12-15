@@ -1,4 +1,0 @@
-mvn install:install-file -Dfile="swimp-0.9.5-bin-linux-x86/dist/swimp.jar" -DgroupId=net.sourceforge.swimp -DartifactId=swimp -Dversion=0.9.5 -Dpackaging=jar
-mvn install:install-file -Dfile="swimp-0.9.5-bin-linux-x86/swimp-sources.jar" -DgroupId=net.sourceforge.swimp -DartifactId=swimp -Dversion=0.9.5 -Dpackaging=jar -Dclassifier=sources
-mvn install:install-file -Dfile="swimp-0.9.5-bin-linux-x86/dist/swimp-osicbc.jar" -DgroupId=net.sourceforge.swimp -DartifactId=swimp-osicbc -Dversion=0.9.5 -Dpackaging=jar
-mvn install:install-file -Dfile="swimp-0.9.5-bin-linux-x86/swimp-sources.jar" -DgroupId=net.sourceforge.swimp -DartifactId=swimp-osicbc -Dversion=0.9.5 -Dpackaging=jar -Dclassifier=sources

@@ -1,9 +1,5 @@
-*.class
-
-*.jar
-
-*/detailed.log
-*/errors.log
-
-*/target/
+.project
+.classpath
+.settings/
+/target/
 

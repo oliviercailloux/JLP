@@ -9,7 +9,6 @@
 	<groupId>io.github.oliviercailloux</groupId>
 	<artifactId>jlp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
 	<name>JLP</name>
 	<description>Java Linear Programming, a project to specify and solve linear programs from Java.</description>
 	<url>http://www.decision-deck.org/code/JLP</url>
@@ -37,14 +36,6 @@
 		<builddir>${project.basedir}</builddir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<modules>
-		<module>jlp-main</module>
-		<module>jlp-solver-cplex</module>
-		<module>jlp-solver-lp-solve</module>
-		<module>jlp-solver-minisat-jni</module>
-		<module>jlp-solver-minisat</module>
-		<module>jlp-solver-cbc</module>
-	</modules>
 	<build>
 		<plugins>
 			<plugin>
@@ -101,6 +92,17 @@
 		</pluginManagement>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
