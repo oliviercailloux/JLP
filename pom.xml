@@ -10,58 +10,38 @@
 	<artifactId>jlp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JLP</name>
-	<description>Java Linear Programming, a project to specify and solve linear programs from Java.</description>
-	<url>http://www.decision-deck.org/code/JLP</url>
+	<description>Java Linear Programming: specify and solve linear programs in object-oriented fashion.</description>
+	<url>http://github.com/oliviercailloux/jlp</url>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License version 3</name>
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/jlp-interface/source/browse/</url>
-		<connection>scm:hg:https://code.google.com/p/jlp-interface/</connection>
-		<developerConnection>scm:hg:https://code.google.com/p/jlp-interface/</developerConnection>
+		<connection>scm:git:git://github.com/oliviercailloux/jlp.git</connection>
+		<developerConnection>scm:git:ssh://github.com/oliviercailloux/jlp.git</developerConnection>
+		<url>http://github.com/oliviercailloux/jlp/tree/master</url>
 	</scm>
 	<developers>
 		<developer>
 			<name>Olivier Cailloux</name>
-			<email>olivier.cailloux@gmail.com</email>
-		</developer>
-		<developer>
-			<name>Martin Lukasiewycz</name>
+			<email>olivier.cailloux@dauphine.fr</email>
+			<url>http://www.lamsade.dauphine.fr/~ocailloux/</url>
+			<organization>Paris-Dauphine</organization>
+			<organizationUrl>http://www.dauphine.fr</organizationUrl>
 		</developer>
 	</developers>
 	<properties>
-		<builddir>${project.basedir}</builddir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<configuration>
-						</configuration>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
