@@ -10,8 +10,6 @@ import java.util.Objects;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
-import io.github.oliviercailloux.jlp.problem.LpVariableType;
-
 /**
  * <p>
  * An object which may be used to refer to a variable in a linear programming
@@ -33,18 +31,18 @@ import io.github.oliviercailloux.jlp.problem.LpVariableType;
 public class NamedVariable implements Variable {
 
 	static public NamedVariable newInt(String name, Object... references) {
-		return new NamedVariable(name, LpVariableType.INT, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
+		return new NamedVariable(name, VariableType.INT, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
 				references);
 	}
 
-	static public NamedVariable newNamedVariable(String name, LpVariableType type, Number lowerBound, Number upperBound,
+	static public NamedVariable newNamedVariable(String name, VariableType type, Number lowerBound, Number upperBound,
 			Object... references) {
 		/** TODO provide static constructors for all types. */
 		return new NamedVariable(name, type, lowerBound, upperBound, references);
 	}
 
 	static public NamedVariable newReal(String name, Object... references) {
-		return new NamedVariable(name, LpVariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
+		return new NamedVariable(name, VariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
 				references);
 	}
 
@@ -58,7 +56,7 @@ public class NamedVariable implements Variable {
 	/** Does not contain <code>null</code>. */
 	private final List<Object> refs;
 
-	private LpVariableType type;
+	private VariableType type;
 
 	private Number upperBound;
 
@@ -77,7 +75,7 @@ public class NamedVariable implements Variable {
 	 *            not <code>null</code>, no <code>null</code> reference inside. May
 	 *            be empty.
 	 */
-	private NamedVariable(String name, LpVariableType type, Number lowerBound, Number upperBound,
+	private NamedVariable(String name, VariableType type, Number lowerBound, Number upperBound,
 			Object... references) {
 		this.type = requireNonNull(type);
 		this.lowerBound = requireNonNull(lowerBound);
@@ -142,7 +140,7 @@ public class NamedVariable implements Variable {
 	}
 
 	@Override
-	public LpVariableType getType() {
+	public VariableType getType() {
 		return type;
 	}
 

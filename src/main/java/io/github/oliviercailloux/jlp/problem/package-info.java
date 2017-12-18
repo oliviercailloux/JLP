@@ -1,7 +1,7 @@
 /**
  * <h2>About the type of the variables</h2>
  * <p>
- * Classes such as {@link io.github.oliviercailloux.jlp.problem.LpProblem} let you
+ * Classes such as {@link io.github.oliviercailloux.jlp.problem.MP} let you
  * choose a type for the variables in the mathematical programs you create. If
  * you like to name your variables, use String. If you like to number them, use
  * Integer. For advanced use, you may create a type for your variables and make

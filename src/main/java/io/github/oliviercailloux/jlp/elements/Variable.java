@@ -1,7 +1,5 @@
 package io.github.oliviercailloux.jlp.elements;
 
-import io.github.oliviercailloux.jlp.problem.LpVariableType;
-
 /**
  * Two variables should be equal, as determined by {@link #equals(Object)}, iff
  * they have the same description, as given by {@link #toString()}.
@@ -36,7 +34,7 @@ public interface Variable {
 	 */
 	public Number getLowerBound();
 
-	public LpVariableType getType();
+	public VariableType getType();
 
 	/**
 	 * @return positive infinity, for an upper bound equal to positive infinity, may
