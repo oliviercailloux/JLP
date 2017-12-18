@@ -11,10 +11,10 @@ import com.google.common.collect.ImmutableMap.Builder;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.MP;
-import io.github.oliviercailloux.jlp.problem.MPs;
-import io.github.oliviercailloux.jlp.utils.SumTermUtils;
+import io.github.oliviercailloux.jlp.problem.IMP;
+import io.github.oliviercailloux.jlp.problem.ImmutableMP;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
+import io.github.oliviercailloux.jlp.utils.SumTermUtils;
 
 public class SolutionImmutable implements Solution {
 
@@ -27,7 +27,7 @@ public class SolutionImmutable implements Solution {
 
 	private final ImmutableMap<Variable, Number> primalValues;
 
-	private final MP problem;
+	private final IMP problem;
 
 	/**
 	 * <p>
@@ -49,7 +49,7 @@ public class SolutionImmutable implements Solution {
 	 * @param solution
 	 *            not <code>null</code>.
 	 */
-	public SolutionImmutable(MP problem, SolutionAlone solution) {
+	public SolutionImmutable(IMP problem, SolutionAlone solution) {
 		this(problem, solution, true);
 	}
 
@@ -63,7 +63,7 @@ public class SolutionImmutable implements Solution {
 		this(solution.getProblem(), solution, false);
 	}
 
-	private SolutionImmutable(MP problem, SolutionAlone solution, boolean protectProblem) {
+	private SolutionImmutable(IMP problem, SolutionAlone solution, boolean protectProblem) {
 		Preconditions.checkNotNull(solution);
 		final Builder<Variable, Number> primalValues = ImmutableMap.builder();
 		final Builder<Constraint, Number> dualValues = ImmutableMap.builder();
@@ -87,7 +87,7 @@ public class SolutionImmutable implements Solution {
 		this.primalValues = primalValues.build();
 		this.dualValues = dualValues.build();
 		if (protectProblem) {
-			this.problem = MPs.newImmutable(problem);
+			this.problem = ImmutableMP.copyOf(problem);
 		} else {
 			this.problem = problem;
 		}
@@ -149,7 +149,7 @@ public class SolutionImmutable implements Solution {
 	}
 
 	@Override
-	public MP getProblem() {
+	public IMP getProblem() {
 		return problem;
 	}
 

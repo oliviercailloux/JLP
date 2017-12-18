@@ -25,11 +25,10 @@ import com.google.common.base.Preconditions;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.MP;
-import io.github.oliviercailloux.jlp.problem.MPImmutable;
-import io.github.oliviercailloux.jlp.problem.MPs;
-import io.github.oliviercailloux.jlp.utils.SumTermUtils;
+import io.github.oliviercailloux.jlp.problem.IMP;
+import io.github.oliviercailloux.jlp.problem.ImmutableMP;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
+import io.github.oliviercailloux.jlp.utils.SumTermUtils;
 
 /**
  * The class {@code ResultImpl} is a {@code Map} based implementation of the
@@ -56,7 +55,7 @@ public class SolutionImpl implements Solution {
 	/**
 	 * Not <code>null</code>, immutable.
 	 */
-	private final MPImmutable problem;
+	private final ImmutableMP problem;
 
 	/**
 	 * A new solution satisfying the given problem. The new solution is shielded
@@ -65,9 +64,9 @@ public class SolutionImpl implements Solution {
 	 * @param problem
 	 *            not <code>null</code>.
 	 */
-	public SolutionImpl(MP problem) {
+	public SolutionImpl(IMP problem) {
 		Preconditions.checkNotNull(problem);
-		this.problem = MPs.newImmutable(problem);
+		this.problem = ImmutableMP.copyOf(problem);
 	}
 
 	/**
@@ -91,7 +90,7 @@ public class SolutionImpl implements Solution {
 	 * @param solution
 	 *            not <code>null</code>.
 	 */
-	public SolutionImpl(MP problem, SolutionAlone solution) {
+	public SolutionImpl(IMP problem, SolutionAlone solution) {
 		Preconditions.checkNotNull(problem);
 		Preconditions.checkNotNull(solution);
 
@@ -111,7 +110,7 @@ public class SolutionImpl implements Solution {
 		}
 
 		objectiveValue = solution.getObjectiveValue();
-		this.problem = MPs.newImmutable(problem);
+		this.problem = ImmutableMP.copyOf(problem);
 	}
 
 	@Override
@@ -166,7 +165,7 @@ public class SolutionImpl implements Solution {
 	}
 
 	@Override
-	public MP getProblem() {
+	public IMP getProblem() {
 		return problem;
 	}
 

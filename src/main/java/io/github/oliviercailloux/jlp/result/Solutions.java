@@ -2,7 +2,7 @@ package io.github.oliviercailloux.jlp.result;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.oliviercailloux.jlp.problem.MP;
+import io.github.oliviercailloux.jlp.problem.IMP;
 
 /**
  * Utilities methods related to a {@link Solution}.
@@ -26,7 +26,7 @@ public class Solutions {
 		return new SolutionImmutable(source);
 	}
 
-	static public Solution newSolution(MP problem) {
+	static public Solution newSolution(IMP problem) {
 		checkNotNull(problem);
 		return new SolutionImpl(problem);
 	}

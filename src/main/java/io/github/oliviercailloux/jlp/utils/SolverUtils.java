@@ -24,8 +24,7 @@ import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableType;
 import io.github.oliviercailloux.jlp.parameters.SolverParameters;
 import io.github.oliviercailloux.jlp.parameters.SolverParametersUtils;
-import io.github.oliviercailloux.jlp.problem.MP;
-import io.github.oliviercailloux.jlp.problem.MPWithTransformedBoolsView;
+import io.github.oliviercailloux.jlp.problem.IMP;
 import io.github.oliviercailloux.jlp.problem.MPs;
 import io.github.oliviercailloux.jlp.result.Solution;
 import io.github.oliviercailloux.jlp.result.SolutionAlone;
@@ -140,48 +139,16 @@ public class SolverUtils {
 		}
 	}
 
-	/**
-	 * Ensures that the given problem represents a zero-one problem, thus that each
-	 * variable in the problem either has type {@link VariableType#BOOL} or has
-	 * type {@link VariableType#INT} with bounds defined between 0 and 1
-	 * (inclusive).
-	 *
-	 * @param problem
-	 *            not <code>null</code>.
-	 * @throws SolverException
-	 *             iff the problem is not zero-one.
-	 */
-	static public void assertIntZeroOne(final MP problem) throws SolverException {
-		final MP problemNoBool = SolverUtils.getViewWithTransformedBools(problem);
-		for (Variable variable : problemNoBool.getVariables()) {
-			VariableType type = problemNoBool.getVariableType(variable);
-			if (type == VariableType.REAL) {
-				throw new SolverException(
-						"Variable " + variable + " is not an integer variable, this is not a zero-one problem.");
-			}
-			final Number lowerBound = variable.getLowerBound();
-			final Number upperBound = variable.getUpperBound();
-			if (lowerBound.doubleValue() < 0d) {
-				throw new SolverException(
-						"Variable " + variable + " has an inadequate lower bound, this is not a zero-one problem.");
-			}
-			if (upperBound.doubleValue() > 1d) {
-				throw new SolverException(
-						"Variable " + variable + " has an inadequate upper bound, this is not a zero-one problem.");
-			}
-		}
-	}
-
 	static public boolean equivalent(Constraint a, Constraint b) {
 		return getConstraintEquivalence().equivalent(a, b);
 	}
 
-	static public boolean equivalent(SumTerms a, SumTerms b) {
-		return getLinearEquivalence().equivalent(a, b);
+	static public boolean equivalent(IMP a, IMP b) {
+		return getProblemEquivalence().equivalent(a, b);
 	}
 
-	static public boolean equivalent(MP a, MP b) {
-		return getProblemEquivalence().equivalent(a, b);
+	public static boolean equivalent(final Number value1, final Number value2, double epsilon) {
+		return Math.abs(value1.doubleValue() - value2.doubleValue()) <= epsilon;
 	}
 
 	static public boolean equivalent(Solution a, Solution b) {
@@ -215,8 +182,8 @@ public class SolverUtils {
 		return true;
 	}
 
-	public static boolean equivalent(final Number value1, final Number value2, double epsilon) {
-		return Math.abs(value1.doubleValue() - value2.doubleValue()) <= epsilon;
+	static public boolean equivalent(SumTerms a, SumTerms b) {
+		return getLinearEquivalence().equivalent(a, b);
 	}
 
 	static public int getAsInteger(double number) throws SolverException {
@@ -241,7 +208,7 @@ public class SolverUtils {
 	 *            not <code>null</code>.
 	 * @return a debug description.
 	 */
-	static public String getAsString(MP problem) {
+	static public String getAsString(IMP problem) {
 		final ToStringHelper helper = Objects.toStringHelper(problem);
 		helper.addValue('\'' + problem.getName() + '\'');
 		if (!problem.getObjective().isEmpty()) {
@@ -316,20 +283,20 @@ public class SolverUtils {
 		};
 	}
 
-	static public Equivalence<MP> getProblemEquivalence() {
-		return new Equivalence<MP>() {
+	static public Equivalence<IMP> getProblemEquivalence() {
+		return new Equivalence<IMP>() {
 			@Override
-			public boolean doEquivalent(MP a, MP b) {
+			public boolean doEquivalent(IMP a, IMP b) {
 				return computeEquivalent(a, b);
 			}
 
 			@Override
-			public int doHash(MP t) {
+			public int doHash(IMP t) {
 				final int hashCode = Objects.hashCode(t.getObjective());
 				return hashCode + t.getConstraints().hashCode() + t.getVariables().hashCode();
 			}
 
-			private <T1, T2> boolean computeEquivalent(MP a, MP b) {
+			private <T1, T2> boolean computeEquivalent(IMP a, IMP b) {
 				if (!a.getConstraints().equals(b.getConstraints())) {
 					return false;
 				}
@@ -410,7 +377,7 @@ public class SolverUtils {
 		};
 	}
 
-	static public BiMap<Variable, Integer> getVariablesIds(MP problem, int startId) {
+	static public BiMap<Variable, Integer> getVariablesIds(IMP problem, int startId) {
 		Preconditions.checkNotNull(problem);
 		final Builder<Variable, Integer> builder = ImmutableBiMap.builder();
 		{
@@ -427,8 +394,8 @@ public class SolverUtils {
 	/**
 	 * <p>
 	 * Retrieves the bound of the variable from the given problem, with a possible
-	 * modification if the variable type is {@link VariableType#BOOL} : the bound
-	 * is itself <em>bounded</em> to zero.
+	 * modification if the variable type is {@link VariableType#BOOL} : the bound is
+	 * itself <em>bounded</em> to zero.
 	 * </p>
 	 * <p>
 	 * Consider a variable defined in the delegate problem having the type
@@ -439,7 +406,7 @@ public class SolverUtils {
 	 * -1 in the given problem.
 	 * </p>
 	 *
-	 * @see #getViewWithTransformedBools(MP)
+	 * @see #getViewWithTransformedBools(IMP)
 	 *
 	 * @param problem
 	 *            not <code>null</code>.
@@ -450,7 +417,7 @@ public class SolverUtils {
 	 *         variable has the type {@link VariableType#BOOL} according to the
 	 *         given problem.
 	 */
-	static public Number getVarLowerBoundBounded(MP problem, Variable variable) {
+	static public Number getVarLowerBoundBounded(IMP problem, Variable variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final VariableType type = problem.getVariableType(variable);
 		if (type != VariableType.BOOL) {
@@ -466,19 +433,19 @@ public class SolverUtils {
 	/**
 	 * <p>
 	 * Retrieves the bound of the variable from the given problem, with a possible
-	 * modification if the variable type is {@link VariableType#BOOL} : the bound
-	 * is itself <em>bounded</em> to one.
+	 * modification if the variable type is {@link VariableType#BOOL} : the bound is
+	 * itself <em>bounded</em> to one.
 	 * </p>
 	 * <p>
 	 * Consider a variable defined in the delegate problem having the type
 	 * {@link VariableType#BOOL} and an upper bound <em>u</em>. This method will
 	 * return as its upper bound 1 if u.doubleValue() is greater than one (including
 	 * if it is positive infinity), and u otherwise. E.g. this method returns 1 as
-	 * the upper bound of a {@link VariableType#BOOL} variable having an upper
-	 * bound of 1.5 in the given problem.
+	 * the upper bound of a {@link VariableType#BOOL} variable having an upper bound
+	 * of 1.5 in the given problem.
 	 * </p>
 	 *
-	 * @see #getViewWithTransformedBools(MP)
+	 * @see #getViewWithTransformedBools(IMP)
 	 *
 	 * @param problem
 	 *            not <code>null</code>.
@@ -489,7 +456,7 @@ public class SolverUtils {
 	 *         variable has the type {@link VariableType#BOOL} according to the
 	 *         given problem.
 	 */
-	static public Number getVarUpperBoundBounded(MP problem, Variable variable) {
+	static public Number getVarUpperBoundBounded(IMP problem, Variable variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final VariableType type = problem.getVariableType(variable);
 		if (type != VariableType.BOOL) {
@@ -501,9 +468,5 @@ public class SolverUtils {
 			return Double.valueOf(1d);
 		}
 		return up;
-	}
-
-	static public MP getViewWithTransformedBools(MP problem) {
-		return new MPWithTransformedBoolsView(problem);
 	}
 }

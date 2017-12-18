@@ -9,7 +9,7 @@ import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
- * Utilities methods (e.g. views, copies) related to a {@link MP}.
+ * Utilities methods (e.g. views, copies) related to a {@link IMP}.
  *
  * @author Olivier Cailloux
  *
@@ -59,7 +59,7 @@ public class MPs {
 	 * @param target
 	 *            not <code>null</code>.
 	 */
-	static public void copyTo(MP source, MP target) {
+	static public void copyTo(IMP source, MP target) {
 		checkNotNull(target);
 		checkNotNull(source);
 
@@ -87,7 +87,7 @@ public class MPs {
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>, not empty.
 	 */
-	static public String getLongDescription(MP problem) {
+	static public String getLongDescription(IMP problem) {
 		Preconditions.checkNotNull(problem);
 		String N = System.getProperty("line.separator");
 		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
@@ -131,41 +131,12 @@ public class MPs {
 	}
 
 	/**
-	 * Retrieves a read-only view of the given delegate problem.
-	 *
-	 * @param delegate
-	 *            not <code>null</code>.
-	 * @return not <code>null</code>.
-	 */
-	static public MPReadView getReadView(MP delegate) {
-		if (delegate instanceof MPReadView) {
-			return (MPReadView) delegate;
-		}
-		return new MPReadView(delegate);
-	}
-
-	/**
-	 * Returns a problem containing the same information as the source problem, and
-	 * which is immutable.
-	 *
-	 * @param source
-	 *            not <code>null</code>.
-	 * @return not <code>null</code>.
-	 */
-	static public MPImmutable newImmutable(MP source) {
-		if (source instanceof MPImmutable) {
-			return (MPImmutable) source;
-		}
-		return new MPImmutable(source);
-	}
-
-	/**
 	 * Creates a new, empty problem.
 	 *
 	 * @return a new problem.
 	 */
 	static public MP newProblem() {
-		return new MPImpl();
+		return new MP();
 	}
 
 	/**
@@ -178,7 +149,7 @@ public class MPs {
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public MP newProblem(MP source) {
-		return new MPImpl(source);
+	static public MP newProblem(IMP source) {
+		return new MP(source);
 	}
 }

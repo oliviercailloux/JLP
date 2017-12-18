@@ -12,7 +12,7 @@ import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.MP;
+import io.github.oliviercailloux.jlp.problem.IMP;
 import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPUtils {
@@ -45,7 +45,7 @@ public class MPUtils {
 		return solutionValue.doubleValue();
 	}
 
-	static public <V> void logProblemContents(MP problem) {
+	static public <V> void logProblemContents(IMP problem) {
 		checkNotNull(problem);
 		s_logger.info("Problem {}, {}.", problem.getName(), problem.getDimension());
 		final Set<Variable> variables = problem.getVariables();

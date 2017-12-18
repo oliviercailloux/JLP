@@ -1,11 +1,11 @@
 package io.github.oliviercailloux.jlp.result;
 
+import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
+import io.github.oliviercailloux.jlp.elements.NamedVariable;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.SumTermsImmutable;
 import io.github.oliviercailloux.jlp.elements.SumTermsImpl;
-import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
-import io.github.oliviercailloux.jlp.elements.NamedVariable;
 import io.github.oliviercailloux.jlp.problem.MP;
 import io.github.oliviercailloux.jlp.problem.MPs;
 

@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.base.Function;
 
 import io.github.oliviercailloux.jlp.MPFileFormat;
-import io.github.oliviercailloux.jlp.problem.MP;
+import io.github.oliviercailloux.jlp.problem.IMP;
 
 public enum SolverParameterObject {
 	/**

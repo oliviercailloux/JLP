@@ -6,11 +6,11 @@ import java.util.Set;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.MP;
+import io.github.oliviercailloux.jlp.problem.IMP;
 
 /**
  * <p>
- * A feasible, but not necessarily optimal, result of a {@link MP}. The
+ * A feasible, but not necessarily optimal, result of a {@link IMP}. The
  * problem that this solution satisfies is bound to this solution object. This
  * permits to also query for, e.g., constraints values, provided the adequate
  * variables have a value set.
@@ -99,7 +99,7 @@ public interface Solution extends SolutionAlone {
 	 *
 	 * @return not <code>null</code>, immutable.
 	 */
-	public MP getProblem();
+	public IMP getProblem();
 
 	/**
 	 * Returns the primal value of the variable, if it is known. Returns necessarily
