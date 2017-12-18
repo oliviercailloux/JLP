@@ -20,8 +20,6 @@ public class LpLinearUtils {
 	 * assigned to the variables in the expression. The numbers used for the
 	 * variable values are converted to double for the computation.
 	 *
-	 * @param <V>
-	 *            the type of the variables.
 	 * @param linear
 	 *            not <code>null</code>.
 	 * @param values
@@ -30,7 +28,7 @@ public class LpLinearUtils {
 	 *         linear expression has no associated value, zero if the given linear
 	 *         is empty.
 	 */
-	static public <V> Double evaluate(LpLinear linear, Map<Variable, Number> values) {
+	static public Double evaluate(LpLinear linear, Map<Variable, Number> values) {
 		Preconditions.checkNotNull(linear);
 		Preconditions.checkNotNull(values);
 
@@ -52,7 +50,7 @@ public class LpLinearUtils {
 	 *
 	 * @return a new linear object.
 	 */
-	static public <V> LpLinear newLinear() {
+	static public LpLinear newLinear() {
 		return new LpLinearImpl();
 	}
 
@@ -63,7 +61,7 @@ public class LpLinearUtils {
 	 *            not <code>null</code>.
 	 * @return a linear object.
 	 */
-	static public <V> LpLinear newLinear(Collection<LpTerm> terms) {
+	static public LpLinear newLinear(Collection<LpTerm> terms) {
 		checkNotNull(terms);
 		return new LpLinearImpl(terms);
 	}
@@ -88,7 +86,7 @@ public class LpLinearUtils {
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public <V> LpLinear newMult(double factor, Collection<LpTerm> source) {
+	static public LpLinear newMult(double factor, Collection<LpTerm> source) {
 		checkNotNull(source);
 		checkArgument(Doubles.isFinite(factor));
 		final LpLinearImpl result = new LpLinearImpl();

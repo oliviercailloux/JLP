@@ -13,13 +13,10 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * the related problem can be bound to the solution, see documentation there.
  * </p>
  *
- * @param <V>
- *            the type of the variables.
- *
  * @author Olivier Cailloux
  *
  */
-public interface LpSolutionAlone<V> {
+public interface LpSolutionAlone {
 
 	/**
 	 * <p>
@@ -48,7 +45,7 @@ public interface LpSolutionAlone<V> {
 	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
-	public Set<LpConstraint<V>> getConstraints();
+	public Set<LpConstraint> getConstraints();
 
 	/**
 	 * Returns, if it is known, the value corresponding to the dual variable
@@ -58,7 +55,7 @@ public interface LpSolutionAlone<V> {
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated dual value.
 	 */
-	public Number getDualValue(LpConstraint<V> constraint);
+	public Number getDualValue(LpConstraint constraint);
 
 	/**
 	 * Returns the objective value.

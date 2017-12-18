@@ -9,17 +9,29 @@ import com.google.common.base.Objects.ToStringHelper;
 import io.github.oliviercailloux.jlp.parameters.LpParameters;
 import io.github.oliviercailloux.jlp.parameters.LpParametersUtils;
 
-public class LpResultImpl<V> implements LpResult<V> {
+public class LpResultImpl implements LpResult {
 
-	private final LpResultStatus m_status;
+	static public LpResultImpl noSolution(LpResultStatus status, LpSolverDuration duration, LpParameters parameters) {
+		checkArgument(!status.foundFeasible());
+		return new LpResultImpl(status, duration, parameters, null);
+	}
+
+	static public LpResultImpl withSolution(LpResultStatus status, LpSolverDuration duration, LpParameters parameters,
+			LpSolution solution) {
+		checkArgument(status.foundFeasible());
+		checkNotNull(solution);
+		return new LpResultImpl(status, duration, parameters, solution);
+	}
 
 	private final LpSolverDuration m_duration;
 
-	private final LpSolution<V> m_solution;
-
 	private final LpParameters m_parameters;
 
-	LpResultImpl(LpResultStatus status, LpSolverDuration duration, LpParameters parameters, LpSolution<V> solution) {
+	private final LpSolution m_solution;
+
+	private final LpResultStatus m_status;
+
+	LpResultImpl(LpResultStatus status, LpSolverDuration duration, LpParameters parameters, LpSolution solution) {
 		checkNotNull(status);
 		checkNotNull(duration);
 		checkNotNull(parameters);
@@ -29,11 +41,14 @@ public class LpResultImpl<V> implements LpResult<V> {
 		m_solution = solution == null ? null : LpSolutions.newImmutable(solution);
 	}
 
-	static public <V> LpResultImpl<V> withSolution(LpResultStatus status, LpSolverDuration duration,
-			LpParameters parameters, LpSolution<V> solution) {
-		checkArgument(status.foundFeasible());
-		checkNotNull(solution);
-		return new LpResultImpl<V>(status, duration, parameters, solution);
+	@Override
+	public LpSolverDuration getDuration() {
+		return m_duration;
+	}
+
+	@Override
+	public LpParameters getParameters() {
+		return m_parameters;
 	}
 
 	@Override
@@ -42,24 +57,8 @@ public class LpResultImpl<V> implements LpResult<V> {
 	}
 
 	@Override
-	public LpSolverDuration getDuration() {
-		return m_duration;
-	}
-
-	@Override
-	public LpSolution<V> getSolution() {
+	public LpSolution getSolution() {
 		return m_solution;
-	}
-
-	static public <V> LpResultImpl<V> noSolution(LpResultStatus status, LpSolverDuration duration,
-			LpParameters parameters) {
-		checkArgument(!status.foundFeasible());
-		return new LpResultImpl<V>(status, duration, parameters, null);
-	}
-
-	@Override
-	public LpParameters getParameters() {
-		return m_parameters;
 	}
 
 	@Override

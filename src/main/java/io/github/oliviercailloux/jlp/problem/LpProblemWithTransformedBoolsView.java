@@ -37,13 +37,10 @@ import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
  * of variables: iteration order of these sets is the order used by the
  * delegate.
  *
- * @param <V>
- *            the type of the variables objects.
- *
  * @author Olivier Cailloux
  *
  */
-public class LpProblemWithTransformedBoolsView<V> extends LpProblemForwarder<V> implements LpProblem<V> {
+public class LpProblemWithTransformedBoolsView extends LpProblemForwarder implements LpProblem {
 
 	/**
 	 * Creates a view that delegates to the given object.
@@ -51,21 +48,21 @@ public class LpProblemWithTransformedBoolsView<V> extends LpProblemForwarder<V> 
 	 * @param delegate
 	 *            not <code>null</code>.
 	 */
-	public LpProblemWithTransformedBoolsView(LpProblem<V> delegate) {
+	public LpProblemWithTransformedBoolsView(LpProblem delegate) {
 		super(delegate);
 	}
 
 	@Override
-	public boolean add(LpConstraint<V> constraint) {
+	public boolean add(LpConstraint constraint) {
 		return delegate().add(constraint);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LpProblem<?>)) {
+		if (!(obj instanceof LpProblem)) {
 			return false;
 		}
-		LpProblem<?> p2 = (LpProblem<?>) obj;
+		LpProblem p2 = (LpProblem) obj;
 		return LpSolverUtils.equivalent(this, p2);
 	}
 

@@ -18,9 +18,6 @@ import io.github.oliviercailloux.jlp.utils.LpLinearUtils;
  * {@link LpLinearUtils}.
  * </p>
  *
- * @param <V>
- *            the type of the variables.
- *
  * @author Olivier Cailloux
  *
  */

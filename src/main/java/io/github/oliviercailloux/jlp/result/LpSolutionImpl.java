@@ -37,16 +37,14 @@ import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
  *
  * @author lukasiewycz
  * @author Olivier Cailloux
- * @param <V>
- *            the type of the variables to be used in the new solver instance.
  *
  */
-public class LpSolutionImpl<V> implements LpSolution<V> {
+public class LpSolutionImpl implements LpSolution {
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<LpConstraint<V>, Number> m_dualValues = new HashMap<>();
+	private final Map<LpConstraint, Number> m_dualValues = new HashMap<>();
 
 	private Number m_objectiveValue = null;
 
@@ -58,7 +56,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	/**
 	 * Not <code>null</code>, immutable.
 	 */
-	private final LpProblemImmutable<V> m_problem;
+	private final LpProblemImmutable m_problem;
 
 	/**
 	 * A new solution satisfying the given problem. The new solution is shielded
@@ -67,7 +65,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	 * @param problem
 	 *            not <code>null</code>.
 	 */
-	public LpSolutionImpl(LpProblem<V> problem) {
+	public LpSolutionImpl(LpProblem problem) {
 		Preconditions.checkNotNull(problem);
 		m_problem = LpProblems.newImmutable(problem);
 	}
@@ -93,7 +91,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	 * @param solution
 	 *            not <code>null</code>.
 	 */
-	public LpSolutionImpl(LpProblem<V> problem, LpSolutionAlone<V> solution) {
+	public LpSolutionImpl(LpProblem problem, LpSolutionAlone solution) {
 		Preconditions.checkNotNull(problem);
 		Preconditions.checkNotNull(solution);
 
@@ -104,7 +102,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 				m_primalValues.put(variable, value);
 			}
 		}
-		for (LpConstraint<V> constraint : solution.getConstraints()) {
+		for (LpConstraint constraint : solution.getConstraints()) {
 			final Number value = solution.getDualValue(constraint);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getConstraints().contains(constraint));
@@ -118,11 +116,11 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LpSolution<?>)) {
+		if (!(obj instanceof LpSolution)) {
 			return false;
 		}
 
-		LpSolution<?> s2 = (LpSolution<?>) obj;
+		LpSolution s2 = (LpSolution) obj;
 		return LpSolverUtils.equivalent(this, s2);
 	}
 
@@ -152,12 +150,12 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public Set<LpConstraint<V>> getConstraints() {
+	public Set<LpConstraint> getConstraints() {
 		return Collections.unmodifiableSet(m_dualValues.keySet());
 	}
 
 	@Override
-	public Number getDualValue(LpConstraint<V> constraint) {
+	public Number getDualValue(LpConstraint constraint) {
 		Preconditions.checkNotNull(constraint);
 		return m_dualValues.get(constraint);
 	}
@@ -168,7 +166,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public LpProblem<V> getProblem() {
+	public LpProblem getProblem() {
 		return m_problem;
 	}
 
@@ -199,7 +197,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	 *         set, or the given value is not <code>null</code> and equals the dual
 	 *         value previously associated with the given variable.
 	 */
-	public boolean putDualValue(LpConstraint<V> constraint, Number value) {
+	public boolean putDualValue(LpConstraint constraint, Number value) {
 		Preconditions.checkNotNull(constraint);
 		Preconditions.checkArgument(m_problem.getConstraints().contains(constraint));
 		m_dualValues.put(constraint, value);

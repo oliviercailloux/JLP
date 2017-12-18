@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.Lists;
 
-public class LpLinearImmutable<V> extends ForwardingList<LpTerm> implements LpLinear {
+public class LpLinearImmutable extends ForwardingList<LpTerm> implements LpLinear {
 	/**
 	 * Retrieves a linear, immutable object containing the given terms.
 	 *
@@ -19,40 +19,40 @@ public class LpLinearImmutable<V> extends ForwardingList<LpTerm> implements LpLi
 	 *            not <code>null</code>.
 	 * @return a linear object.
 	 */
-	static public <V> LpLinearImmutable<V> of(Collection<LpTerm> terms) {
+	static public LpLinearImmutable of(Collection<LpTerm> terms) {
 		requireNonNull(terms);
 		if (terms instanceof LpLinearImmutable) {
-			return (LpLinearImmutable<V>) terms;
+			return (LpLinearImmutable) terms;
 		}
-		return new LpLinearImmutable<>(terms);
+		return new LpLinearImmutable(terms);
 	}
 
 	static public LpLinearImmutable of(double c1, Variable v1) {
 		final List<LpTerm> asList = Lists.newLinkedList();
 		asList.add(new LpTerm(c1, v1));
-		return new LpLinearImmutable<>(asList);
+		return new LpLinearImmutable(asList);
 	}
 
-	static public <V> LpLinearImmutable<V> of(double c1, Variable v1, double c2, Variable v2) {
+	static public LpLinearImmutable of(double c1, Variable v1, double c2, Variable v2) {
 		final List<LpTerm> asList = Lists.newLinkedList();
 		asList.add(new LpTerm(c1, v1));
 		asList.add(new LpTerm(c2, v2));
-		return new LpLinearImmutable<>(asList);
+		return new LpLinearImmutable(asList);
 	}
 
-	static public <V> LpLinearImmutable<V> of(double c1, Variable v1, double c2, Variable v2, double c3, Variable v3) {
+	static public LpLinearImmutable of(double c1, Variable v1, double c2, Variable v2, double c3, Variable v3) {
 		final List<LpTerm> asList = Lists.newLinkedList();
 		asList.add(new LpTerm(c1, v1));
 		asList.add(new LpTerm(c2, v2));
 		asList.add(new LpTerm(c3, v3));
-		return new LpLinearImmutable<>(asList);
+		return new LpLinearImmutable(asList);
 	}
 
-	static public <V> LpLinearImmutable<V> of(LpTerm... terms) {
+	static public LpLinearImmutable of(LpTerm... terms) {
 		/**
 		 * TODO Inverse: immutable should be the default; add a builder for convenience.
 		 */
-		return new LpLinearImmutable<>(Arrays.asList(terms));
+		return new LpLinearImmutable(Arrays.asList(terms));
 	}
 
 	private final LpLinear m_delegate;

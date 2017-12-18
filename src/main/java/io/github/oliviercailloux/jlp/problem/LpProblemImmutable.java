@@ -15,10 +15,8 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
-public class LpProblemImmutable<V> extends LpProblemForwarder<V> implements LpProblem<V> {
+public class LpProblemImmutable extends LpProblemForwarder implements LpProblem {
 
 	/**
 	 * Creates a new problem that contains the same data than the given problem and
@@ -27,8 +25,8 @@ public class LpProblemImmutable<V> extends LpProblemForwarder<V> implements LpPr
 	 * @param problem
 	 *            not <code>null</code>.
 	 */
-	public LpProblemImmutable(LpProblem<V> problem) {
-		super((problem instanceof LpProblemImmutable<?>) ? problem : new LpProblemImpl<>(problem));
+	public LpProblemImmutable(LpProblem problem) {
+		super((problem instanceof LpProblemImmutable) ? problem : new LpProblemImpl(problem));
 	}
 
 	/**
@@ -41,7 +39,7 @@ public class LpProblemImmutable<V> extends LpProblemForwarder<V> implements LpPr
 	 *             always.
 	 */
 	@Override
-	public boolean add(LpConstraint<V> constraint) {
+	public boolean add(LpConstraint constraint) {
 		throw new UnsupportedOperationException("This object is immutable.");
 	}
 
@@ -99,7 +97,7 @@ public class LpProblemImmutable<V> extends LpProblemForwarder<V> implements LpPr
 	 *             always.
 	 */
 	@Override
-	public void setConstraintsNamer(Function<LpConstraint<V>, String> namer) {
+	public void setConstraintsNamer(Function<LpConstraint, String> namer) {
 		throw new UnsupportedOperationException("This object is immutable.");
 	}
 

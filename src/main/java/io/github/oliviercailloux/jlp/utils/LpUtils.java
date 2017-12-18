@@ -37,7 +37,7 @@ public class LpUtils {
 	 *            not <code>null</code>.
 	 * @return the value of the variable.
 	 */
-	static public <V> double getSolutionValue(LpSolution<V> solution, Variable variable) {
+	static public double getSolutionValue(LpSolution solution, Variable variable) {
 		final Number solutionValue = solution.getValue(variable);
 		if (solutionValue == null) {
 			throw new IllegalStateException("Solution value for " + variable + " not found.");
@@ -45,7 +45,7 @@ public class LpUtils {
 		return solutionValue.doubleValue();
 	}
 
-	static public <V> void logProblemContents(LpProblem<V> problem) {
+	static public <V> void logProblemContents(LpProblem problem) {
 		checkNotNull(problem);
 		s_logger.info("Problem {}, {}.", problem.getName(), problem.getDimension());
 		final Set<Variable> variables = problem.getVariables();
@@ -54,14 +54,14 @@ public class LpUtils {
 					+ problem.getVariableLowerBound(variable) + " to " + problem.getVariableUpperBound(variable) + ".",
 					variable, problem.getVariableName(variable));
 		}
-		final Set<LpConstraint<V>> constraints = problem.getConstraints();
-		for (LpConstraint<V> constraint : constraints) {
+		final Set<LpConstraint> constraints = problem.getConstraints();
+		for (LpConstraint constraint : constraints) {
 			s_logger.info("Constraint {}.", constraint);
 		}
 		s_logger.info("Objective: {}.", problem.getObjective());
 	}
 
-	static public <V> void logSolutionValues(LpSolution<V> solution) {
+	static public void logSolutionValues(LpSolution solution) {
 		checkNotNull(solution);
 		final Set<Variable> variables = solution.getVariables();
 		for (Variable variable : variables) {
@@ -71,7 +71,7 @@ public class LpUtils {
 		s_logger.info("Objective value: {}.", solution.getObjectiveValue());
 	}
 
-	static public <V> LpObjective newWithDirection(LpObjective source, LpDirection newDirection) {
+	static public LpObjective newWithDirection(LpObjective source, LpDirection newDirection) {
 		checkNotNull(source);
 		checkNotNull(newDirection);
 		final LpLinear sourceFunction = source.getFunction();

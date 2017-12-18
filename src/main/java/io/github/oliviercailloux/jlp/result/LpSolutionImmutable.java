@@ -16,18 +16,18 @@ import io.github.oliviercailloux.jlp.problem.LpProblems;
 import io.github.oliviercailloux.jlp.utils.LpLinearUtils;
 import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
 
-public class LpSolutionImmutable<V> implements LpSolution<V> {
+public class LpSolutionImmutable implements LpSolution {
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<LpConstraint<V>, Number> m_dualValues;
+	private final Map<LpConstraint, Number> m_dualValues;
 
 	private final Number m_objectiveValue;
 
 	private final ImmutableMap<Variable, Number> m_primalValues;
 
-	private final LpProblem<V> m_problem;
+	private final LpProblem m_problem;
 
 	/**
 	 * <p>
@@ -49,7 +49,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	 * @param solution
 	 *            not <code>null</code>.
 	 */
-	public LpSolutionImmutable(LpProblem<V> problem, LpSolutionAlone<V> solution) {
+	public LpSolutionImmutable(LpProblem problem, LpSolutionAlone solution) {
 		this(problem, solution, true);
 	}
 
@@ -59,14 +59,14 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	 * @param solution
 	 *            not <code>null</code>.
 	 */
-	public LpSolutionImmutable(LpSolution<V> solution) {
+	public LpSolutionImmutable(LpSolution solution) {
 		this(solution.getProblem(), solution, false);
 	}
 
-	private LpSolutionImmutable(LpProblem<V> problem, LpSolutionAlone<V> solution, boolean protectProblem) {
+	private LpSolutionImmutable(LpProblem problem, LpSolutionAlone solution, boolean protectProblem) {
 		Preconditions.checkNotNull(solution);
 		final Builder<Variable, Number> primalValues = ImmutableMap.builder();
-		final Builder<LpConstraint<V>, Number> dualValues = ImmutableMap.builder();
+		final Builder<LpConstraint, Number> dualValues = ImmutableMap.builder();
 
 		for (Variable variable : solution.getVariables()) {
 			final Number value = solution.getValue(variable);
@@ -76,7 +76,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 				primalValues.put(variable, value);
 			}
 		}
-		for (LpConstraint<V> constraint : solution.getConstraints()) {
+		for (LpConstraint constraint : solution.getConstraints()) {
 			final Number value = solution.getDualValue(constraint);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getConstraints().contains(constraint));
@@ -95,11 +95,11 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LpSolution<?>)) {
+		if (!(obj instanceof LpSolution)) {
 			return false;
 		}
 
-		LpSolution<?> s2 = (LpSolution<?>) obj;
+		LpSolution s2 = (LpSolution) obj;
 		return LpSolverUtils.equivalent(this, s2);
 	}
 
@@ -133,12 +133,12 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public Set<LpConstraint<V>> getConstraints() {
+	public Set<LpConstraint> getConstraints() {
 		return Collections.unmodifiableSet(m_dualValues.keySet());
 	}
 
 	@Override
-	public Number getDualValue(LpConstraint<V> constraint) {
+	public Number getDualValue(LpConstraint constraint) {
 		Preconditions.checkNotNull(constraint);
 		return m_dualValues.get(constraint);
 	}
@@ -149,7 +149,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public LpProblem<V> getProblem() {
+	public LpProblem getProblem() {
 		return m_problem;
 	}
 

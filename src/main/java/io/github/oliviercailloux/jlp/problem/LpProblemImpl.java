@@ -31,19 +31,16 @@ import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
 /**
  * A simple mutable implementation of {@link LpProblem}.
  *
- * @param <V>
- *            the type of the variables.
- *
  * @author Olivier Cailloux
  *
  */
-class LpProblemImpl<V> implements LpProblem<V> {
+class LpProblemImpl implements LpProblem {
 
-	private final Set<LpConstraint<V>> m_constraints = Sets.newLinkedHashSet();
+	private final Set<LpConstraint> m_constraints = Sets.newLinkedHashSet();
 
-	private Function<LpConstraint<V>, String> m_constraintsNamer;
+	private Function<LpConstraint, String> m_constraintsNamer;
 
-	private final DefaultConstraintsNamer<V> m_defaultConstraintsNamer = new DefaultConstraintsNamer<>();
+	private final DefaultConstraintsNamer m_defaultConstraintsNamer = new DefaultConstraintsNamer();
 
 	/**
 	 * Never <code>null</code>.
@@ -98,13 +95,13 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	 * @param problem
 	 *            not <code>null</code>.
 	 */
-	public LpProblemImpl(LpProblem<V> problem) {
+	public LpProblemImpl(LpProblem problem) {
 		Preconditions.checkNotNull(problem);
 		LpProblems.copyTo(problem, this);
 	}
 
 	@Override
-	public boolean add(LpConstraint<V> constraint) {
+	public boolean add(LpConstraint constraint) {
 		return addInternal(constraint);
 	}
 
@@ -144,20 +141,20 @@ class LpProblemImpl<V> implements LpProblem<V> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LpProblem<?>)) {
+		if (!(obj instanceof LpProblem)) {
 			return false;
 		}
-		LpProblem<?> p2 = (LpProblem<?>) obj;
+		LpProblem p2 = (LpProblem) obj;
 		return LpSolverUtils.equivalent(this, p2);
 	}
 
 	@Override
-	public Set<LpConstraint<V>> getConstraints() {
+	public Set<LpConstraint> getConstraints() {
 		return Collections.unmodifiableSet(m_constraints);
 	}
 
 	@Override
-	public Function<LpConstraint<V>, String> getConstraintsNamer() {
+	public Function<LpConstraint, String> getConstraintsNamer() {
 		return m_constraintsNamer;
 	}
 
@@ -223,7 +220,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public void setConstraintsNamer(Function<LpConstraint<V>, String> namer) {
+	public void setConstraintsNamer(Function<LpConstraint, String> namer) {
 		if (namer == null) {
 			m_constraintsNamer = m_defaultConstraintsNamer;
 		} else {
@@ -255,7 +252,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 				m_objectiveFunction = null;
 			} else {
 				assertVariablesExist(objectiveFunction);
-				m_objectiveFunction = new LpLinearImmutable<>(objectiveFunction);
+				m_objectiveFunction = new LpLinearImmutable(objectiveFunction);
 			}
 		}
 		final boolean equalDirs = m_optType == direction;

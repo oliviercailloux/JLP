@@ -9,8 +9,6 @@ import com.google.common.base.Objects.ToStringHelper;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
 public class LpObjective {
 	/**

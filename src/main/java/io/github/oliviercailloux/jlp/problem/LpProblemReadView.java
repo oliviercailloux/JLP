@@ -13,12 +13,10 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
-public class LpProblemReadView<V> extends LpProblemForwarder<V> implements LpProblem<V> {
+public class LpProblemReadView extends LpProblemForwarder implements LpProblem {
 
-	public LpProblemReadView(LpProblem<V> delegate) {
+	public LpProblemReadView(LpProblem delegate) {
 		super(delegate);
 	}
 
@@ -32,7 +30,7 @@ public class LpProblemReadView<V> extends LpProblemForwarder<V> implements LpPro
 	 *             always.
 	 */
 	@Override
-	public boolean add(LpConstraint<V> constraint) {
+	public boolean add(LpConstraint constraint) {
 		throw new UnsupportedOperationException("This object is a read-only view.");
 	}
 
@@ -90,7 +88,7 @@ public class LpProblemReadView<V> extends LpProblemForwarder<V> implements LpPro
 	 *             always.
 	 */
 	@Override
-	public void setConstraintsNamer(Function<LpConstraint<V>, String> namer) {
+	public void setConstraintsNamer(Function<LpConstraint, String> namer) {
 		throw new UnsupportedOperationException("This object is a read-only view.");
 	}
 

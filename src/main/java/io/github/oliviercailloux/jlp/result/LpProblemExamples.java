@@ -24,8 +24,8 @@ public class LpProblemExamples {
 	 *
 	 * @return a new problem.
 	 */
-	static public LpProblem<String> getIntOneFourThree() {
-		LpProblem<String> problem = LpProblems.newProblem();
+	static public LpProblem getIntOneFourThree() {
+		LpProblem problem = LpProblems.newProblem();
 		problem.setName("OneFourThree");
 		final NamedVariable x = NamedVariable.newInt("x");
 		final NamedVariable y = NamedVariable.newInt("y");
@@ -55,8 +55,8 @@ public class LpProblemExamples {
 		return problem;
 	}
 
-	public static LpProblem<String> getIntOneFourThreeLowX() {
-		final LpProblem<String> problem = getIntOneFourThree();
+	public static LpProblem getIntOneFourThreeLowX() {
+		final LpProblem problem = getIntOneFourThree();
 		final NamedVariable x = NamedVariable.newInt("x");
 		problem.add("low x", LpLinearImmutable.of(1, x), LpOperator.LE, 16d);
 		return problem;
@@ -67,8 +67,8 @@ public class LpProblemExamples {
 	 *
 	 * @return the solution.
 	 */
-	static public LpSolution<String> getIntOneFourThreeLowXSolution() {
-		final LpSolutionImpl<String> solution = new LpSolutionImpl<>(getIntOneFourThreeLowX());
+	static public LpSolution getIntOneFourThreeLowXSolution() {
+		final LpSolutionImpl solution = new LpSolutionImpl(getIntOneFourThreeLowX());
 		final NamedVariable x = NamedVariable.newInt("x");
 		final NamedVariable y = NamedVariable.newInt("y");
 		solution.setObjectiveValue(Integer.valueOf(5828));
@@ -83,8 +83,8 @@ public class LpProblemExamples {
 	 *
 	 * @return the solution.
 	 */
-	static public LpSolution<String> getIntOneFourThreeSolution() {
-		final LpSolutionImpl<String> solution = new LpSolutionImpl<>(getIntOneFourThree());
+	static public LpSolution getIntOneFourThreeSolution() {
+		final LpSolutionImpl solution = new LpSolutionImpl(getIntOneFourThree());
 		final NamedVariable x = NamedVariable.newInt("x");
 		final NamedVariable y = NamedVariable.newInt("y");
 		solution.setObjectiveValue(Integer.valueOf(6266));

@@ -1,18 +1,11 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Collections;
-import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Sets;
 
 import io.github.oliviercailloux.jlp.elements.LpConstraint;
-import io.github.oliviercailloux.jlp.elements.LpOperator;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
@@ -22,19 +15,19 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  */
 public class LpProblems {
-	static public class DefaultConstraintsNamer<V> implements Function<LpConstraint<V>, String> {
+	static public class DefaultConstraintsNamer implements Function<LpConstraint, String> {
 		public DefaultConstraintsNamer() {
 			/** Public default constructor. */
 		}
 
 		@Override
-		public String apply(LpConstraint<V> input) {
+		public String apply(LpConstraint input) {
 			return input.toString();
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			return obj != null && obj instanceof DefaultConstraintsNamer<?>;
+			return obj != null && obj instanceof DefaultConstraintsNamer;
 		}
 
 		@Override
@@ -61,15 +54,12 @@ public class LpProblems {
 	 * functions for variable and constraint names as the source problem.
 	 * </p>
 	 *
-	 * @param <V>
-	 *            the type of the variables objects.
-	 *
 	 * @param source
 	 *            not <code>null</code>.
 	 * @param target
 	 *            not <code>null</code>.
 	 */
-	static public <V> void copyTo(LpProblem<V> source, LpProblem<V> target) {
+	static public void copyTo(LpProblem source, LpProblem target) {
 		checkNotNull(target);
 		checkNotNull(source);
 
@@ -83,7 +73,7 @@ public class LpProblems {
 					source.getVariableUpperBound(variable));
 		}
 		target.setObjective(source.getObjective().getFunction(), source.getObjective().getDirection());
-		for (LpConstraint<V> constraint : source.getConstraints()) {
+		for (LpConstraint constraint : source.getConstraints()) {
 			target.add(constraint);
 		}
 	}
@@ -97,7 +87,7 @@ public class LpProblems {
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>, not empty.
 	 */
-	static public <T> String getLongDescription(LpProblem<T> problem) {
+	static public String getLongDescription(LpProblem problem) {
 		Preconditions.checkNotNull(problem);
 		String N = System.getProperty("line.separator");
 		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
@@ -110,7 +100,7 @@ public class LpProblems {
 			s += "Find one solution" + N;
 		}
 		s += "Subject To" + N;
-		for (LpConstraint<T> constraint : problem.getConstraints()) {
+		for (LpConstraint constraint : problem.getConstraints()) {
 			s += "\t" + constraint + N;
 		}
 		s += "Bounds" + N;
@@ -143,45 +133,39 @@ public class LpProblems {
 	/**
 	 * Retrieves a read-only view of the given delegate problem.
 	 *
-	 * @param <V>
-	 *            the type of the variables.
 	 * @param delegate
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public <V> LpProblemReadView<V> getReadView(LpProblem<V> delegate) {
-		if (delegate instanceof LpProblemReadView<?>) {
-			return (LpProblemReadView<V>) delegate;
+	static public LpProblemReadView getReadView(LpProblem delegate) {
+		if (delegate instanceof LpProblemReadView) {
+			return (LpProblemReadView) delegate;
 		}
-		return new LpProblemReadView<>(delegate);
+		return new LpProblemReadView(delegate);
 	}
 
 	/**
 	 * Returns a problem containing the same information as the source problem, and
 	 * which is immutable.
 	 *
-	 * @param <V>
-	 *            the type of variables.
 	 * @param source
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public <V> LpProblemImmutable<V> newImmutable(LpProblem<V> source) {
-		if (source instanceof LpProblemImmutable<?>) {
-			return (LpProblemImmutable<V>) source;
+	static public LpProblemImmutable newImmutable(LpProblem source) {
+		if (source instanceof LpProblemImmutable) {
+			return (LpProblemImmutable) source;
 		}
-		return new LpProblemImmutable<>(source);
+		return new LpProblemImmutable(source);
 	}
 
 	/**
 	 * Creates a new, empty problem.
 	 *
-	 * @param <V>
-	 *            the type of the variables.
 	 * @return a new problem.
 	 */
-	static public <V> LpProblem<V> newProblem() {
-		return new LpProblemImpl<>();
+	static public LpProblem newProblem() {
+		return new LpProblemImpl();
 	}
 
 	/**
@@ -190,13 +174,11 @@ public class LpProblems {
 	 * source object: modifications in the source problem are not reflected in the
 	 * returned problem, and conversely.
 	 *
-	 * @param <V>
-	 *            the type of variables.
 	 * @param source
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public <V> LpProblem<V> newProblem(LpProblem<V> source) {
-		return new LpProblemImpl<>(source);
+	static public LpProblem newProblem(LpProblem source) {
+		return new LpProblemImpl(source);
 	}
 }

@@ -29,16 +29,14 @@ import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
-public class LpConstraint<V> {
+public class LpConstraint {
 	/**
 	 * Not <code>null</code>.
 	 */
 	private final String descr;
 
-	private final LpLinearImmutable<V> m_lhs;
+	private final LpLinearImmutable m_lhs;
 
 	private final LpOperator m_op;
 
@@ -76,7 +74,7 @@ public class LpConstraint<V> {
 		if (!(obj instanceof LpConstraint)) {
 			return false;
 		}
-		LpConstraint<?> c2 = (LpConstraint<?>) obj;
+		LpConstraint c2 = (LpConstraint) obj;
 		return LpSolverUtils.equivalent(this, c2);
 	}
 

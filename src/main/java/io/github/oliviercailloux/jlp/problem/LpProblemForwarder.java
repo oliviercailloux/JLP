@@ -21,24 +21,22 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
-public class LpProblemForwarder<V> implements LpProblem<V> {
+public class LpProblemForwarder implements LpProblem {
 
-	private final LpProblem<V> m_delegate;
+	private final LpProblem m_delegate;
 
 	/**
 	 * @param delegate
 	 *            not <code>null</code>.
 	 */
-	public LpProblemForwarder(LpProblem<V> delegate) {
+	public LpProblemForwarder(LpProblem delegate) {
 		Preconditions.checkNotNull(delegate);
 		m_delegate = delegate;
 	}
 
 	@Override
-	public boolean add(LpConstraint<V> constraint) {
+	public boolean add(LpConstraint constraint) {
 		return m_delegate.add(constraint);
 	}
 
@@ -63,12 +61,12 @@ public class LpProblemForwarder<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public Set<LpConstraint<V>> getConstraints() {
+	public Set<LpConstraint> getConstraints() {
 		return m_delegate.getConstraints();
 	}
 
 	@Override
-	public Function<LpConstraint<V>, String> getConstraintsNamer() {
+	public Function<LpConstraint, String> getConstraintsNamer() {
 		return m_delegate.getConstraintsNamer();
 	}
 
@@ -123,7 +121,7 @@ public class LpProblemForwarder<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public void setConstraintsNamer(Function<LpConstraint<V>, String> namer) {
+	public void setConstraintsNamer(Function<LpConstraint, String> namer) {
 		m_delegate.setConstraintsNamer(namer);
 	}
 
@@ -162,7 +160,7 @@ public class LpProblemForwarder<V> implements LpProblem<V> {
 		return m_delegate.toString();
 	}
 
-	protected LpProblem<V> delegate() {
+	protected LpProblem delegate() {
 		return m_delegate;
 	}
 

@@ -64,13 +64,10 @@ import io.github.oliviercailloux.jlp.parameters.LpObjectParameter;
  * solutions.
  * </p>
  *
- * @param <V>
- *            the type of the variables. See the package description.
- *
  * @author Olivier Cailloux
  *
  */
-public interface LpProblem<V> {
+public interface LpProblem {
 
 	public Function<Variable, String> TO_STRING_NAMER = Variable::toString;
 
@@ -85,7 +82,7 @@ public interface LpProblem<V> {
 	 *         Equivalently, returns <code>false</code> iff the given constraint
 	 *         already was in the problem.
 	 */
-	public boolean add(LpConstraint<V> constraint);
+	public boolean add(LpConstraint constraint);
 
 	/**
 	 * Adds a constraint, or does nothing if the given constraint is already in the
@@ -144,7 +141,7 @@ public interface LpProblem<V> {
 	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
-	public Set<LpConstraint<V>> getConstraints();
+	public Set<LpConstraint> getConstraints();
 
 	/**
 	 * <p>
@@ -160,7 +157,7 @@ public interface LpProblem<V> {
 	 * @see #setConstraintsNamer(Function)
 	 * @see LpProblems.DefaultConstraintsNamer
 	 */
-	public Function<LpConstraint<V>, String> getConstraintsNamer();
+	public Function<LpConstraint, String> getConstraintsNamer();
 
 	/**
 	 * Retrieves the dimension of this problem in number of variables and
@@ -257,7 +254,7 @@ public interface LpProblem<V> {
 	 * @see #getConstraintsNamer()
 	 * @see LpObjectParameter#NAMER_CONSTRAINTS
 	 */
-	public void setConstraintsNamer(Function<LpConstraint<V>, String> namer);
+	public void setConstraintsNamer(Function<LpConstraint, String> namer);
 
 	/**
 	 * Sets or removes the name of this problem.

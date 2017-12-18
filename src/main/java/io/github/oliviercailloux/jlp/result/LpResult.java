@@ -18,8 +18,6 @@ import io.github.oliviercailloux.jlp.parameters.LpParameters;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
 /**
  * <p>
@@ -48,10 +46,8 @@ import io.github.oliviercailloux.jlp.parameters.LpParameters;
  *
  * @author Olivier Cailloux
  *
- * @param <V>
- *            the type of the variables.
  */
-public interface LpResult<V> {
+public interface LpResult {
 
 	/**
 	 * The duration of solving the problem. If an error occurred, this is the
@@ -85,6 +81,6 @@ public interface LpResult<V> {
 	 * @see #getResultStatus()
 	 * @see LpResultStatus#foundFeasible()
 	 */
-	public LpSolution<V> getSolution();
+	public LpSolution getSolution();
 
 }

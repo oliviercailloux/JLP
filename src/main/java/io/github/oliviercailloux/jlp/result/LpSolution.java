@@ -32,13 +32,10 @@ import io.github.oliviercailloux.jlp.problem.LpProblem;
  * pose no problem. Using other types as numbers is unsupported.
  * </p>
  *
- * @param <V>
- *            the type of the variables.
- *
  * @author Olivier Cailloux
  *
  */
-public interface LpSolution<V> extends LpSolutionAlone<V> {
+public interface LpSolution extends LpSolutionAlone {
 
 	/**
 	 * <p>
@@ -86,7 +83,7 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	 * @return <code>null</code> iff the variable has no associated dual value.
 	 */
 	@Override
-	public Number getDualValue(LpConstraint<V> constraint);
+	public Number getDualValue(LpConstraint constraint);
 
 	/**
 	 * Returns the objective value. Returns necessarily <code>null</code> if the
@@ -102,7 +99,7 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	 *
 	 * @return not <code>null</code>, immutable.
 	 */
-	public LpProblem<V> getProblem();
+	public LpProblem getProblem();
 
 	/**
 	 * Returns the primal value of the variable, if it is known. Returns necessarily
