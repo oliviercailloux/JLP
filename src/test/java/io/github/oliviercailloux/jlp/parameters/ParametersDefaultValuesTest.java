@@ -10,7 +10,7 @@ import io.github.oliviercailloux.jlp.parameters.SolverParameterObject;
 import io.github.oliviercailloux.jlp.parameters.SolverParametersDefaultValues;
 import io.github.oliviercailloux.jlp.parameters.SolverParameterString;
 
-public class IlpParametersDefaultValuesTest {
+public class ParametersDefaultValuesTest {
 	@Test
 	public void testInit() throws Exception {
 		assertTrue(SolverParametersDefaultValues.getDefaultDoubleValues().size() == SolverParameterDouble.values().length);

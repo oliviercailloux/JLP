@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import io.github.oliviercailloux.jlp.elements.NamedVariable;
 
-public class IlpVariableTest {
+public class VariableTest {
 	@Test(expected = NullPointerException.class)
 	public void testNullReferenceInside() throws Exception {
 		Object[] refs = new Object[] { "ref1", null, "ref2" };
