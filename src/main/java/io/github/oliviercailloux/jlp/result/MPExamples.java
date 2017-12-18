@@ -1,7 +1,7 @@
 package io.github.oliviercailloux.jlp.result;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
-import io.github.oliviercailloux.jlp.elements.NamedVariable;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.SumTermsImmutable;
@@ -27,8 +27,8 @@ public class MPExamples {
 	static public MP getIntOneFourThree() {
 		MP problem = MPs.newProblem();
 		problem.setName("OneFourThree");
-		final NamedVariable x = NamedVariable.newInt("x");
-		final NamedVariable y = NamedVariable.newInt("y");
+		final Variable x = Variable.newInt("x");
+		final Variable y = Variable.newInt("y");
 		problem.addVariable(x);
 		problem.addVariable(y);
 
@@ -57,7 +57,7 @@ public class MPExamples {
 
 	public static MP getIntOneFourThreeLowX() {
 		final MP problem = getIntOneFourThree();
-		final NamedVariable x = NamedVariable.newInt("x");
+		final Variable x = Variable.newInt("x");
 		problem.add("low x", SumTermsImmutable.of(1, x), ComparisonOperator.LE, 16d);
 		return problem;
 	}
@@ -69,8 +69,8 @@ public class MPExamples {
 	 */
 	static public Solution getIntOneFourThreeLowXSolution() {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThreeLowX());
-		final NamedVariable x = NamedVariable.newInt("x");
-		final NamedVariable y = NamedVariable.newInt("y");
+		final Variable x = Variable.newInt("x");
+		final Variable y = Variable.newInt("y");
 		solution.setObjectiveValue(Integer.valueOf(5828));
 		solution.putValue(x, Integer.valueOf(16));
 		solution.putValue(y, Integer.valueOf(59));
@@ -85,8 +85,8 @@ public class MPExamples {
 	 */
 	static public Solution getIntOneFourThreeSolution() {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThree());
-		final NamedVariable x = NamedVariable.newInt("x");
-		final NamedVariable y = NamedVariable.newInt("y");
+		final Variable x = Variable.newInt("x");
+		final Variable y = Variable.newInt("y");
 		solution.setObjectiveValue(Integer.valueOf(6266));
 		solution.putValue(x, Integer.valueOf(22));
 		solution.putValue(y, Integer.valueOf(52));
