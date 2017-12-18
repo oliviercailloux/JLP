@@ -36,11 +36,11 @@ public class LpConstraint {
 	 */
 	private final String descr;
 
-	private final LpLinearImmutable m_lhs;
+	private final LpLinearImmutable lhs;
 
-	private final LpOperator m_op;
+	private final LpOperator op;
 
-	private final double m_rhs;
+	private final double rhs;
 
 	/**
 	 * @param descr
@@ -59,9 +59,9 @@ public class LpConstraint {
 		Preconditions.checkArgument(!Double.isNaN(rhs));
 		Preconditions.checkArgument(lhs.size() >= 1);
 		this.descr = requireNonNull(descr);
-		m_lhs = LpLinearImmutable.of(lhs);
-		m_op = op;
-		m_rhs = rhs;
+		this.lhs = LpLinearImmutable.of(lhs);
+		this.op = op;
+		this.rhs = rhs;
 	}
 
 	/**
@@ -82,21 +82,21 @@ public class LpConstraint {
 	 * @return not <code>null</code>, not empty.
 	 */
 	public LpLinear getLhs() {
-		return m_lhs;
+		return lhs;
 	}
 
 	/**
 	 * @return the op
 	 */
 	public LpOperator getOperator() {
-		return m_op;
+		return op;
 	}
 
 	/**
 	 * @return the rhs
 	 */
 	public double getRhs() {
-		return m_rhs;
+		return rhs;
 	}
 
 	@Override

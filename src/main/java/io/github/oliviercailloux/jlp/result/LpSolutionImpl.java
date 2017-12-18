@@ -44,19 +44,19 @@ public class LpSolutionImpl implements LpSolution {
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<LpConstraint, Number> m_dualValues = new HashMap<>();
+	private final Map<LpConstraint, Number> dualValues = new HashMap<>();
 
-	private Number m_objectiveValue = null;
+	private Number objectiveValue = null;
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<Variable, Number> m_primalValues = new HashMap<>();
+	private final Map<Variable, Number> primalValues = new HashMap<>();
 
 	/**
 	 * Not <code>null</code>, immutable.
 	 */
-	private final LpProblemImmutable m_problem;
+	private final LpProblemImmutable problem;
 
 	/**
 	 * A new solution satisfying the given problem. The new solution is shielded
@@ -67,7 +67,7 @@ public class LpSolutionImpl implements LpSolution {
 	 */
 	public LpSolutionImpl(LpProblem problem) {
 		Preconditions.checkNotNull(problem);
-		m_problem = LpProblems.newImmutable(problem);
+		this.problem = LpProblems.newImmutable(problem);
 	}
 
 	/**
@@ -99,19 +99,19 @@ public class LpSolutionImpl implements LpSolution {
 			final Number value = solution.getValue(variable);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getVariables().contains(variable));
-				m_primalValues.put(variable, value);
+				primalValues.put(variable, value);
 			}
 		}
 		for (LpConstraint constraint : solution.getConstraints()) {
 			final Number value = solution.getDualValue(constraint);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getConstraints().contains(constraint));
-				m_dualValues.put(constraint, value);
+				dualValues.put(constraint, value);
 			}
 		}
 
-		m_objectiveValue = solution.getObjectiveValue();
-		m_problem = LpProblems.newImmutable(problem);
+		objectiveValue = solution.getObjectiveValue();
+		this.problem = LpProblems.newImmutable(problem);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class LpSolutionImpl implements LpSolution {
 
 	@Override
 	public boolean getBooleanValue(Variable variable) {
-		Number number = m_primalValues.get(variable);
+		Number number = primalValues.get(variable);
 		if (number == null) {
 			throw new IllegalArgumentException("Variable has no value: " + variable + ".");
 		}
@@ -142,43 +142,43 @@ public class LpSolutionImpl implements LpSolution {
 
 	@Override
 	public Number getComputedObjectiveValue() {
-		final LpLinear objectiveFunction = m_problem.getObjective().getFunction();
+		final LpLinear objectiveFunction = problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
 		}
-		return LpLinearUtils.evaluate(objectiveFunction, m_primalValues);
+		return LpLinearUtils.evaluate(objectiveFunction, primalValues);
 	}
 
 	@Override
 	public Set<LpConstraint> getConstraints() {
-		return Collections.unmodifiableSet(m_dualValues.keySet());
+		return Collections.unmodifiableSet(dualValues.keySet());
 	}
 
 	@Override
 	public Number getDualValue(LpConstraint constraint) {
 		Preconditions.checkNotNull(constraint);
-		return m_dualValues.get(constraint);
+		return dualValues.get(constraint);
 	}
 
 	@Override
 	public Number getObjectiveValue() {
-		return m_objectiveValue;
+		return objectiveValue;
 	}
 
 	@Override
 	public LpProblem getProblem() {
-		return m_problem;
+		return problem;
 	}
 
 	@Override
 	public Number getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
-		return m_primalValues.get(variable);
+		return primalValues.get(variable);
 	}
 
 	@Override
 	public Set<Variable> getVariables() {
-		return Collections.unmodifiableSet(m_primalValues.keySet());
+		return Collections.unmodifiableSet(primalValues.keySet());
 	}
 
 	@Override
@@ -199,13 +199,13 @@ public class LpSolutionImpl implements LpSolution {
 	 */
 	public boolean putDualValue(LpConstraint constraint, Number value) {
 		Preconditions.checkNotNull(constraint);
-		Preconditions.checkArgument(m_problem.getConstraints().contains(constraint));
-		m_dualValues.put(constraint, value);
+		Preconditions.checkArgument(problem.getConstraints().contains(constraint));
+		dualValues.put(constraint, value);
 		final Number previous;
 		if (value == null) {
-			previous = m_dualValues.remove(constraint);
+			previous = dualValues.remove(constraint);
 		} else {
-			previous = m_dualValues.put(constraint, value);
+			previous = dualValues.put(constraint, value);
 		}
 		return Objects.equal(previous, value);
 	}
@@ -223,12 +223,12 @@ public class LpSolutionImpl implements LpSolution {
 	 */
 	public boolean putValue(Variable variable, Number value) {
 		Preconditions.checkNotNull(variable);
-		Preconditions.checkArgument(m_problem.getVariables().contains(variable));
+		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final Number previous;
 		if (value == null) {
-			previous = m_primalValues.remove(variable);
+			previous = primalValues.remove(variable);
 		} else {
-			previous = m_primalValues.put(variable, value);
+			previous = primalValues.put(variable, value);
 		}
 		return Objects.equal(previous, value);
 	}
@@ -240,9 +240,9 @@ public class LpSolutionImpl implements LpSolution {
 	 *            may be <code>null</code>.
 	 */
 	public void setObjectiveValue(Number objectiveValue) {
-		Preconditions.checkState(m_problem.getObjective().isComplete(),
+		Preconditions.checkState(problem.getObjective().isComplete(),
 				"Objective value only with complete objective please.");
-		m_objectiveValue = objectiveValue;
+		this.objectiveValue = objectiveValue;
 	}
 
 	@Override

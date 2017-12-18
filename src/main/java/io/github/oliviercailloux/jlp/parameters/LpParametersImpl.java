@@ -49,22 +49,22 @@ public class LpParametersImpl implements LpParameters {
 	/**
 	 * Does not contain default values. No <code>null</code> key.
 	 */
-	private final Map<LpDoubleParameter, Double> m_doubleParameters = Maps.newHashMap();
+	private final Map<LpDoubleParameter, Double> doubleParameters = Maps.newHashMap();
 
 	/**
 	 * Does not contain default values. No <code>null</code> key.
 	 */
-	private final Map<LpObjectParameter, Object> m_objectParameters = Maps.newHashMap();
+	private final Map<LpObjectParameter, Object> objectParameters = Maps.newHashMap();
 
 	/**
 	 * Does not contain default values. No <code>null</code> key.
 	 */
-	private final Map<LpIntParameter, Integer> m_intParameters = Maps.newHashMap();
+	private final Map<LpIntParameter, Integer> intParameters = Maps.newHashMap();
 
 	/**
 	 * Does not contain default values. No <code>null</code> key.
 	 */
-	private final Map<LpStringParameter, String> m_stringParameters = Maps.newHashMap();
+	private final Map<LpStringParameter, String> stringParameters = Maps.newHashMap();
 
 	public LpParametersImpl() {
 		/** No parameters constructor. */
@@ -78,10 +78,10 @@ public class LpParametersImpl implements LpParameters {
 	 *            not <code>null</code>.
 	 */
 	public LpParametersImpl(LpParameters source) {
-		m_intParameters.putAll(source.getIntParameters());
-		m_stringParameters.putAll(source.getStringParameters());
-		m_doubleParameters.putAll(source.getDoubleParameters());
-		m_objectParameters.putAll(source.getObjectParameters());
+		intParameters.putAll(source.getIntParameters());
+		stringParameters.putAll(source.getStringParameters());
+		doubleParameters.putAll(source.getDoubleParameters());
+		objectParameters.putAll(source.getObjectParameters());
 	}
 
 	@Override
@@ -95,38 +95,38 @@ public class LpParametersImpl implements LpParameters {
 
 	@Override
 	public Map<LpDoubleParameter, Double> getDoubleParameters() {
-		return Maps.newHashMap(m_doubleParameters);
+		return Maps.newHashMap(doubleParameters);
 	}
 
 	@Override
 	public Map<LpIntParameter, Integer> getIntParameters() {
-		return Maps.newHashMap(m_intParameters);
+		return Maps.newHashMap(intParameters);
 	}
 
 	@Override
 	public Map<LpObjectParameter, Object> getObjectParameters() {
-		return Maps.newHashMap(m_objectParameters);
+		return Maps.newHashMap(objectParameters);
 	}
 
 	@Override
 	public Double getValue(LpDoubleParameter parameter) {
 		Preconditions.checkNotNull(parameter);
-		return m_doubleParameters.containsKey(parameter) ? m_doubleParameters.get(parameter)
+		return doubleParameters.containsKey(parameter) ? doubleParameters.get(parameter)
 				: LpParametersDefaultValues.getDefaultDoubleValues().get(parameter);
 	}
 
 	@Override
 	public Integer getValue(LpIntParameter parameter) {
 		Preconditions.checkNotNull(parameter);
-		return m_intParameters.containsKey(parameter) ? m_intParameters.get(parameter)
+		return intParameters.containsKey(parameter) ? intParameters.get(parameter)
 				: LpParametersDefaultValues.getDefaultIntValues().get(parameter);
 	}
 
 	@Override
 	public Object getValue(LpObjectParameter parameter) {
 		Preconditions.checkNotNull(parameter);
-		if (m_objectParameters.containsKey(parameter)) {
-			return m_objectParameters.get(parameter);
+		if (objectParameters.containsKey(parameter)) {
+			return objectParameters.get(parameter);
 		}
 		final Map<LpObjectParameter, Object> defaults = LpParametersDefaultValues.getDefaultObjectValues();
 		assert (defaults.containsKey(parameter));
@@ -170,7 +170,7 @@ public class LpParametersImpl implements LpParameters {
 		Predicate<Double> validator = LpParametersUtils.getValidator(parameter);
 		Preconditions.checkArgument(validator.apply(value),
 				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(m_doubleParameters, parameter, value);
+		return setValue(doubleParameters, parameter, value);
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class LpParametersImpl implements LpParameters {
 		Predicate<Integer> validator = LpParametersUtils.getValidator(parameter);
 		Preconditions.checkArgument(validator.apply(value),
 				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(m_intParameters, parameter, value);
+		return setValue(intParameters, parameter, value);
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class LpParametersImpl implements LpParameters {
 		Predicate<Object> validator = LpParametersUtils.getValidator(parameter);
 		Preconditions.checkArgument(validator.apply(value),
 				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(m_objectParameters, parameter, value);
+		return setValue(objectParameters, parameter, value);
 	}
 
 	private <IlpParameter, V> boolean setValue(Map<IlpParameter, V> parametersMap, IlpParameter parameter, V value) {
@@ -244,13 +244,13 @@ public class LpParametersImpl implements LpParameters {
 
 	@Override
 	public Map<LpStringParameter, String> getStringParameters() {
-		return Maps.newHashMap(m_stringParameters);
+		return Maps.newHashMap(stringParameters);
 	}
 
 	@Override
 	public String getValue(LpStringParameter parameter) {
 		Preconditions.checkNotNull(parameter);
-		return m_stringParameters.containsKey(parameter) ? m_stringParameters.get(parameter)
+		return stringParameters.containsKey(parameter) ? stringParameters.get(parameter)
 				: LpParametersDefaultValues.getDefaultStringValues().get(parameter);
 	}
 
@@ -259,7 +259,7 @@ public class LpParametersImpl implements LpParameters {
 		Predicate<String> validator = LpParametersUtils.getValidator(parameter);
 		Preconditions.checkArgument(validator.apply(value),
 				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(m_stringParameters, parameter, value);
+		return setValue(stringParameters, parameter, value);
 	}
 
 	static Equivalence<LpParameters> getEquivalenceRelation() {

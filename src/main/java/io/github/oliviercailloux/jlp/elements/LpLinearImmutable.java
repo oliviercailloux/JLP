@@ -55,10 +55,10 @@ public class LpLinearImmutable extends ForwardingList<LpTerm> implements LpLinea
 		return new LpLinearImmutable(Arrays.asList(terms));
 	}
 
-	private final LpLinear m_delegate;
+	private final LpLinear delegate;
 
 	public LpLinearImmutable(Collection<LpTerm> terms) {
-		m_delegate = new LpLinearImpl(terms);
+		delegate = new LpLinearImpl(terms);
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class LpLinearImmutable extends ForwardingList<LpTerm> implements LpLinea
 	public LpLinearImmutable(LpLinear source) {
 		Preconditions.checkNotNull(source);
 		if (source instanceof LpLinearImmutable) {
-			m_delegate = source;
+			delegate = source;
 		} else {
-			m_delegate = new LpLinearImpl(source);
+			delegate = new LpLinearImpl(source);
 		}
 	}
 
@@ -81,6 +81,6 @@ public class LpLinearImmutable extends ForwardingList<LpTerm> implements LpLinea
 
 	@Override
 	protected List<LpTerm> delegate() {
-		return Collections.unmodifiableList(m_delegate);
+		return Collections.unmodifiableList(delegate);
 	}
 }

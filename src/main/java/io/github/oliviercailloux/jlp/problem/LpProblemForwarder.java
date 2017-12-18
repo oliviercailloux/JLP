@@ -24,7 +24,7 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  */
 public class LpProblemForwarder implements LpProblem {
 
-	private final LpProblem m_delegate;
+	private final LpProblem delegate;
 
 	/**
 	 * @param delegate
@@ -32,136 +32,136 @@ public class LpProblemForwarder implements LpProblem {
 	 */
 	public LpProblemForwarder(LpProblem delegate) {
 		Preconditions.checkNotNull(delegate);
-		m_delegate = delegate;
+		this.delegate = delegate;
 	}
 
 	@Override
 	public boolean add(LpConstraint constraint) {
-		return m_delegate.add(constraint);
+		return delegate.add(constraint);
 	}
 
 	@Override
 	public boolean add(String id, LpLinear lhs, LpOperator operator, double rhs) {
-		return m_delegate.add(id, lhs, operator, rhs);
+		return delegate.add(id, lhs, operator, rhs);
 	}
 
 	@Override
 	public boolean addVariable(Variable variable) {
-		return m_delegate.addVariable(variable);
+		return delegate.addVariable(variable);
 	}
 
 	@Override
 	public void clear() {
-		m_delegate.clear();
+		delegate.clear();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return m_delegate.equals(obj);
+		return delegate.equals(obj);
 	}
 
 	@Override
 	public Set<LpConstraint> getConstraints() {
-		return m_delegate.getConstraints();
+		return delegate.getConstraints();
 	}
 
 	@Override
 	public Function<LpConstraint, String> getConstraintsNamer() {
-		return m_delegate.getConstraintsNamer();
+		return delegate.getConstraintsNamer();
 	}
 
 	@Override
 	public LpDimension getDimension() {
-		return m_delegate.getDimension();
+		return delegate.getDimension();
 	}
 
 	@Override
 	public String getName() {
-		return m_delegate.getName();
+		return delegate.getName();
 	}
 
 	@Override
 	public LpObjective getObjective() {
-		return m_delegate.getObjective();
+		return delegate.getObjective();
 	}
 
 	@Override
 	public Number getVariableLowerBound(Variable variable) {
-		return m_delegate.getVariableLowerBound(variable);
+		return delegate.getVariableLowerBound(variable);
 	}
 
 	@Override
 	public String getVariableName(Variable variable) {
-		return m_delegate.getVariableName(variable);
+		return delegate.getVariableName(variable);
 	}
 
 	@Override
 	public Set<Variable> getVariables() {
-		return m_delegate.getVariables();
+		return delegate.getVariables();
 	}
 
 	@Override
 	public Function<Variable, String> getVariablesNamer() {
-		return m_delegate.getVariablesNamer();
+		return delegate.getVariablesNamer();
 	}
 
 	@Override
 	public LpVariableType getVariableType(Variable variable) {
-		return m_delegate.getVariableType(variable);
+		return delegate.getVariableType(variable);
 	}
 
 	@Override
 	public Number getVariableUpperBound(Variable variable) {
-		return m_delegate.getVariableUpperBound(variable);
+		return delegate.getVariableUpperBound(variable);
 	}
 
 	@Override
 	public int hashCode() {
-		return m_delegate.hashCode();
+		return delegate.hashCode();
 	}
 
 	@Override
 	public void setConstraintsNamer(Function<LpConstraint, String> namer) {
-		m_delegate.setConstraintsNamer(namer);
+		delegate.setConstraintsNamer(namer);
 	}
 
 	@Override
 	public boolean setName(String name) {
-		return m_delegate.setName(name);
+		return delegate.setName(name);
 	}
 
 	@Override
 	public boolean setObjective(LpLinear objective, LpDirection direction) {
-		return m_delegate.setObjective(objective, direction);
+		return delegate.setObjective(objective, direction);
 	}
 
 	@Override
 	public boolean setObjectiveDirection(LpDirection dir) {
-		return m_delegate.setObjectiveDirection(dir);
+		return delegate.setObjectiveDirection(dir);
 	}
 
 	@Override
 	public boolean setVariableBounds(Variable variable, Number lowerBound, Number upperBound) {
-		return m_delegate.setVariableBounds(variable, lowerBound, upperBound);
+		return delegate.setVariableBounds(variable, lowerBound, upperBound);
 	}
 
 	@Override
 	public void setVariablesNamer(Function<Variable, String> namer) {
-		m_delegate.setVariablesNamer(namer);
+		delegate.setVariablesNamer(namer);
 	}
 
 	@Override
 	public boolean setVariableType(Variable variable, LpVariableType type) {
-		return m_delegate.setVariableType(variable, type);
+		return delegate.setVariableType(variable, type);
 	}
 
 	@Override
 	public String toString() {
-		return m_delegate.toString();
+		return delegate.toString();
 	}
 
 	protected LpProblem delegate() {
-		return m_delegate;
+		return delegate;
 	}
 
 }

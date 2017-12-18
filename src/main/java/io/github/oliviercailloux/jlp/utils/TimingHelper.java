@@ -9,62 +9,62 @@ import io.github.oliviercailloux.jlp.parameters.LpTimingType;
 import io.github.oliviercailloux.jlp.result.LpSolverDuration;
 
 public class TimingHelper {
-	private Long m_cpuEnd_ns;
+	private Long cpuEnd_ns;
 
-	private Long m_cpuStart_ns;
+	private Long cpuStart_ns;
 
-	private boolean m_ended;
+	private boolean ended;
 
 	/**
 	 * <code>null</code> iff cpu timing is not supported.
 	 */
-	private final ThreadMXBean m_mgmt;
+	private final ThreadMXBean mgmt;
 
-	private Double m_solverCpuEnd_ms;
+	private Double solverCpuEnd_ms;
 
-	private Double m_solverCpuStart_ms;
+	private Double solverCpuStart_ms;
 
-	private final Map<LpTimingType, Long> m_solverDurations_ms = new HashMap<LpTimingType, Long>();
+	private final Map<LpTimingType, Long> solverDurations_ms = new HashMap<LpTimingType, Long>();
 
-	private Double m_solverWallEnd_ms;
+	private Double solverWallEnd_ms;
 
-	private Double m_solverWallStart_ms;
+	private Double solverWallStart_ms;
 
-	private long m_wallEnd_ns;
+	private long wallEnd_ns;
 
-	private long m_wallStart_ns;
+	private long wallStart_ns;
 
 	public TimingHelper() {
 		final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 		if (threadMXBean.isCurrentThreadCpuTimeSupported()) {
-			m_mgmt = threadMXBean;
+			mgmt = threadMXBean;
 		} else {
-			m_mgmt = null;
+			mgmt = null;
 		}
 
-		m_wallStart_ns = -1;
-		m_cpuStart_ns = null;
-		m_solverWallStart_ms = null;
-		m_solverCpuStart_ms = null;
+		wallStart_ns = -1;
+		cpuStart_ns = null;
+		solverWallStart_ms = null;
+		solverCpuStart_ms = null;
 
-		m_wallEnd_ns = -1;
-		m_cpuEnd_ns = null;
-		m_solverWallEnd_ms = null;
-		m_solverCpuEnd_ms = null;
+		wallEnd_ns = -1;
+		cpuEnd_ns = null;
+		solverWallEnd_ms = null;
+		solverCpuEnd_ms = null;
 
-		m_ended = false;
+		ended = false;
 	}
 
 	private void assertEndCalled() {
-		if (!m_ended) {
+		if (!ended) {
 			throw new IllegalStateException("End has not been called before duration is asked.");
 		}
 	}
 
 	public Long getCpuDuration_ms() {
 		assertEndCalled();
-		return m_mgmt == null ? null
-				: Long.valueOf(Math.round((m_cpuEnd_ns.longValue() - m_cpuStart_ns.longValue()) / 1e6d));
+		return mgmt == null ? null
+				: Long.valueOf(Math.round((cpuEnd_ns.longValue() - cpuStart_ns.longValue()) / 1e6d));
 	}
 
 	public LpSolverDuration getDuration() {
@@ -75,33 +75,33 @@ public class TimingHelper {
 
 	public Long getSolverCpuDuration_ms() {
 		assertEndCalled();
-		return m_solverDurations_ms.get(LpTimingType.CPU_TIMING);
+		return solverDurations_ms.get(LpTimingType.CPU_TIMING);
 	}
 
 	public Double getSolverCpuEnd_ms() {
-		return m_solverCpuEnd_ms;
+		return solverCpuEnd_ms;
 	}
 
 	public Double getSolverCpuStart_ms() {
-		return m_solverCpuStart_ms;
+		return solverCpuStart_ms;
 	}
 
 	public Long getSolverWallDuration_ms() {
 		assertEndCalled();
-		return m_solverDurations_ms.get(LpTimingType.WALL_TIMING);
+		return solverDurations_ms.get(LpTimingType.WALL_TIMING);
 	}
 
 	public Double getSolverWallEnd_ms() {
-		return m_solverWallEnd_ms;
+		return solverWallEnd_ms;
 	}
 
 	public Double getSolverWallStart_ms() {
-		return m_solverWallStart_ms;
+		return solverWallStart_ms;
 	}
 
 	public long getWallDuration_ms() {
 		assertEndCalled();
-		return Math.round((m_wallEnd_ns - m_wallStart_ns) / 1e6d);
+		return Math.round((wallEnd_ns - wallStart_ns) / 1e6d);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class TimingHelper {
 	 *         measurement for current thread; <code>false</code> otherwise.
 	 */
 	public boolean isCpuTimingSupported() {
-		return m_mgmt != null;
+		return mgmt != null;
 	}
 
 	public void setSolverCpuEnd_ms(double solverCpuEnd_ms) {
@@ -130,45 +130,45 @@ public class TimingHelper {
 		if (timingType == null) {
 			throw new NullPointerException("" + timingType + solverDuration_ms);
 		}
-		m_solverDurations_ms.put(timingType, Long.valueOf(Math.round(solverDuration_ms)));
+		solverDurations_ms.put(timingType, Long.valueOf(Math.round(solverDuration_ms)));
 	}
 
 	public void setSolverEnd_ms(LpTimingType type, double solverEnd_ms) {
 		final Long duration_ms;
 		switch (type) {
 		case WALL_TIMING:
-			m_solverWallEnd_ms = Double.valueOf(solverEnd_ms);
-			duration_ms = (m_solverWallStart_ms == null || m_solverWallEnd_ms == null) ? null
-					: Long.valueOf(Math.round((m_solverWallEnd_ms.doubleValue() - m_solverWallStart_ms.doubleValue())));
+			solverWallEnd_ms = Double.valueOf(solverEnd_ms);
+			duration_ms = (solverWallStart_ms == null || solverWallEnd_ms == null) ? null
+					: Long.valueOf(Math.round((solverWallEnd_ms.doubleValue() - solverWallStart_ms.doubleValue())));
 			break;
 		case CPU_TIMING:
-			m_solverCpuEnd_ms = Double.valueOf(solverEnd_ms);
-			duration_ms = (m_solverCpuStart_ms == null || m_solverCpuEnd_ms == null) ? null
-					: Long.valueOf(Math.round((m_solverCpuEnd_ms.doubleValue() - m_solverCpuStart_ms.doubleValue())));
+			solverCpuEnd_ms = Double.valueOf(solverEnd_ms);
+			duration_ms = (solverCpuStart_ms == null || solverCpuEnd_ms == null) ? null
+					: Long.valueOf(Math.round((solverCpuEnd_ms.doubleValue() - solverCpuStart_ms.doubleValue())));
 			break;
 		default:
 			throw new IllegalStateException("Unknown timing type.");
 		}
-		m_solverDurations_ms.put(type, duration_ms);
+		solverDurations_ms.put(type, duration_ms);
 	}
 
 	public void setSolverStart_ms(LpTimingType type, double solverStart_ms) {
 		final Long duration_ms;
 		switch (type) {
 		case WALL_TIMING:
-			m_solverWallStart_ms = Double.valueOf(solverStart_ms);
-			duration_ms = (m_solverWallStart_ms == null || m_solverWallEnd_ms == null) ? null
-					: Long.valueOf(Math.round((m_solverWallEnd_ms.doubleValue() - m_solverWallStart_ms.doubleValue())));
+			solverWallStart_ms = Double.valueOf(solverStart_ms);
+			duration_ms = (solverWallStart_ms == null || solverWallEnd_ms == null) ? null
+					: Long.valueOf(Math.round((solverWallEnd_ms.doubleValue() - solverWallStart_ms.doubleValue())));
 			break;
 		case CPU_TIMING:
-			m_solverCpuStart_ms = Double.valueOf(solverStart_ms);
-			duration_ms = (m_solverCpuStart_ms == null || m_solverCpuEnd_ms == null) ? null
-					: Long.valueOf(Math.round((m_solverCpuEnd_ms.doubleValue() - m_solverCpuStart_ms.doubleValue())));
+			solverCpuStart_ms = Double.valueOf(solverStart_ms);
+			duration_ms = (solverCpuStart_ms == null || solverCpuEnd_ms == null) ? null
+					: Long.valueOf(Math.round((solverCpuEnd_ms.doubleValue() - solverCpuStart_ms.doubleValue())));
 			break;
 		default:
 			throw new IllegalStateException("Unknown timing type.");
 		}
-		m_solverDurations_ms.put(type, duration_ms);
+		solverDurations_ms.put(type, duration_ms);
 	}
 
 	public void setSolverWallEnd_ms(double solverWallEnd_ms) {
@@ -180,13 +180,13 @@ public class TimingHelper {
 	}
 
 	public void start() {
-		m_cpuStart_ns = m_mgmt == null ? null : Long.valueOf(m_mgmt.getCurrentThreadCpuTime());
-		m_wallStart_ns = System.nanoTime();
+		cpuStart_ns = mgmt == null ? null : Long.valueOf(mgmt.getCurrentThreadCpuTime());
+		wallStart_ns = System.nanoTime();
 	}
 
 	public void stop() {
-		m_wallEnd_ns = System.nanoTime();
-		m_cpuEnd_ns = m_mgmt == null ? null : Long.valueOf(m_mgmt.getCurrentThreadCpuTime());
-		m_ended = true;
+		wallEnd_ns = System.nanoTime();
+		cpuEnd_ns = mgmt == null ? null : Long.valueOf(mgmt.getCurrentThreadCpuTime());
+		ended = true;
 	}
 }

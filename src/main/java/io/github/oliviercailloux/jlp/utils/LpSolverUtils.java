@@ -60,17 +60,16 @@ final Predicate<Number> isBool = new IsBoolValue(1e-6);
 public class LpSolverUtils {
 
 	static public class FunctionGetValue implements Function<Variable, Number> {
-		private final LpSolutionAlone m_solution;
+		private final LpSolutionAlone solution;
 
 		public FunctionGetValue(LpSolutionAlone solution) {
 			checkNotNull(solution);
-			m_solution = solution;
-
+			this.solution = solution;
 		}
 
 		@Override
 		public Number apply(Variable input) {
-			return m_solution.getValue(input);
+			return solution.getValue(input);
 		}
 	}
 

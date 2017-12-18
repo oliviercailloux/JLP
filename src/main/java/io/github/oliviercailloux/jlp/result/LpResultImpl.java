@@ -23,52 +23,52 @@ public class LpResultImpl implements LpResult {
 		return new LpResultImpl(status, duration, parameters, solution);
 	}
 
-	private final LpSolverDuration m_duration;
+	private final LpSolverDuration duration;
 
-	private final LpParameters m_parameters;
+	private final LpParameters parameters;
 
-	private final LpSolution m_solution;
+	private final LpSolution solution;
 
-	private final LpResultStatus m_status;
+	private final LpResultStatus status;
 
 	LpResultImpl(LpResultStatus status, LpSolverDuration duration, LpParameters parameters, LpSolution solution) {
 		checkNotNull(status);
 		checkNotNull(duration);
 		checkNotNull(parameters);
-		m_status = status;
-		m_duration = duration;
-		m_parameters = LpParametersUtils.newParameters(parameters);
-		m_solution = solution == null ? null : LpSolutions.newImmutable(solution);
+		this.status = status;
+		this.duration = duration;
+		this.parameters = LpParametersUtils.newParameters(parameters);
+		this.solution = solution == null ? null : LpSolutions.newImmutable(solution);
 	}
 
 	@Override
 	public LpSolverDuration getDuration() {
-		return m_duration;
+		return duration;
 	}
 
 	@Override
 	public LpParameters getParameters() {
-		return m_parameters;
+		return parameters;
 	}
 
 	@Override
 	public LpResultStatus getResultStatus() {
-		return m_status;
+		return status;
 	}
 
 	@Override
 	public LpSolution getSolution() {
-		return m_solution;
+		return solution;
 	}
 
 	@Override
 	public String toString() {
 		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.add("Status", m_status);
-		helper.add("Duration", m_duration);
-		helper.add("Parameters", m_parameters);
-		if (m_solution != null) {
-			helper.add("Solution", m_solution);
+		helper.add("Status", status);
+		helper.add("Duration", duration);
+		helper.add("Parameters", parameters);
+		if (solution != null) {
+			helper.add("Solution", solution);
 		}
 		return helper.toString();
 	}

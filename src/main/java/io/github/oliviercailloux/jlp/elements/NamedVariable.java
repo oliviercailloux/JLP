@@ -53,10 +53,10 @@ public class NamedVariable implements Variable {
 	/**
 	 * Not <code>null</code>, may be empty (an empty description).
 	 */
-	private String m_name;
+	private String name;
 
 	/** Does not contain <code>null</code>. */
-	private final List<Object> m_refs;
+	private final List<Object> refs;
 
 	private LpVariableType type;
 
@@ -82,7 +82,7 @@ public class NamedVariable implements Variable {
 		this.type = requireNonNull(type);
 		this.lowerBound = requireNonNull(lowerBound);
 		this.upperBound = requireNonNull(upperBound);
-		m_name = requireNonNull(name);
+		this.name = requireNonNull(name);
 		/**
 		 * TODO check javadoc warnings, should trigger when type param is unused.
 		 *
@@ -94,7 +94,7 @@ public class NamedVariable implements Variable {
 		if (hasNull) {
 			throw new NullPointerException("Given references contain a null reference.");
 		}
-		m_refs = Collections.unmodifiableList(asList);
+		this.refs = Collections.unmodifiableList(asList);
 	}
 
 	@Override
@@ -109,10 +109,10 @@ public class NamedVariable implements Variable {
 			return false;
 		}
 		NamedVariable other = (NamedVariable) obj;
-		if (!m_name.equals(other.m_name)) {
+		if (!name.equals(other.name)) {
 			return false;
 		}
-		if (!m_refs.equals(other.m_refs)) {
+		if (!refs.equals(other.refs)) {
 			return false;
 		}
 		return true;
@@ -127,7 +127,7 @@ public class NamedVariable implements Variable {
 	 * @return not <code>null</code>.
 	 */
 	public String getName() {
-		return m_name;
+		return name;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class NamedVariable implements Variable {
 	 *         references.
 	 */
 	public List<Object> getReferences() {
-		return m_refs;
+		return refs;
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class NamedVariable implements Variable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(m_name, m_refs);
+		return Objects.hash(name, refs);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class NamedVariable implements Variable {
 	@Override
 	public String toString() {
 		/** TODO. */
-		return m_name + "-" + Arrays.toString(m_refs.toArray());
+		return name + "-" + Arrays.toString(refs.toArray());
 	}
 
 }

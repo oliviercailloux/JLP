@@ -14,12 +14,12 @@ public class LpObjective {
 	/**
 	 * May be <code>null</code>. TODO check why this is allowed.
 	 */
-	final private LpDirection m_direction;
+	final private LpDirection direction;
 
 	/**
 	 * May be <code>null</code>.
 	 */
-	final private LpLinearImmutable m_objectiveFunction;
+	final private LpLinearImmutable objectiveFunction;
 
 	/**
 	 * Creates a new objective function with direction.
@@ -30,8 +30,8 @@ public class LpObjective {
 	 *            may be <code>null</code>.
 	 */
 	public LpObjective(LpLinear objectiveFunction, LpDirection direction) {
-		m_objectiveFunction = objectiveFunction == null ? null : new LpLinearImmutable(objectiveFunction);
-		m_direction = direction;
+		this.objectiveFunction = objectiveFunction == null ? null : new LpLinearImmutable(objectiveFunction);
+		this.direction = direction;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class LpObjective {
 	 * @return possibly <code>null</code>.
 	 */
 	public LpDirection getDirection() {
-		return m_direction;
+		return direction;
 	}
 
 	/**
@@ -67,12 +67,12 @@ public class LpObjective {
 	 * @return possibly <code>null</code>. Is a copy or is immutable.
 	 */
 	public LpLinear getFunction() {
-		return m_objectiveFunction;
+		return objectiveFunction;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(m_direction, m_objectiveFunction);
+		return Objects.hashCode(direction, objectiveFunction);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class LpObjective {
 	 *         are non <code>null</code>.
 	 */
 	public boolean isComplete() {
-		return m_objectiveFunction != null && m_direction != null;
+		return objectiveFunction != null && direction != null;
 	}
 
 	/**
@@ -94,14 +94,14 @@ public class LpObjective {
 	 *         are <code>null</code>.
 	 */
 	public boolean isEmpty() {
-		return m_objectiveFunction == null && m_direction == null;
+		return objectiveFunction == null && direction == null;
 	}
 
 	@Override
 	public String toString() {
 		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.add("Function", m_objectiveFunction);
-		helper.add("Direction", m_direction);
+		helper.add("Function", objectiveFunction);
+		helper.add("Direction", direction);
 		return helper.toString();
 	}
 }

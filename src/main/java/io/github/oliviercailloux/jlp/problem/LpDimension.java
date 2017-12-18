@@ -6,18 +6,18 @@ import com.google.common.base.Objects.ToStringHelper;
 /**
  * The dimension of a problem, in numbers of variables and constraints.
  * Immutable.
- * 
+ *
  * @author Olivier Cailloux
- * 
+ *
  */
 public class LpDimension {
-	private final int m_binaries;
+	private final int binaries;
 
-	private final int m_constraints;
+	private final int constraints;
 
-	private final int m_continuous;
+	private final int continuous;
 
-	private final int m_integersNonBinary;
+	private final int integersNonBinary;
 
 	/**
 	 * @param binaries
@@ -34,10 +34,10 @@ public class LpDimension {
 			throw new IllegalArgumentException(
 					"Must be positive or null:" + binaries + integersNonBinary + continuous + constraints + ".");
 		}
-		m_binaries = binaries;
-		m_integersNonBinary = integersNonBinary;
-		m_continuous = continuous;
-		m_constraints = constraints;
+		this.binaries = binaries;
+		this.integersNonBinary = integersNonBinary;
+		this.continuous = continuous;
+		this.constraints = constraints;
 	}
 
 	@Override
@@ -46,69 +46,69 @@ public class LpDimension {
 			return false;
 		}
 		LpDimension d2 = (LpDimension) obj;
-		if (m_binaries != d2.m_binaries) {
+		if (binaries != d2.binaries) {
 			return false;
 		}
-		if (m_integersNonBinary != d2.m_integersNonBinary) {
+		if (integersNonBinary != d2.integersNonBinary) {
 			return false;
 		}
-		if (m_continuous != d2.m_continuous) {
+		if (continuous != d2.continuous) {
 			return false;
 		}
-		if (m_constraints != d2.m_constraints) {
+		if (constraints != d2.constraints) {
 			return false;
 		}
 		return true;
 	}
 
 	public int getBinaries() {
-		return m_binaries;
+		return binaries;
 	}
 
 	public int getConstraints() {
-		return m_constraints;
+		return constraints;
 	}
 
 	public int getContinuous() {
-		return m_continuous;
+		return continuous;
 	}
 
 	public int getIntegers() {
-		return m_integersNonBinary + m_binaries;
+		return integersNonBinary + binaries;
 	}
 
 	public int getIntegersNonBinary() {
-		return m_integersNonBinary;
+		return integersNonBinary;
 	}
 
 	/**
 	 * Retrieves the number of variables in the problem: binaries, integers non
 	 * binaries, and continous.
-	 * 
+	 *
 	 * @return at least zero.
 	 */
 	public int getVariables() {
-		return m_integersNonBinary + m_binaries + m_continuous;
+		return integersNonBinary + binaries + continuous;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 67;
 		int result = 1;
-		result = prime * result + m_binaries;
-		result = prime * result + m_integersNonBinary;
-		result = prime * result + m_continuous;
-		result = prime * result + m_constraints;
+		result = prime * result + binaries;
+		result = prime * result + integersNonBinary;
+		result = prime * result + continuous;
+		result = prime * result + constraints;
 		return result;
 	}
 
 	@Override
 	public String toString() {
 		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.add("binaries", Integer.valueOf(m_binaries));
-		helper.add("integers", Integer.valueOf(m_integersNonBinary));
-		helper.add("continuous", Integer.valueOf(m_continuous));
-		helper.add("constraints", Integer.valueOf(m_constraints));
+		helper.add("binaries", Integer.valueOf(binaries));
+		helper.add("integers", Integer.valueOf(integersNonBinary));
+		helper.add("continuous", Integer.valueOf(continuous));
+		helper.add("constraints", Integer.valueOf(constraints));
 		return helper.toString();
 	}
 }

@@ -17,9 +17,9 @@ import com.google.common.base.Preconditions;
  *
  */
 public class LpTerm {
-	private final double m_coefficient;
+	private final double coefficient;
 
-	private final Variable m_variable;
+	private final Variable variable;
 
 	/**
 	 * @param coefficient
@@ -31,8 +31,8 @@ public class LpTerm {
 		Preconditions.checkNotNull(variable);
 		Preconditions.checkArgument(!Double.isInfinite(coefficient));
 		Preconditions.checkArgument(!Double.isNaN(coefficient));
-		m_coefficient = coefficient;
-		m_variable = variable;
+		this.coefficient = coefficient;
+		this.variable = variable;
 	}
 
 	@Override
@@ -45,10 +45,10 @@ public class LpTerm {
 		}
 
 		LpTerm t2 = (LpTerm) obj;
-		if (m_coefficient != t2.m_coefficient) {
+		if (coefficient != t2.coefficient) {
 			return false;
 		}
-		if (!m_variable.equals(t2.m_variable)) {
+		if (!variable.equals(t2.variable)) {
 			return false;
 		}
 
@@ -61,7 +61,7 @@ public class LpTerm {
 	 * @return a valid number.
 	 */
 	public double getCoefficient() {
-		return m_coefficient;
+		return coefficient;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class LpTerm {
 	 * @return not <code>null</code>.
 	 */
 	public Variable getVariable() {
-		return m_variable;
+		return variable;
 	}
 
 	@Override
@@ -78,9 +78,9 @@ public class LpTerm {
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp = Double.doubleToLongBits(m_coefficient);
+		temp = Double.doubleToLongBits(coefficient);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + m_variable.hashCode();
+		result = prime * result + variable.hashCode();
 		return result;
 	}
 

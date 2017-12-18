@@ -21,13 +21,13 @@ public class LpSolutionImmutable implements LpSolution {
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<LpConstraint, Number> m_dualValues;
+	private final Map<LpConstraint, Number> dualValues;
 
-	private final Number m_objectiveValue;
+	private final Number objectiveValue;
 
-	private final ImmutableMap<Variable, Number> m_primalValues;
+	private final ImmutableMap<Variable, Number> primalValues;
 
-	private final LpProblem m_problem;
+	private final LpProblem problem;
 
 	/**
 	 * <p>
@@ -83,13 +83,13 @@ public class LpSolutionImmutable implements LpSolution {
 				dualValues.put(constraint, value);
 			}
 		}
-		m_objectiveValue = solution.getObjectiveValue();
-		m_primalValues = primalValues.build();
-		m_dualValues = dualValues.build();
+		objectiveValue = solution.getObjectiveValue();
+		this.primalValues = primalValues.build();
+		this.dualValues = dualValues.build();
 		if (protectProblem) {
-			m_problem = LpProblems.newImmutable(problem);
+			this.problem = LpProblems.newImmutable(problem);
 		} else {
-			m_problem = problem;
+			this.problem = problem;
 		}
 	}
 
@@ -105,9 +105,9 @@ public class LpSolutionImmutable implements LpSolution {
 
 	@Override
 	public boolean getBooleanValue(Variable variable) {
-		Number number = m_primalValues.get(variable);
+		Number number = primalValues.get(variable);
 		if (number == null) {
-			if (!m_problem.getVariables().contains(variable)) {
+			if (!problem.getVariables().contains(variable)) {
 				throw new IllegalArgumentException("Unknown variable: " + variable + ".");
 
 			}
@@ -125,43 +125,43 @@ public class LpSolutionImmutable implements LpSolution {
 
 	@Override
 	public Number getComputedObjectiveValue() {
-		final LpLinear objectiveFunction = m_problem.getObjective().getFunction();
+		final LpLinear objectiveFunction = problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
 		}
-		return LpLinearUtils.evaluate(objectiveFunction, m_primalValues);
+		return LpLinearUtils.evaluate(objectiveFunction, primalValues);
 	}
 
 	@Override
 	public Set<LpConstraint> getConstraints() {
-		return Collections.unmodifiableSet(m_dualValues.keySet());
+		return Collections.unmodifiableSet(dualValues.keySet());
 	}
 
 	@Override
 	public Number getDualValue(LpConstraint constraint) {
 		Preconditions.checkNotNull(constraint);
-		return m_dualValues.get(constraint);
+		return dualValues.get(constraint);
 	}
 
 	@Override
 	public Number getObjectiveValue() {
-		return m_objectiveValue;
+		return objectiveValue;
 	}
 
 	@Override
 	public LpProblem getProblem() {
-		return m_problem;
+		return problem;
 	}
 
 	@Override
 	public Number getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
-		return m_primalValues.get(variable);
+		return primalValues.get(variable);
 	}
 
 	@Override
 	public Set<Variable> getVariables() {
-		return Collections.unmodifiableSet(m_primalValues.keySet());
+		return Collections.unmodifiableSet(primalValues.keySet());
 	}
 
 	@Override
