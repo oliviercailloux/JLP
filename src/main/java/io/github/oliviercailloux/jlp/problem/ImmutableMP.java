@@ -30,7 +30,7 @@ public class ImmutableMP implements IMP {
 		if (source instanceof ImmutableMP) {
 			return (ImmutableMP) source;
 		}
-		return new ImmutableMP(new MP(source));
+		return new ImmutableMP(MP.copyOf(source));
 	}
 
 	/**
@@ -53,11 +53,6 @@ public class ImmutableMP implements IMP {
 	}
 
 	@Override
-	public Function<Constraint, String> getConstraintsNamer() {
-		return delegate.getConstraintsNamer();
-	}
-
-	@Override
 	public MPDimension getDimension() {
 		return delegate.getDimension();
 	}
@@ -73,33 +68,8 @@ public class ImmutableMP implements IMP {
 	}
 
 	@Override
-	public Number getVariableLowerBound(Variable variable) {
-		return delegate.getVariableLowerBound(variable);
-	}
-
-	@Override
-	public String getVariableName(Variable variable) {
-		return delegate.getVariableName(variable);
-	}
-
-	@Override
 	public Set<Variable> getVariables() {
 		return delegate.getVariables();
-	}
-
-	@Override
-	public Function<Variable, String> getVariablesNamer() {
-		return delegate.getVariablesNamer();
-	}
-
-	@Override
-	public VariableType getVariableType(Variable variable) {
-		return delegate.getVariableType(variable);
-	}
-
-	@Override
-	public Number getVariableUpperBound(Variable variable) {
-		return delegate.getVariableUpperBound(variable);
 	}
 
 	@Override

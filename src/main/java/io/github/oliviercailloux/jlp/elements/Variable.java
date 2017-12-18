@@ -3,12 +3,9 @@ package io.github.oliviercailloux.jlp.elements;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ImmutableList;
 
 /**
  * <p>
@@ -27,8 +24,9 @@ import com.google.common.collect.Iterables;
  * This object is immutable if the objects used as references are immutable.
  * </p>
  * <p>
- * Two variables should be equal, as determined by {@link #equals(Object)}, iff
- * they have the same description, as given by {@link #toString()}.
+ * For clarity, two variables (used together in a problem) should be equal, as
+ * determined by {@link #equals(Object)}, iff they have the same description, as
+ * given by {@link #toString()}.
  * </p>
  * <p>
  * It is suggested that {@link #toString()} returns a short description unique
@@ -36,10 +34,33 @@ import com.google.common.collect.Iterables;
  * example, "c-p1" for a variable representing the cost of the product number 1.
  * </p>
  * <p>
- * It is expected that this object be immutable. (It will be referred to in
+ * It is expected that this object be immutable, more precisely, their hashcode,
+ * or equality status viz other variables, should not change once they have been
+ * added to a constraint, or a problem. (It will also be referred to in
  * solutions of problems.) Hence, the bounds (or type) of this variable should
  * be considered as a structural property of the variable, that will never
- * change.
+ * change. Furthermore, the objects this variable refers to main not change
+ * hashcode either during the time a problem (or other objects from this library
+ * which contain variables) is used.
+ * </p>
+ * <p>
+ * A variable bounds may be set to anything, as long as the lower bound is lower
+ * than or equal to the upper bound, independently of the variable type. For
+ * example, a boolean typed variable may have a lower bound of -3 and upper
+ * bound of 0.8. When solving the problem, the variable will be considered as
+ * having the most restrictive bounds imposed by either its bounds or its type.
+ * In the example, the variable would be constrained to zero.
+ * </p>
+ * <p>
+ * Assume you want a variable to refer to a Truck in your domain model, but
+ * truck has an inappropriately long toString description. Then you can subclass
+ * this class and create a TruckVariable class, with a reference to a Truck, and
+ * an overridden toString.
+ * </p>
+ * <p>
+ * If this class is inherited, the inheriting class must honor the contracts of
+ * this class (objects of this library count on it), except that it may use a
+ * different {@link #toString()} implementation.
  * </p>
  *
  * @author Olivier Cailloux
@@ -51,14 +72,14 @@ public class Variable {
 		return new Variable(name, VariableType.INT, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
 	}
 
+	static public Variable newReal(String name, Object... references) {
+		return new Variable(name, VariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
+	}
+
 	static public Variable newVariable(String name, VariableType type, Number lowerBound, Number upperBound,
 			Object... references) {
 		/** TODO provide static constructors for all types. */
 		return new Variable(name, type, lowerBound, upperBound, references);
-	}
-
-	static public Variable newReal(String name, Object... references) {
-		return new Variable(name, VariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
 	}
 
 	private Number lowerBound;
@@ -69,7 +90,7 @@ public class Variable {
 	private String name;
 
 	/** Does not contain <code>null</code>. */
-	private final List<Object> refs;
+	private final ImmutableList<Object> refs;
 
 	private VariableType type;
 
@@ -101,12 +122,8 @@ public class Variable {
 		 * TODO update javadoc in this constructor. Provide other constructors.
 		 */
 		requireNonNull(references);
-		final List<Object> asList = Arrays.asList(references);
-		final boolean hasNull = Iterables.any(asList, Predicates.isNull());
-		if (hasNull) {
-			throw new NullPointerException("Given references contain a null reference.");
-		}
-		this.refs = Collections.unmodifiableList(asList);
+		/** Note ImmutableList is hostile to nulls. */
+		refs = ImmutableList.copyOf(references);
 	}
 
 	/**
@@ -154,13 +171,11 @@ public class Variable {
 	}
 
 	/**
-	 * Retrieves a copy, or read-only view, of the references associated to the
-	 * variable.
+	 * Returns the references associated to the variable.
 	 *
-	 * @return not <code>null</code>, may be empty. Contain no <code>null</code>
-	 *         references.
+	 * @return not <code>null</code>, may be empty
 	 */
-	public List<Object> getReferences() {
+	public ImmutableList<Object> getReferences() {
 		return refs;
 	}
 

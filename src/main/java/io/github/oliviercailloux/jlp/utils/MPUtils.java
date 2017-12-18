@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
+import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.IMP;
 import io.github.oliviercailloux.jlp.result.Solution;
@@ -25,10 +25,9 @@ public class MPUtils {
 	 * thrown.
 	 * </p>
 	 * <p>
-	 * Using this method is equivalent to invoking
-	 * {@link Solution#getValue(Object)} then {@link Number#doubleValue()} ,
-	 * except that this method produces a clearer exception message when the
-	 * variable is not in the solution.
+	 * Using this method is equivalent to invoking {@link Solution#getValue(Object)}
+	 * then {@link Number#doubleValue()} , except that this method produces a
+	 * clearer exception message when the variable is not in the solution.
 	 * </p>
 	 *
 	 * @param solution
@@ -50,9 +49,8 @@ public class MPUtils {
 		s_logger.info("Problem {}, {}.", problem.getName(), problem.getDimension());
 		final Set<Variable> variables = problem.getVariables();
 		for (Variable variable : variables) {
-			s_logger.info("Variable {} in problem: name {}, type " + problem.getVariableType(variable) + ", bounds "
-					+ problem.getVariableLowerBound(variable) + " to " + problem.getVariableUpperBound(variable) + ".",
-					variable, problem.getVariableName(variable));
+			s_logger.info("Variable {} in problem: type " + variable.getType() + ", bounds " + variable.getLowerBound()
+					+ " to " + variable.getUpperBound() + ".", variable.toString());
 		}
 		final Set<Constraint> constraints = problem.getConstraints();
 		for (Constraint constraint : constraints) {

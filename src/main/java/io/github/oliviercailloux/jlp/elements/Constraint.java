@@ -10,7 +10,7 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
  * <p>
  * A constraint in a linear program, or mixed linear program, consisting of a
  * linear expression on the left hand side (lhs) and a constant on the right
- * hand side (rhs), and an equality or inequality sign (as an
+ * hand side (rhs), and an equality or inequality sign (as a
  * {@link ComparisonOperator}) in between.
  * </p>
  * <p>
@@ -24,7 +24,7 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
  * same left hand side, operator, and right hand side. The id is not considered.
  * </p>
  * <p>
- * Objects of this class are immutable.
+ * Objects of this class are immutable (provided variables are).
  * </p>
  *
  * @author Olivier Cailloux

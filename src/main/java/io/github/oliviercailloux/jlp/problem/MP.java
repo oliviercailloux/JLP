@@ -1,18 +1,15 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Equivalence;
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
@@ -27,8 +24,6 @@ import io.github.oliviercailloux.jlp.elements.SumTermsImmutable;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableType;
-import io.github.oliviercailloux.jlp.parameters.SolverParameterObject;
-import io.github.oliviercailloux.jlp.problem.MPs.DefaultConstraintsNamer;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
 /**
@@ -39,76 +34,64 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
  */
 public class MP implements IMP {
 
+	/**
+	 * A copy constructor, by value. No reference is shared between the new problem
+	 * and the given one.
+	 * <p>
+	 * The variables and constraints sets iteration order will be the same as the
+	 * sets iteration order of the source.
+	 * </p>
+	 *
+	 * @param source
+	 *            not <code>null</code>.
+	 */
+	static public MP copyOf(IMP source) {
+		requireNonNull(source);
+
+		final MP mp = new MP();
+		mp.setName(source.getName());
+		for (Variable variable : source.getVariables()) {
+			mp.addVariable(variable);
+		}
+		mp.setObjective(source.getObjective().getFunction(), source.getObjective().getDirection());
+		for (Constraint constraint : source.getConstraints()) {
+			mp.add(constraint);
+		}
+
+		return mp;
+	}
+
+	static public MP newMP() {
+		return new MP();
+	}
+
 	public Function<Variable, String> TO_STRING_NAMER = Variable::toString;
 
 	private final Set<Constraint> constraints = Sets.newLinkedHashSet();
 
-	private Function<Constraint, String> constraintsNamer;
-
-	private final DefaultConstraintsNamer defaultConstraintsNamer = new DefaultConstraintsNamer();
-
 	/**
 	 * Never <code>null</code>.
 	 */
-	private String name;
+	private String mpName;
 
 	private SumTerms objectiveFunction;
 
 	private OptimizationDirection optType;
 
+	private Map<Variable, Variable> toCanonical;
+
 	private final Multiset<VariableType> varCount = EnumMultiset.create(VariableType.class);
 
-	/**
-	 * Missing entries correspond to minus infinity bound.
-	 */
-	private final Map<Variable, Number> varLowerBound = Maps.newHashMap();
-
-	/**
-	 * Never <code>null</code>.
-	 */
-	private Function<Variable, String> varNamer;
-
-	/**
-	 * Contains no <code>null</code> keys, no <code>null</code> values, no empty
-	 * string values.
-	 */
-	private final Map<Variable, String> varNames = Maps.newHashMap();
-
-	/**
-	 * No <code>null</code> key or value. Each variable in this problem has a type,
-	 * thus this map contains all the variables in the problem.
-	 */
-	private final Map<Variable, VariableType> varType = Maps.newLinkedHashMap();
-
-	/**
-	 * Missing entries correspond to positive infinity bound.
-	 */
-	private final Map<Variable, Number> varUpperBound = Maps.newHashMap();
-
 	public MP() {
-		name = "";
+		mpName = "";
 		objectiveFunction = null;
 		optType = null;
-		varNamer = TO_STRING_NAMER;
-		constraintsNamer = defaultConstraintsNamer;
-	}
-
-	/**
-	 * A copy constructor, by value. No reference is shared between the new problem
-	 * and the given one.
-	 *
-	 * @param problem
-	 *            not <code>null</code>.
-	 */
-	public MP(IMP problem) {
-		Preconditions.checkNotNull(problem);
-		MPs.copyTo(problem, this);
+		toCanonical = Maps.newHashMap();
 	}
 
 	/**
 	 * Adds a constraint, or does nothing if the given constraint is already in the
-	 * problem. The variables used in the objective must have been added to this
-	 * problem already.
+	 * problem. The variables used in the objective are added to this problem.
 	 *
 	 * @param constraint
 	 *            the constraint to be added. Not <code>null</code>.
@@ -117,13 +100,23 @@ public class MP implements IMP {
 	 *         already was in the problem.
 	 */
 	public boolean add(Constraint constraint) {
-		return addInternal(constraint);
+		Preconditions.checkNotNull(constraint);
+		final SumTerms sumTerms = constraint.getLhs();
+		final boolean addedV = addVariables(sumTerms);
+		final boolean addedC = constraints.add(constraint);
+		/**
+		 * We want to check addedV ⇒ addedC, thus, exclude the contradictory case, where
+		 * addedV but not addedC.
+		 *
+		 * Equiv: addedC iff addedV || addedC.
+		 */
+		assert !(addedV && !addedC);
+		return addedC;
 	}
 
 	/**
 	 * Adds a constraint, or does nothing if the given constraint is already in the
-	 * problem. The variables used in the objective must have been added to this
-	 * problem already.
+	 * problem. The variables used in the constraint are added to this problem.
 	 *
 	 * @param id
 	 *            the id of the constraint. If <code>null</code>, a no-id constraint
@@ -143,7 +136,7 @@ public class MP implements IMP {
 		Preconditions.checkNotNull(operator, "" + lhs + rhs);
 		Preconditions.checkArgument(!Double.isNaN(rhs) && !Double.isInfinite(rhs));
 		final Constraint constraint = new Constraint(id, lhs, operator, rhs);
-		return addInternal(constraint);
+		return add(constraint);
 	}
 
 	/**
@@ -156,31 +149,25 @@ public class MP implements IMP {
 	 * @return <code>true</code> iff the call modified the state of this object.
 	 */
 	public boolean addVariable(Variable variable) {
-		if (varType.containsKey(variable)) {
+		if (toCanonical.containsKey(requireNonNull(variable))) {
 			return false;
 		}
-		setVarTypeInternal(variable, VariableType.REAL);
-		varLowerBound.put(variable, Double.valueOf(0));
+		toCanonical.put(variable, variable);
+		varCount.add(variable.getType());
 		return true;
 	}
 
 	/**
-	 * Removes all the variables and constraints, objective function, name, namers
-	 * set in this problem. As a result of this call, this problem has the same
-	 * visible state as a newly created, empty problem.
+	 * Removes all the variables and constraints, objective function, name set in
+	 * this problem. As a result of this call, this problem has the same visible
+	 * state as a newly created, empty problem.
 	 */
 	public void clear() {
-		name = "";
-		setConstraintsNamer(null);
-		setVariablesNamer(null);
+		mpName = "";
 		objectiveFunction = null;
 		optType = null;
 		constraints.clear();
 		varCount.clear();
-		varNames.clear();
-		varType.clear();
-		varLowerBound.clear();
-		varUpperBound.clear();
 	}
 
 	@Override
@@ -198,11 +185,6 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public Function<Constraint, String> getConstraintsNamer() {
-		return constraintsNamer;
-	}
-
-	@Override
 	public MPDimension getDimension() {
 		return new MPDimension(varCount.count(VariableType.BOOL), varCount.count(VariableType.INT),
 				varCount.count(VariableType.REAL), getConstraints().size());
@@ -210,7 +192,7 @@ public class MP implements IMP {
 
 	@Override
 	public String getName() {
-		return name;
+		return mpName;
 	}
 
 	@Override
@@ -218,15 +200,8 @@ public class MP implements IMP {
 		return new ObjectiveFunction(objectiveFunction, optType);
 	}
 
-	@Override
-	public Number getVariableLowerBound(Variable variable) {
-		checkArgument(varType.containsKey(variable));
-		return Objects.firstNonNull(varLowerBound.get(variable), Double.valueOf(Double.NEGATIVE_INFINITY));
-	}
-
-	@Override
-	public String getVariableName(Variable variable) {
-		return Strings.nullToEmpty(varNamer.apply(variable));
+	public Optional<Variable> getVariable(String name, Object... references) {
+		return Optional.ofNullable(toCanonical.get(Variable.newVariable(name, null, null, null, references)));
 	}
 
 	@Override
@@ -237,51 +212,16 @@ public class MP implements IMP {
 		 * retrieve a namedVar according to its name and refs? Better: change variable
 		 * to namedvariable, because anyway using own domain objects as vars would be
 		 * inappropriate as domain objects do not have bounds or domains.
+		 *
+		 * We could also use Guava’s interner, but we probably need to wait that it gets
+		 * richer.
 		 */
-		return Collections.unmodifiableSet(varType.keySet());
-	}
-
-	@Override
-	public Function<Variable, String> getVariablesNamer() {
-		return varNamer;
-	}
-
-	@Override
-	public VariableType getVariableType(Variable variable) {
-		Preconditions.checkArgument(varType.containsKey(variable));
-		return varType.get(variable);
-	}
-
-	@Override
-	public Number getVariableUpperBound(Variable variable) {
-		checkArgument(varType.containsKey(variable));
-		return Objects.firstNonNull(varUpperBound.get(variable), Double.valueOf(Double.POSITIVE_INFINITY));
+		return Collections.unmodifiableSet(toCanonical.keySet());
 	}
 
 	@Override
 	public int hashCode() {
 		return SolverUtils.getProblemEquivalence().hash(this);
-	}
-
-	/**
-	 * <p>
-	 * Sets the namer function that is used to associate names to constraints. If
-	 * the given namer is <code>null</code>, the namer function is set back to the
-	 * default function. The function is never given a <code>null</code> constraint;
-	 * however the constraint id may be <code>null</code>.
-	 * </p>
-	 *
-	 * @param namer
-	 *            <code>null</code> to reset default behavior.
-	 * @see #getConstraintsNamer()
-	 * @see SolverParameterObject#NAMER_CONSTRAINTS
-	 */
-	public void setConstraintsNamer(Function<Constraint, String> namer) {
-		if (namer == null) {
-			constraintsNamer = defaultConstraintsNamer;
-		} else {
-			constraintsNamer = namer;
-		}
 	}
 
 	/**
@@ -302,18 +242,18 @@ public class MP implements IMP {
 		} else {
 			newName = name;
 		}
-		final boolean equivalent = Equivalence.equals().equivalent(this.name, newName);
+		final boolean equivalent = Equivalence.equals().equivalent(this.mpName, newName);
 		if (equivalent) {
 			return false;
 		}
-		this.name = name;
+		this.mpName = name;
 		return true;
 	}
 
 	/**
 	 * Sets or removes the objective bound to this problem. The variables used in
-	 * the objective function must have been added to this problem already. Setting
-	 * both parameters to <code>null</code> is legal.
+	 * the objective function are added to this problem. Setting both parameters to
+	 * <code>null</code> is legal.
 	 *
 	 * @param objectiveFunction
 	 *            <code>null</code> to remove a possibly set objective function.
@@ -328,7 +268,7 @@ public class MP implements IMP {
 			if (objectiveFunction == null) {
 				this.objectiveFunction = null;
 			} else {
-				assertVariablesExist(objectiveFunction);
+				addVariables(objectiveFunction);
 				this.objectiveFunction = new SumTermsImmutable(objectiveFunction);
 			}
 		}
@@ -353,174 +293,19 @@ public class MP implements IMP {
 		return !equalDir;
 	}
 
-	/**
-	 * <p>
-	 * Sets the lower and upper bounds of a variable. Adds the variable to this
-	 * problem if it is not already in, with a REAL type as default type. The lower
-	 * bound must be less than or equal to the upper bound.
-	 * </p>
-	 * <p>
-	 * The variable type does <em>not</em> impose constraints on the acceptable
-	 * bounds that may be associated to it.
-	 * </p>
-	 *
-	 * @param variable
-	 *            not <code>null</code>.
-	 * @param lowerBound
-	 *            <code>null</code>, or minus infinity, for a lower bound equal to
-	 *            minus infinity, may not be positive infinity.
-	 * @param upperBound
-	 *            <code>null</code>, or positive infinity, for an infinite upper
-	 *            bound, may not be negative infinity.
-	 * @return <code>true</code> iff the call modified the state of this object, or
-	 *         equivalently, iff the variable did not exist previously in this
-	 *         object or at least one of the given bounds is different than the
-	 *         previous bound. Two bounds are considered equal iff they are both
-	 *         infinite with the same sign or they would be considered equal
-	 *         according to the given bound {@link #equals(Object)} method. For
-	 *         example, when given as new bound a {@link BigDecimal} with the same
-	 *         value as the current bound but a different scale, this method will
-	 *         change the bound and return <code>true</code>, because such numbers
-	 *         are not considered equal as per {@link BigDecimal#equals}.
-	 */
-	public boolean setVariableBounds(Variable variable, Number lowerBound, Number upperBound) {
-		checkNotNull(variable, "" + lowerBound + "; " + upperBound);
-		final Number newLower = lowerBound == null ? Double.valueOf(Double.NEGATIVE_INFINITY) : lowerBound;
-		final Number newUpper = upperBound == null ? Double.valueOf(Double.POSITIVE_INFINITY) : upperBound;
-		checkArgument(newLower.doubleValue() <= newUpper.doubleValue(),
-				"Lower bound: " + newLower + " must be less or equal to upper bound: " + newUpper + ".");
-
-		final boolean added;
-		if (varType.containsKey(variable)) {
-			added = false;
-		} else {
-			setVarTypeInternal(variable, VariableType.REAL);
-			added = true;
-		}
-
-		final Number previousLower;
-		if (newLower.equals(Double.valueOf(Double.NEGATIVE_INFINITY))) {
-			previousLower = varLowerBound.remove(variable);
-		} else {
-			previousLower = varLowerBound.put(variable, lowerBound);
-		}
-		final boolean changedLower = (previousLower == null
-				&& newLower.equals(Double.valueOf(Double.NEGATIVE_INFINITY))) || Objects.equal(previousLower, newLower);
-
-		final Number previousUpper;
-		if (newUpper.equals(Double.valueOf(Double.POSITIVE_INFINITY))) {
-			previousUpper = varUpperBound.remove(variable);
-		} else {
-			previousUpper = varUpperBound.put(variable, upperBound);
-		}
-		final boolean changedUpper = (previousUpper == null
-				&& newUpper.equals(Double.valueOf(Double.POSITIVE_INFINITY))) || Objects.equal(previousUpper, newUpper);
-
-		return added || changedLower || changedUpper;
-	}
-
-	/**
-	 * <p>
-	 * Sets the namer function that is used to associate names to variables.
-	 * </p>
-	 *
-	 * @param namer
-	 *            <code>null</code> to restore the default namer.
-	 * @see #getVariableName
-	 * @see #TO_STRING_NAMER
-	 * @see SolverParameterObject#NAMER_VARIABLES
-	 */
-	public void setVariablesNamer(Function<Variable, String> namer) {
-		if (namer == null) {
-			varNamer = TO_STRING_NAMER;
-		} else {
-			varNamer = namer;
-		}
-	}
-
-	/**
-	 * Sets or removes the type of a variable. Adds the variable to this problem if
-	 * it is not already in, with a default lower bound equal to zero.
-	 *
-	 * @param variable
-	 *            not <code>null</code>.
-	 * @param type
-	 *            not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 */
-	public boolean setVariableType(Variable variable, VariableType type) {
-		checkNotNull(variable, type);
-		checkNotNull(type, variable);
-		final VariableType previous = setVarTypeInternal(variable, type);
-		if (previous == null) {
-			varLowerBound.put(variable, Double.valueOf(0));
-		}
-		return previous == null || previous != type;
-	}
-
-	public boolean setVarNameOld(Variable variable, String name) {
-		Preconditions.checkNotNull(variable, "" + name);
-		final boolean added = addVariable(variable);
-
-		final String previous;
-		final boolean changed;
-		if (name == null || name.isEmpty()) {
-			previous = varNames.remove(variable);
-			changed = previous != null;
-		} else {
-			previous = varNames.put(variable, name);
-			changed = !name.equals(previous);
-		}
-		return added || changed;
-	}
-
 	@Override
 	public String toString() {
 		return SolverUtils.getAsString(this);
 	}
 
-	/**
-	 * NB no defensive copy of the given constraint is done. Adds a constraint, or
-	 * does nothing if the given constraint is already in the problem. The variables
-	 * used in the objective must have been added to this problem already.
-	 *
-	 * @param constraint
-	 *            the constraint to be added. Not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 *         Equivalently, returns <code>false</code> iff the given constraint
-	 *         already was in the problem.
-	 */
-	private boolean addInternal(Constraint constraint) {
-		Preconditions.checkNotNull(constraint);
-		for (Term term : constraint.getLhs()) {
+	private boolean addVariables(SumTerms sumTerms) {
+		boolean added = false;
+		for (Term term : sumTerms) {
 			final Variable variable = term.getVariable();
-			if (!varType.containsKey(variable)) {
-				// setVarTypeInternal(variable, IlpVariableType.REAL);
-				throw new IllegalArgumentException(
-						"Unknown variable: " + variable + " in constraint " + constraint + ".");
-			}
+			final boolean nowAdded = addVariable(variable);
+			added = added || nowAdded;
 		}
-		return constraints.add(constraint);
-	}
-
-	private void assertVariablesExist(SumTerms linear) {
-		for (Term term : linear) {
-			final Variable variable = term.getVariable();
-			Preconditions.checkArgument(varType.containsKey(variable));
-		}
-	}
-
-	private VariableType setVarTypeInternal(Variable variable, VariableType type) {
-		Preconditions.checkNotNull(type);
-		final VariableType previous = varType.put(variable, type);
-		if (previous != null && previous != type) {
-			final boolean removed = varCount.remove(previous);
-			assert removed;
-		}
-		if (previous == null || previous != type) {
-			varCount.add(type);
-		}
-		return previous;
+		return added;
 	}
 
 }

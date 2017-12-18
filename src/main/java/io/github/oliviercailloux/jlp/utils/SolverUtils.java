@@ -296,7 +296,7 @@ public class SolverUtils {
 				return hashCode + t.getConstraints().hashCode() + t.getVariables().hashCode();
 			}
 
-			private <T1, T2> boolean computeEquivalent(IMP a, IMP b) {
+			private boolean computeEquivalent(IMP a, IMP b) {
 				if (!a.getConstraints().equals(b.getConstraints())) {
 					return false;
 				}
@@ -305,21 +305,6 @@ public class SolverUtils {
 				}
 				if (!a.getVariables().equals(b.getVariables())) {
 					return false;
-				}
-				for (Variable variable : a.getVariables()) {
-					final Variable varTyped = variable;
-
-					if (!getEquivalenceByDoubleValue().equivalent(a.getVariableLowerBound(variable),
-							b.getVariableLowerBound(varTyped))) {
-						return false;
-					}
-					if (!Objects.equal(a.getVariableType(variable), b.getVariableType(varTyped))) {
-						return false;
-					}
-					if (!getEquivalenceByDoubleValue().equivalent(a.getVariableUpperBound(variable),
-							b.getVariableUpperBound(varTyped))) {
-						return false;
-					}
 				}
 				return true;
 			}
@@ -389,84 +374,5 @@ public class SolverUtils {
 		}
 		final ImmutableBiMap<Variable, Integer> variableIds = builder.build();
 		return variableIds;
-	}
-
-	/**
-	 * <p>
-	 * Retrieves the bound of the variable from the given problem, with a possible
-	 * modification if the variable type is {@link VariableType#BOOL} : the bound is
-	 * itself <em>bounded</em> to zero.
-	 * </p>
-	 * <p>
-	 * Consider a variable defined in the delegate problem having the type
-	 * {@link VariableType#BOOL} and a lower bound <em>l</em>. This method will
-	 * return as its lower bound 0 if l is <code>null</code>, 0 if l.doubleValue()
-	 * is lower than zero, and l otherwise. E.g. this method returns zero as the
-	 * lower bound of a {@link VariableType#BOOL} variable having a lower bound of
-	 * -1 in the given problem.
-	 * </p>
-	 *
-	 * @see #getViewWithTransformedBools(IMP)
-	 *
-	 * @param problem
-	 *            not <code>null</code>.
-	 * @param variable
-	 *            must exist in the problem.
-	 * @return the bound of the variable according to the given problem, not
-	 *         <code>null</code>. The bound is greater than or equal to zero if the
-	 *         variable has the type {@link VariableType#BOOL} according to the
-	 *         given problem.
-	 */
-	static public Number getVarLowerBoundBounded(IMP problem, Variable variable) {
-		Preconditions.checkArgument(problem.getVariables().contains(variable));
-		final VariableType type = problem.getVariableType(variable);
-		if (type != VariableType.BOOL) {
-			return problem.getVariableLowerBound(variable);
-		}
-		final Number low = problem.getVariableLowerBound(variable);
-		if (low.doubleValue() < 0d) {
-			return Double.valueOf(0d);
-		}
-		return low;
-	}
-
-	/**
-	 * <p>
-	 * Retrieves the bound of the variable from the given problem, with a possible
-	 * modification if the variable type is {@link VariableType#BOOL} : the bound is
-	 * itself <em>bounded</em> to one.
-	 * </p>
-	 * <p>
-	 * Consider a variable defined in the delegate problem having the type
-	 * {@link VariableType#BOOL} and an upper bound <em>u</em>. This method will
-	 * return as its upper bound 1 if u.doubleValue() is greater than one (including
-	 * if it is positive infinity), and u otherwise. E.g. this method returns 1 as
-	 * the upper bound of a {@link VariableType#BOOL} variable having an upper bound
-	 * of 1.5 in the given problem.
-	 * </p>
-	 *
-	 * @see #getViewWithTransformedBools(IMP)
-	 *
-	 * @param problem
-	 *            not <code>null</code>.
-	 * @param variable
-	 *            must exist in the problem.
-	 * @return the bound of the variable according to the given problem, not
-	 *         <code>null</code>. The bound is greater than or equal to zero if the
-	 *         variable has the type {@link VariableType#BOOL} according to the
-	 *         given problem.
-	 */
-	static public Number getVarUpperBoundBounded(IMP problem, Variable variable) {
-		Preconditions.checkArgument(problem.getVariables().contains(variable));
-		final VariableType type = problem.getVariableType(variable);
-		if (type != VariableType.BOOL) {
-			return problem.getVariableUpperBound(variable);
-		}
-		final Number up = problem.getVariableUpperBound(variable);
-		/** TODO seems strange! (and see doc). */
-		if (up.doubleValue() > 0d) {
-			return Double.valueOf(1d);
-		}
-		return up;
 	}
 }

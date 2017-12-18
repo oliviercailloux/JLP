@@ -1,7 +1,5 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 
@@ -42,43 +40,6 @@ public class MPs {
 	}
 
 	/**
-	 * <p>
-	 * Completely erase the target data and replace it with the data in the source
-	 * problem. The order of the variables and constraints in target is set to be
-	 * the same as the order of the source, thus the variables and constraints sets
-	 * iteration order of the target will be the same as the sets iteration order of
-	 * the source. When this method returns the target is identical to the source.
-	 * </p>
-	 * <p>
-	 * After this method returns, the target problem uses <em>the same</em> namer
-	 * functions for variable and constraint names as the source problem.
-	 * </p>
-	 *
-	 * @param source
-	 *            not <code>null</code>.
-	 * @param target
-	 *            not <code>null</code>.
-	 */
-	static public void copyTo(IMP source, MP target) {
-		checkNotNull(target);
-		checkNotNull(source);
-
-		target.clear();
-		target.setName(source.getName());
-		target.setVariablesNamer(source.getVariablesNamer());
-		target.setConstraintsNamer(source.getConstraintsNamer());
-		for (Variable variable : source.getVariables()) {
-			target.setVariableType(variable, source.getVariableType(variable));
-			target.setVariableBounds(variable, source.getVariableLowerBound(variable),
-					source.getVariableUpperBound(variable));
-		}
-		target.setObjective(source.getObjective().getFunction(), source.getObjective().getDirection());
-		for (Constraint constraint : source.getConstraints()) {
-			target.add(constraint);
-		}
-	}
-
-	/**
 	 * Retrieves a long description, with line breaks, of the given problem.
 	 *
 	 * @param <T>
@@ -105,8 +66,8 @@ public class MPs {
 		}
 		s += "Bounds" + N;
 		for (Variable variable : problem.getVariables()) {
-			final Number lb = problem.getVariableLowerBound(variable);
-			final Number ub = problem.getVariableUpperBound(variable);
+			final Number lb = variable.getLowerBound();
+			final Number ub = variable.getUpperBound();
 
 			if (lb.doubleValue() != Double.NEGATIVE_INFINITY || ub.doubleValue() != Double.POSITIVE_INFINITY) {
 				s += "\t";
@@ -123,7 +84,7 @@ public class MPs {
 
 		s += "Variables" + N;
 		for (Variable variable : problem.getVariables()) {
-			s += "\t" + variable + " " + problem.getVariableType(variable) + N;
+			s += "\t" + variable + " " + variable.getType() + N;
 		}
 
 		return s;
@@ -150,6 +111,6 @@ public class MPs {
 	 * @return not <code>null</code>.
 	 */
 	static public MP newProblem(IMP source) {
-		return new MP(source);
+		return MP.copyOf(source);
 	}
 }

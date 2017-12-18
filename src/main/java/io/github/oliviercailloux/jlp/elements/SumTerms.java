@@ -27,4 +27,12 @@ public interface SumTerms extends List<Term> {
 	 *            not <code>null</code>.
 	 */
 	public void addTerm(double coefficient, Variable variable);
+
+	/**
+	 * TODO add this.
+	 *
+	 * @return a list that has the same size as this list.
+	 *
+	 *         public List<Variable> getVariables();
+	 */
 }
