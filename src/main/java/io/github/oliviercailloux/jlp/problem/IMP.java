@@ -2,14 +2,12 @@ package io.github.oliviercailloux.jlp.problem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.Set;
-
-import com.google.common.base.Function;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.elements.VariableType;
 
 /**
  * <p>
@@ -60,12 +58,12 @@ public interface IMP {
 
 	/**
 	 * Two problems are considered equal when they define the same variables (as per
-	 * {@link #equals}), constraints, objective function, and bounds for the
-	 * variables as determined by the {@link Number#doubleValue()} method. The
-	 * equality between two problems does not take the names into account: neither
-	 * the problem, variables or constraints names are considered.
+	 * {@link #equals}), constraints, objective function.
 	 *
-	 * @see IMP
+	 * @param obj
+	 *            the reference object with which to compare.
+	 * @return <code>true</code> if this object is the same as the obj argument;
+	 *         <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(Object obj);
@@ -102,6 +100,18 @@ public interface IMP {
 	 * @return not <code>null</code>.
 	 */
 	public ObjectiveFunction getObjective();
+
+	/**
+	 * Retrieves the variable corresponding to the given description, or an absent
+	 * optional. Note that the description of the variable generally differs from
+	 * its name.
+	 *
+	 * @param description
+	 *            the description of the variable, as given by {@link #toString()}
+	 * @return an optional containing a variable, if found, otherwise an empty
+	 *         optional.
+	 */
+	public Optional<Variable> getVariable(String description);
 
 	/**
 	 * Retrieves a copy or a read-only view of the variables. The returned set uses

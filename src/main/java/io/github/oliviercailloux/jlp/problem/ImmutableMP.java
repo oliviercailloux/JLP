@@ -2,14 +2,12 @@ package io.github.oliviercailloux.jlp.problem;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Optional;
 import java.util.Set;
-
-import com.google.common.base.Function;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.elements.VariableType;
 
 /**
  * An immutable problem. To obtain such a problem, use {@link MPs#newProblem()},
@@ -65,6 +63,11 @@ public class ImmutableMP implements IMP {
 	@Override
 	public ObjectiveFunction getObjective() {
 		return delegate.getObjective();
+	}
+
+	@Override
+	public Optional<Variable> getVariable(String description) {
+		return delegate.getVariable(description);
 	}
 
 	@Override

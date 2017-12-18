@@ -17,31 +17,23 @@ import com.google.common.collect.ImmutableList;
  * the reference object would be a product.
  * </p>
  * <p>
- * A variable {@link #equals(Object)} an other one when both names are equal and
- * the list of reference objects are equal and in the same order.
- * </p>
- * <p>
- * This object is immutable if the objects used as references are immutable.
- * </p>
- * <p>
- * For clarity, two variables (used together in a problem) should be equal, as
- * determined by {@link #equals(Object)}, iff they have the same description, as
- * given by {@link #toString()}.
- * </p>
- * <p>
- * It is suggested that {@link #toString()} returns a short description unique
- * to that variable (in problems in which the variable will appear). For
+ * A variable has a description, given by the {@link #toString()} method. The
+ * description should be unique to that variable (in objects in which the
+ * variable will appear). It is suggested to make it a short description, for
  * example, "c-p1" for a variable representing the cost of the product number 1.
  * </p>
  * <p>
- * It is expected that this object be immutable, more precisely, their hashcode,
- * or equality status viz other variables, should not change once they have been
- * added to a constraint, or a problem. (It will also be referred to in
- * solutions of problems.) Hence, the bounds (or type) of this variable should
- * be considered as a structural property of the variable, that will never
- * change. Furthermore, the objects this variable refers to main not change
- * hashcode either during the time a problem (or other objects from this library
- * which contain variables) is used.
+ * A variable {@link #equals(Object)} an other one when both descriptions are
+ * equal. (This is why it is important to make the description unique.)
+ * </p>
+ * <p>
+ * It is expected that this object be immutable. In particular, it is important
+ * that their description should not change once they have been added to a
+ * constraint, or a problem. (This is because hashcode, or equality status viz
+ * other variables, should not change, and because it will also be referred to
+ * in solutions of problems.) Hence, the bounds (or type) of this variable
+ * should be considered as a structural property of the variable, that will
+ * never change.
  * </p>
  * <p>
  * A variable bounds may be set to anything, as long as the lower bound is lower
@@ -60,7 +52,26 @@ import com.google.common.collect.ImmutableList;
  * <p>
  * If this class is inherited, the inheriting class must honor the contracts of
  * this class (objects of this library count on it), except that it may use a
- * different {@link #toString()} implementation.
+ * different {@link #toString()} implementation, subject to the constraints in
+ * this documentation.
+ * </p>
+ * <p>
+ * Rationale for the uniqueness constraint of the description: this permits to
+ * the user to retrieve the variable knowing only its description, given a
+ * problem. We could also have made equality depend on its name and references,
+ * to make it possible to retrieve the variable knowing its name and references.
+ * But this has no advantage: we would then have to mandate as especially
+ * important that the references do not change and identify uniquely the
+ * variable, in which case it is anyway probably easy to provide a unique string
+ * description; and furthermore the user would have to have underhand a
+ * reference equal to the original reference in order to retrieve the variable,
+ * not just a description of it. In any case, ensuring uniqueness of the
+ * description is a good idea to make the MP contents clear, and provides for a
+ * cleaner interface and concept. Furthermore, the user may with the adopted
+ * solution refer to mutable objects, provided that the description itself does
+ * not change. Finally, it is probably easy for the user to retrieve the
+ * description from the variable name and references, though the converse may
+ * not hold as indicated above.
  * </p>
  *
  * @author Olivier Cailloux
@@ -132,27 +143,16 @@ public class Variable {
 	 * @param obj
 	 *            the reference object with which to compare.
 	 * @return <code>true</code> iff this variable represents the same variable as
-	 *         the obj argument.
+	 *         the obj argument (as judged by their description).
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
+		/** Includes null case: if null, is not an instance. */
 		if (!(obj instanceof Variable)) {
 			return false;
 		}
-		Variable other = (Variable) obj;
-		if (!name.equals(other.name)) {
-			return false;
-		}
-		if (!refs.equals(other.refs)) {
-			return false;
-		}
-		return true;
+		final Variable v2 = (Variable) obj;
+		return this == v2 || toString().equals(v2.toString());
 	}
 
 	/**

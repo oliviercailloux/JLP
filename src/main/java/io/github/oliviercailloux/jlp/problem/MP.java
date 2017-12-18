@@ -3,15 +3,15 @@ package io.github.oliviercailloux.jlp.problem;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Equivalence;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumMultiset;
-import com.google.common.collect.Maps;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
@@ -69,6 +69,8 @@ public class MP implements IMP {
 
 	private final Set<Constraint> constraints = Sets.newLinkedHashSet();
 
+	private BiMap<String, Variable> descrToVar;
+
 	/**
 	 * Never <code>null</code>.
 	 */
@@ -78,15 +80,14 @@ public class MP implements IMP {
 
 	private OptimizationDirection optType;
 
-	private Map<Variable, Variable> toCanonical;
-
 	private final Multiset<VariableType> varCount = EnumMultiset.create(VariableType.class);
 
 	public MP() {
 		mpName = "";
 		objectiveFunction = null;
 		optType = null;
-		toCanonical = Maps.newHashMap();
+		final HashBiMap<String, Variable> b = HashBiMap.create();
+		descrToVar = b;
 	}
 
 	/**
@@ -140,19 +141,20 @@ public class MP implements IMP {
 	}
 
 	/**
-	 * Adds the variable to this problem if it is not already in, with a default
-	 * type of REAL, no name, a lower bound equal to zero and a positive infinite
-	 * upper bound.
+	 * Adds the variable to this problem if it is not already in.
 	 *
 	 * @param variable
 	 *            not <code>null</code>.
 	 * @return <code>true</code> iff the call modified the state of this object.
 	 */
 	public boolean addVariable(Variable variable) {
-		if (toCanonical.containsKey(requireNonNull(variable))) {
+		requireNonNull(variable);
+		final String descr = variable.toString();
+		requireNonNull(descr);
+		if (descrToVar.containsKey(descr)) {
 			return false;
 		}
-		toCanonical.put(variable, variable);
+		descrToVar.put(descr, variable);
 		varCount.add(variable.getType());
 		return true;
 	}
@@ -200,8 +202,9 @@ public class MP implements IMP {
 		return new ObjectiveFunction(objectiveFunction, optType);
 	}
 
-	public Optional<Variable> getVariable(String name, Object... references) {
-		return Optional.ofNullable(toCanonical.get(Variable.newVariable(name, null, null, null, references)));
+	@Override
+	public Optional<Variable> getVariable(String description) {
+		return Optional.ofNullable(descrToVar.get(description));
 	}
 
 	@Override
@@ -216,7 +219,7 @@ public class MP implements IMP {
 		 * We could also use Guava’s interner, but we probably need to wait that it gets
 		 * richer.
 		 */
-		return Collections.unmodifiableSet(toCanonical.keySet());
+		return Collections.unmodifiableSet(descrToVar.values());
 	}
 
 	@Override
