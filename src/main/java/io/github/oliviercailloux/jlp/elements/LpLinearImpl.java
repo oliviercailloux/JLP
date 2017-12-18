@@ -1,10 +1,9 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.base.Joiner;
 
 import io.github.oliviercailloux.jlp.utils.LpLinearUtils;
 
@@ -18,14 +17,14 @@ import io.github.oliviercailloux.jlp.utils.LpLinearUtils;
  * create linear expressions through the methods available in
  * {@link LpLinearUtils}.
  * </p>
- * 
+ *
  * @param <V>
  *            the type of the variables.
- * 
+ *
  * @author Olivier Cailloux
- * 
+ *
  */
-public class LpLinearImpl<V> extends LinkedList<LpTerm<V>> implements LpLinear<V> {
+public class LpLinearImpl extends LinkedList<LpTerm> implements LpLinear {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,22 +32,26 @@ public class LpLinearImpl<V> extends LinkedList<LpTerm<V>> implements LpLinear<V
 		/** Public no argument constructor. */
 	}
 
-	public LpLinearImpl(Collection<LpTerm<V>> terms) {
+	public LpLinearImpl(Collection<LpTerm> terms) {
 		super(terms);
 	}
 
 	@Override
-	public void addTerm(double coefficient, V variable) {
-		LpTerm<V> term = new LpTerm<V>(coefficient, variable);
+	public void addTerm(double coefficient, Variable variable) {
+		LpTerm term = new LpTerm(coefficient, variable);
 		add(term);
 	}
 
+	/**
+	 * Returns a string representation of the given linear expression.
+	 *
+	 * @param linear
+	 *            not <code>null</code>
+	 * @return not <code>null</code>, may be empty
+	 */
 	@Override
 	public String toString() {
-		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.add("size", "" + size());
-		helper.add("expr", LpLinearUtils.getAsString(this));
-		return helper.toString();
+		return Joiner.on(" + ").join(this);
 	}
 
 }

@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 /**
  * A boolean operator that can be used to relate the left hand side and the
@@ -39,9 +39,9 @@ public enum LpOperator {
 	public String toString() {
 		switch (this) {
 		case LE:
-			return "" + '\u2264';
+			return "≤";
 		case GE:
-			return "" + '\u2265';
+			return "≥";
 		case EQ:
 			return "=";
 		default:

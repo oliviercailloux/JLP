@@ -8,8 +8,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
-import io.github.oliviercailloux.jlp.LpLinear;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpLinear;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.LpProblem;
 import io.github.oliviercailloux.jlp.problem.LpProblems;
 import io.github.oliviercailloux.jlp.utils.LpLinearUtils;
@@ -24,7 +25,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 
 	private final Number m_objectiveValue;
 
-	private final ImmutableMap<V, Number> m_primalValues;
+	private final ImmutableMap<Variable, Number> m_primalValues;
 
 	private final LpProblem<V> m_problem;
 
@@ -41,7 +42,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	 * The new solution is shielded from changes to the given problem and the given
 	 * solution.
 	 * </p>
-	 * 
+	 *
 	 * @param problem
 	 *            not <code>null</code>, must contain the variables for which the
 	 *            given solution has a value.
@@ -52,12 +53,22 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 		this(problem, solution, true);
 	}
 
+	/**
+	 * Copy constructor by value.
+	 *
+	 * @param solution
+	 *            not <code>null</code>.
+	 */
+	public LpSolutionImmutable(LpSolution<V> solution) {
+		this(solution.getProblem(), solution, false);
+	}
+
 	private LpSolutionImmutable(LpProblem<V> problem, LpSolutionAlone<V> solution, boolean protectProblem) {
 		Preconditions.checkNotNull(solution);
-		final Builder<V, Number> primalValues = ImmutableMap.builder();
+		final Builder<Variable, Number> primalValues = ImmutableMap.builder();
 		final Builder<LpConstraint<V>, Number> dualValues = ImmutableMap.builder();
 
-		for (V variable : solution.getVariables()) {
+		for (Variable variable : solution.getVariables()) {
 			final Number value = solution.getValue(variable);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getVariables().contains(variable),
@@ -82,16 +93,6 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 		}
 	}
 
-	/**
-	 * Copy constructor by value.
-	 * 
-	 * @param solution
-	 *            not <code>null</code>.
-	 */
-	public LpSolutionImmutable(LpSolution<V> solution) {
-		this(solution.getProblem(), solution, false);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof LpSolution<?>)) {
@@ -103,7 +104,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public boolean getBooleanValue(V variable) {
+	public boolean getBooleanValue(Variable variable) {
 		Number number = m_primalValues.get(variable);
 		if (number == null) {
 			if (!m_problem.getVariables().contains(variable)) {
@@ -124,7 +125,7 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 
 	@Override
 	public Number getComputedObjectiveValue() {
-		final LpLinear<V> objectiveFunction = m_problem.getObjective().getFunction();
+		final LpLinear objectiveFunction = m_problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
 		}
@@ -153,13 +154,13 @@ public class LpSolutionImmutable<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public Number getValue(V variable) {
+	public Number getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
 		return m_primalValues.get(variable);
 	}
 
 	@Override
-	public Set<V> getVariables() {
+	public Set<Variable> getVariables() {
 		return Collections.unmodifiableSet(m_primalValues.keySet());
 	}
 

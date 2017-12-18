@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.LpProblem;
 
 /**
@@ -30,12 +31,12 @@ import io.github.oliviercailloux.jlp.problem.LpProblem;
  * {@link Double}, {@link Integer}, {@link BigDecimal}, {@link BigInteger} will
  * pose no problem. Using other types as numbers is unsupported.
  * </p>
- * 
+ *
  * @param <V>
  *            the type of the variables.
- * 
+ *
  * @author Olivier Cailloux
- * 
+ *
  */
 public interface LpSolution<V> extends LpSolutionAlone<V> {
 
@@ -56,21 +57,21 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	 * <p>
 	 * If the given variable is not in the bound problem, an exception is thrown.
 	 * </p>
-	 * 
+	 *
 	 * @param variable
 	 *            not <code>null</code>, must have an associated value close enough
 	 *            to zero or one.
 	 * @return <code>true</code> for one, <code>false</code> for zero.
 	 */
 	@Override
-	public boolean getBooleanValue(V variable);
+	public boolean getBooleanValue(Variable variable);
 
 	/**
 	 * Retrieves the value of the objective function computed from the objective
 	 * function itself with the values of the variables set in this solution.
 	 * Returns <code>null</code> if the objective function is not set in the bound
 	 * problem or one of the variables required value is not set.
-	 * 
+	 *
 	 * @return possibly <code>null</code>.
 	 */
 	public Number getComputedObjectiveValue();
@@ -79,7 +80,7 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	 * Returns, if it is known, the value corresponding to the dual variable
 	 * associated to the given primal constraint. Returns necessarily
 	 * <code>null</code> if the constraint is not in the associated problem.
-	 * 
+	 *
 	 * @param constraint
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated dual value.
@@ -90,7 +91,7 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	/**
 	 * Returns the objective value. Returns necessarily <code>null</code> if the
 	 * bound problem has no objective function.
-	 * 
+	 *
 	 * @return <code>null</code> if not set.
 	 */
 	@Override
@@ -98,7 +99,7 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 
 	/**
 	 * Retrieves the problem that this solution solves.
-	 * 
+	 *
 	 * @return not <code>null</code>, immutable.
 	 */
 	public LpProblem<V> getProblem();
@@ -106,22 +107,22 @@ public interface LpSolution<V> extends LpSolutionAlone<V> {
 	/**
 	 * Returns the primal value of the variable, if it is known. Returns necessarily
 	 * <code>null</code> if the given variable is not in the bound problem.
-	 * 
+	 *
 	 * @param variable
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated primal value.
 	 */
 	@Override
-	public Number getValue(V variable);
+	public Number getValue(Variable variable);
 
 	/**
 	 * Retrieves a copy or read-only view of the variables which have a solution
 	 * value. The returned set is guaranteed to be included in the set of variables
 	 * contained in the bound problem.
-	 * 
+	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
 	@Override
-	public Set<V> getVariables();
+	public Set<Variable> getVariables();
 
 }

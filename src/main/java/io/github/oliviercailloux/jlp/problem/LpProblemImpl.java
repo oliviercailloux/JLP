@@ -17,13 +17,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
-import io.github.oliviercailloux.jlp.LpDirection;
-import io.github.oliviercailloux.jlp.LpLinear;
-import io.github.oliviercailloux.jlp.LpLinearImmutable;
-import io.github.oliviercailloux.jlp.LpObjective;
-import io.github.oliviercailloux.jlp.LpOperator;
-import io.github.oliviercailloux.jlp.LpTerm;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpDirection;
+import io.github.oliviercailloux.jlp.elements.LpLinear;
+import io.github.oliviercailloux.jlp.elements.LpLinearImmutable;
+import io.github.oliviercailloux.jlp.elements.LpObjective;
+import io.github.oliviercailloux.jlp.elements.LpOperator;
+import io.github.oliviercailloux.jlp.elements.LpTerm;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.LpProblems.DefaultConstraintsNamer;
 import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
 
@@ -42,14 +43,14 @@ class LpProblemImpl<V> implements LpProblem<V> {
 
 	private Function<LpConstraint<V>, String> m_constraintsNamer;
 
-	private final DefaultConstraintsNamer<V> m_defaultConstraintsNamer = new DefaultConstraintsNamer<V>();
+	private final DefaultConstraintsNamer<V> m_defaultConstraintsNamer = new DefaultConstraintsNamer<>();
 
 	/**
 	 * Never <code>null</code>.
 	 */
 	private String m_name;
 
-	private LpLinear<V> m_objectiveFunction;
+	private LpLinear m_objectiveFunction;
 
 	private LpDirection m_optType;
 
@@ -58,29 +59,29 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	/**
 	 * Missing entries correspond to minus infinity bound.
 	 */
-	private final Map<V, Number> m_varLowerBound = Maps.newHashMap();
+	private final Map<Variable, Number> m_varLowerBound = Maps.newHashMap();
 
 	/**
 	 * Never <code>null</code>.
 	 */
-	private Function<? super V, String> m_varNamer;
+	private Function<Variable, String> m_varNamer;
 
 	/**
 	 * Contains no <code>null</code> keys, no <code>null</code> values, no empty
 	 * string values.
 	 */
-	private final Map<V, String> m_varNames = Maps.newHashMap();
+	private final Map<Variable, String> m_varNames = Maps.newHashMap();
 
 	/**
 	 * No <code>null</code> key or value. Each variable in this problem has a type,
 	 * thus this map contains all the variables in the problem.
 	 */
-	private final Map<V, LpVariableType> m_varType = Maps.newLinkedHashMap();
+	private final Map<Variable, LpVariableType> m_varType = Maps.newLinkedHashMap();
 
 	/**
 	 * Missing entries correspond to positive infinity bound.
 	 */
-	private final Map<V, Number> m_varUpperBound = Maps.newHashMap();
+	private final Map<Variable, Number> m_varUpperBound = Maps.newHashMap();
 
 	public LpProblemImpl() {
 		m_name = "";
@@ -108,16 +109,16 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public boolean add(Object id, LpLinear<V> lhs, LpOperator operator, double rhs) {
+	public boolean add(String id, LpLinear lhs, LpOperator operator, double rhs) {
 		Preconditions.checkNotNull(lhs, "" + operator + rhs);
 		Preconditions.checkNotNull(operator, "" + lhs + rhs);
 		Preconditions.checkArgument(!Double.isNaN(rhs) && !Double.isInfinite(rhs));
-		LpConstraint<V> constraint = new LpConstraint<V>(id, lhs, operator, rhs);
+		final LpConstraint constraint = new LpConstraint(id, lhs, operator, rhs);
 		return addInternal(constraint);
 	}
 
 	@Override
-	public boolean addVariable(V variable) {
+	public boolean addVariable(Variable variable) {
 		if (m_varType.containsKey(variable)) {
 			return false;
 		}
@@ -172,39 +173,46 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public LpObjective<V> getObjective() {
-		return new LpObjective<V>(m_objectiveFunction, m_optType);
+	public LpObjective getObjective() {
+		return new LpObjective(m_objectiveFunction, m_optType);
 	}
 
 	@Override
-	public Number getVariableLowerBound(V variable) {
+	public Number getVariableLowerBound(Variable variable) {
 		checkArgument(m_varType.containsKey(variable));
 		return Objects.firstNonNull(m_varLowerBound.get(variable), Double.valueOf(Double.NEGATIVE_INFINITY));
 	}
 
 	@Override
-	public String getVariableName(V variable) {
+	public String getVariableName(Variable variable) {
 		return Strings.nullToEmpty(m_varNamer.apply(variable));
 	}
 
 	@Override
-	public Set<V> getVariables() {
+	public Set<Variable> getVariables() {
+		/**
+		 * TODO add getVarByName! (So that the problem is self-contained: I get a
+		 * problem, I want to add a cstr including vars x and y, how? Better: how to
+		 * retrieve a namedVar according to its name and refs? Better: change variable
+		 * to namedvariable, because anyway using own domain objects as vars would be
+		 * inappropriate as domain objects do not have bounds or domains.
+		 */
 		return Collections.unmodifiableSet(m_varType.keySet());
 	}
 
 	@Override
-	public Function<? super V, String> getVariablesNamer() {
+	public Function<Variable, String> getVariablesNamer() {
 		return m_varNamer;
 	}
 
 	@Override
-	public LpVariableType getVariableType(V variable) {
+	public LpVariableType getVariableType(Variable variable) {
 		Preconditions.checkArgument(m_varType.containsKey(variable));
 		return m_varType.get(variable);
 	}
 
 	@Override
-	public Number getVariableUpperBound(V variable) {
+	public Number getVariableUpperBound(Variable variable) {
 		checkArgument(m_varType.containsKey(variable));
 		return Objects.firstNonNull(m_varUpperBound.get(variable), Double.valueOf(Double.POSITIVE_INFINITY));
 	}
@@ -240,14 +248,14 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public boolean setObjective(LpLinear<V> objectiveFunction, LpDirection direction) {
+	public boolean setObjective(LpLinear objectiveFunction, LpDirection direction) {
 		final boolean equivFct = Equivalence.equals().equivalent(m_objectiveFunction, objectiveFunction);
 		if (!equivFct) {
 			if (objectiveFunction == null) {
 				m_objectiveFunction = null;
 			} else {
 				assertVariablesExist(objectiveFunction);
-				m_objectiveFunction = new LpLinearImmutable<V>(objectiveFunction);
+				m_objectiveFunction = new LpLinearImmutable<>(objectiveFunction);
 			}
 		}
 		final boolean equalDirs = m_optType == direction;
@@ -263,7 +271,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public boolean setVariableBounds(V variable, Number lowerBound, Number upperBound) {
+	public boolean setVariableBounds(Variable variable, Number lowerBound, Number upperBound) {
 		checkNotNull(variable, "" + lowerBound + "; " + upperBound);
 		final Number newLower = lowerBound == null ? Double.valueOf(Double.NEGATIVE_INFINITY) : lowerBound;
 		final Number newUpper = upperBound == null ? Double.valueOf(Double.POSITIVE_INFINITY) : upperBound;
@@ -300,7 +308,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public void setVariablesNamer(Function<? super V, String> namer) {
+	public void setVariablesNamer(Function<Variable, String> namer) {
 		if (namer == null) {
 			m_varNamer = TO_STRING_NAMER;
 		} else {
@@ -309,7 +317,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	}
 
 	@Override
-	public boolean setVariableType(V variable, LpVariableType type) {
+	public boolean setVariableType(Variable variable, LpVariableType type) {
 		checkNotNull(variable, type);
 		checkNotNull(type, variable);
 		final LpVariableType previous = setVarTypeInternal(variable, type);
@@ -319,7 +327,7 @@ class LpProblemImpl<V> implements LpProblem<V> {
 		return previous == null || previous != type;
 	}
 
-	public boolean setVarNameOld(V variable, String name) {
+	public boolean setVarNameOld(Variable variable, String name) {
 		Preconditions.checkNotNull(variable, "" + name);
 		final boolean added = addVariable(variable);
 
@@ -351,10 +359,10 @@ class LpProblemImpl<V> implements LpProblem<V> {
 	 *         Equivalently, returns <code>false</code> iff the given constraint
 	 *         already was in the problem.
 	 */
-	private boolean addInternal(LpConstraint<V> constraint) {
+	private boolean addInternal(LpConstraint constraint) {
 		Preconditions.checkNotNull(constraint);
-		for (LpTerm<V> term : constraint.getLhs()) {
-			final V variable = term.getVariable();
+		for (LpTerm term : constraint.getLhs()) {
+			final Variable variable = term.getVariable();
 			if (!m_varType.containsKey(variable)) {
 				// setVarTypeInternal(variable, IlpVariableType.REAL);
 				throw new IllegalArgumentException(
@@ -364,14 +372,14 @@ class LpProblemImpl<V> implements LpProblem<V> {
 		return m_constraints.add(constraint);
 	}
 
-	private void assertVariablesExist(LpLinear<V> linear) {
-		for (LpTerm<V> term : linear) {
-			final V variable = term.getVariable();
+	private void assertVariablesExist(LpLinear linear) {
+		for (LpTerm term : linear) {
+			final Variable variable = term.getVariable();
 			Preconditions.checkArgument(m_varType.containsKey(variable));
 		}
 	}
 
-	private LpVariableType setVarTypeInternal(V variable, LpVariableType type) {
+	private LpVariableType setVarTypeInternal(Variable variable, LpVariableType type) {
 		Preconditions.checkNotNull(type);
 		final LpVariableType previous = m_varType.put(variable, type);
 		if (previous != null && previous != type) {

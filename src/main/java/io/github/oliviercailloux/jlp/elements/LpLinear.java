@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 import java.util.List;
 
@@ -13,20 +13,18 @@ import java.util.List;
  * Such a linear object may be immutable, in which case the methods modifying
  * the state will throw {@link UnsupportedOperationException}.
  * </p>
- * 
+ *
  * @author Olivier Cailloux
- * 
- * @param <V>
- *            the type of the variables.
+ *
  */
-public interface LpLinear<V> extends List<LpTerm<V>> {
+public interface LpLinear extends List<LpTerm> {
 	/**
 	 * Adds a term to this linear expression.
-	 * 
+	 *
 	 * @param coefficient
 	 *            a valid double.
 	 * @param variable
 	 *            not <code>null</code>.
 	 */
-	public void addTerm(double coefficient, V variable);
+	public void addTerm(double coefficient, Variable variable);
 }

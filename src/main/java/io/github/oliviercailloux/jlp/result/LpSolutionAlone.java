@@ -2,7 +2,8 @@ package io.github.oliviercailloux.jlp.result;
 
 import java.util.Set;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
  * <p>
@@ -11,12 +12,12 @@ import io.github.oliviercailloux.jlp.LpConstraint;
  * object. The interface {@link LpSolution} should be preferred to this one when
  * the related problem can be bound to the solution, see documentation there.
  * </p>
- * 
+ *
  * @param <V>
  *            the type of the variables.
- * 
+ *
  * @author Olivier Cailloux
- * 
+ *
  */
 public interface LpSolutionAlone<V> {
 
@@ -33,18 +34,18 @@ public interface LpSolutionAlone<V> {
 	 * set to a value that is zero or one ± 1e-6 because some solvers might have an
 	 * imprecision factor higher than this.
 	 * </p>
-	 * 
+	 *
 	 * @param variable
 	 *            not <code>null</code>, must have an associated value close enough
 	 *            to zero or one.
 	 * @return <code>true</code> for one, <code>false</code> for zero.
 	 */
-	public boolean getBooleanValue(V variable);
+	public boolean getBooleanValue(Variable variable);
 
 	/**
 	 * Retrieves a copy or read-only view of the primal constraints, i.e. dual
 	 * variables, which have their dual value set.
-	 * 
+	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
 	public Set<LpConstraint<V>> getConstraints();
@@ -52,7 +53,7 @@ public interface LpSolutionAlone<V> {
 	/**
 	 * Returns, if it is known, the value corresponding to the dual variable
 	 * associated to the given primal constraint.
-	 * 
+	 *
 	 * @param constraint
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated dual value.
@@ -61,7 +62,7 @@ public interface LpSolutionAlone<V> {
 
 	/**
 	 * Returns the objective value.
-	 * 
+	 *
 	 * @return <code>null</code> if not set.
 	 */
 	public Number getObjectiveValue();
@@ -69,19 +70,19 @@ public interface LpSolutionAlone<V> {
 	/**
 	 * Returns the primal value of the variable, if it is known. TODO indicate what
 	 * happens if variable is unknown.
-	 * 
+	 *
 	 * @param variable
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated primal value.
 	 */
-	public Number getValue(V variable);
+	public Number getValue(Variable variable);
 
 	/**
 	 * Retrieves a copy or read-only view of the variables which have their primal
 	 * value set.
-	 * 
+	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
-	public Set<V> getVariables();
+	public Set<Variable> getVariables();
 
 }

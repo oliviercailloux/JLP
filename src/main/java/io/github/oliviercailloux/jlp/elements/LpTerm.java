@@ -1,7 +1,5 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.base.Preconditions;
 
 /**
@@ -11,19 +9,17 @@ import com.google.common.base.Preconditions;
  * </p>
  * <p>
  * Such terms should be used with immutable variables, and should be considered
- * as immutable. An object of this class is indeed immutable iff the variable
- * type is immutable.
+ * as immutable. An object of this class is indeed immutable iff the variable is
+ * immutable.
  * </p>
- * 
+ *
  * @author Olivier Cailloux
- * @param <V>
- *            the type of the variables, should be immutable.
- * 
+ *
  */
-public class LpTerm<V> {
+public class LpTerm {
 	private final double m_coefficient;
 
-	private final V m_variable;
+	private final Variable m_variable;
 
 	/**
 	 * @param coefficient
@@ -31,7 +27,7 @@ public class LpTerm<V> {
 	 * @param variable
 	 *            not <code>null</code>.
 	 */
-	public LpTerm(double coefficient, V variable) {
+	public LpTerm(double coefficient, Variable variable) {
 		Preconditions.checkNotNull(variable);
 		Preconditions.checkArgument(!Double.isInfinite(coefficient));
 		Preconditions.checkArgument(!Double.isNaN(coefficient));
@@ -44,11 +40,11 @@ public class LpTerm<V> {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof LpTerm<?>)) {
+		if (!(obj instanceof LpTerm)) {
 			return false;
 		}
 
-		LpTerm<?> t2 = (LpTerm<?>) obj;
+		LpTerm t2 = (LpTerm) obj;
 		if (m_coefficient != t2.m_coefficient) {
 			return false;
 		}
@@ -61,7 +57,7 @@ public class LpTerm<V> {
 
 	/**
 	 * Retrieves the coefficient that multiplies the variable in this term.
-	 * 
+	 *
 	 * @return a valid number.
 	 */
 	public double getCoefficient() {
@@ -70,10 +66,10 @@ public class LpTerm<V> {
 
 	/**
 	 * Retrieves the variable of this term.
-	 * 
+	 *
 	 * @return not <code>null</code>.
 	 */
-	public V getVariable() {
+	public Variable getVariable() {
 		return m_variable;
 	}
 
@@ -88,10 +84,19 @@ public class LpTerm<V> {
 		return result;
 	}
 
+	/**
+	 * Returns a string representation of this term.
+	 *
+	 * @return not <code>null</code>, not empty
+	 */
 	@Override
 	public String toString() {
-		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.addValue(getCoefficient() + "*" + getVariable());
-		return helper.toString();
+		if (getCoefficient() == 1d) {
+			return getVariable().toString();
+		}
+		if (getCoefficient() == -1d) {
+			return "−" + getVariable().toString();
+		}
+		return getCoefficient() + "×" + getVariable().toString();
 	}
 }

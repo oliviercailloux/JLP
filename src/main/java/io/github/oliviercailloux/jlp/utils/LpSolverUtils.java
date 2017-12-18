@@ -16,10 +16,11 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
 import com.google.common.collect.Iterables;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
-import io.github.oliviercailloux.jlp.LpLinear;
 import io.github.oliviercailloux.jlp.LpSolverException;
-import io.github.oliviercailloux.jlp.LpTerm;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpLinear;
+import io.github.oliviercailloux.jlp.elements.LpTerm;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.parameters.LpParameters;
 import io.github.oliviercailloux.jlp.parameters.LpParametersUtils;
 import io.github.oliviercailloux.jlp.problem.LpProblem;
@@ -58,7 +59,7 @@ final Predicate<Number> isBool = new IsBoolValue(1e-6);
  */
 public class LpSolverUtils {
 
-	static public class FunctionGetValue<V> implements Function<V, Number> {
+	static public class FunctionGetValue<V> implements Function<Variable, Number> {
 		private final LpSolutionAlone<V> m_solution;
 
 		public FunctionGetValue(LpSolutionAlone<V> solution) {
@@ -68,7 +69,7 @@ public class LpSolverUtils {
 		}
 
 		@Override
-		public Number apply(V input) {
+		public Number apply(Variable input) {
 			return m_solution.getValue(input);
 		}
 	}
@@ -156,14 +157,14 @@ public class LpSolverUtils {
 	 */
 	static public <V> void assertIntZeroOne(final LpProblem<V> problem) throws LpSolverException {
 		final LpProblem<V> problemNoBool = LpSolverUtils.getViewWithTransformedBools(problem);
-		for (V variable : problemNoBool.getVariables()) {
+		for (Variable variable : problemNoBool.getVariables()) {
 			LpVariableType type = problemNoBool.getVariableType(variable);
 			if (type == LpVariableType.REAL) {
 				throw new LpSolverException(
 						"Variable " + variable + " is not an integer variable, this is not a zero-one problem.");
 			}
-			final Number lowerBound = problemNoBool.getVariableLowerBound(variable);
-			final Number upperBound = problemNoBool.getVariableUpperBound(variable);
+			final Number lowerBound = variable.getLowerBound();
+			final Number upperBound = variable.getUpperBound();
 			if (lowerBound.doubleValue() < 0d) {
 				throw new LpSolverException(
 						"Variable " + variable + " has an inadequate lower bound, this is not a zero-one problem.");
@@ -179,7 +180,7 @@ public class LpSolverUtils {
 		return getConstraintEquivalence().equivalent(a, b);
 	}
 
-	static public boolean equivalent(LpLinear<?> a, LpLinear<?> b) {
+	static public boolean equivalent(LpLinear a, LpLinear b) {
 		return getLinearEquivalence().equivalent(a, b);
 	}
 
@@ -201,9 +202,9 @@ public class LpSolverUtils {
 		if (!a.getProblem().equals(b.getProblem())) {
 			return false;
 		}
-		for (T1 variable : a.getVariables()) {
+		for (Variable variable : a.getVariables()) {
 			@SuppressWarnings("unchecked")
-			final T2 varTyped = (T2) variable;
+			final Variable varTyped = variable;
 
 			if (!equivalent(a.getValue(variable), b.getValue(varTyped), epsilon)) {
 				return false;
@@ -239,22 +240,6 @@ public class LpSolverUtils {
 	}
 
 	/**
-	 * Provides an implementation of toString for debugging use.
-	 *
-	 * @param <V>
-	 *            the type of variable.
-	 * @param constraint
-	 *            not <code>null</code>.
-	 * @return a debug description.
-	 */
-	static public <V> String getAsString(LpConstraint<V> constraint) {
-		final ToStringHelper helper = Objects.toStringHelper(constraint);
-		helper.addValue('\'' + constraint.getIdAsString() + '\'');
-		helper.addValue(constraint.getLhs().toString() + constraint.getOperator() + constraint.getRhs());
-		return helper.toString();
-	}
-
-	/**
 	 * Provides an implementation of toString for debugging use. For a more user
 	 * friendly string description, see class {@link LpProblems}.
 	 *
@@ -264,7 +249,7 @@ public class LpSolverUtils {
 	 *            not <code>null</code>.
 	 * @return a debug description.
 	 */
-	static public <V> String getAsString(LpProblem<V> problem) {
+	static public String getAsString(LpProblem problem) {
 		final ToStringHelper helper = Objects.toStringHelper(problem);
 		helper.addValue('\'' + problem.getName() + '\'');
 		if (!problem.getObjective().isEmpty()) {
@@ -321,17 +306,17 @@ public class LpSolverUtils {
 		};
 	}
 
-	static public Equivalence<LpLinear<?>> getLinearEquivalence() {
-		return new Equivalence<LpLinear<?>>() {
+	static public Equivalence<LpLinear> getLinearEquivalence() {
+		return new Equivalence<LpLinear>() {
 			@Override
-			public boolean doEquivalent(LpLinear<?> a, LpLinear<?> b) {
+			public boolean doEquivalent(LpLinear a, LpLinear b) {
 				return Iterables.elementsEqual(a, b);
 			}
 
 			@Override
-			public int doHash(LpLinear<?> t) {
+			public int doHash(LpLinear t) {
 				int hashCode = 1;
-				for (LpTerm<?> term : t) {
+				for (LpTerm term : t) {
 					hashCode = 31 * hashCode + term.hashCode();
 				}
 				return hashCode;
@@ -362,9 +347,8 @@ public class LpSolverUtils {
 				if (!a.getVariables().equals(b.getVariables())) {
 					return false;
 				}
-				for (T1 variable : a.getVariables()) {
-					@SuppressWarnings("unchecked")
-					final T2 varTyped = (T2) variable;
+				for (Variable variable : a.getVariables()) {
+					final Variable varTyped = variable;
 
 					if (!getEquivalenceByDoubleValue().equivalent(a.getVariableLowerBound(variable),
 							b.getVariableLowerBound(varTyped))) {
@@ -402,9 +386,9 @@ public class LpSolverUtils {
 				if (!a.getProblem().equals(b.getProblem())) {
 					return false;
 				}
-				for (T1 variable : a.getVariables()) {
+				for (Variable variable : a.getVariables()) {
 					@SuppressWarnings("unchecked")
-					final T2 varTyped = (T2) variable;
+					final Variable varTyped = variable;
 
 					if (!getEquivalenceByDoubleValue().equivalent(a.getValue(variable), b.getValue(varTyped))) {
 						return false;
@@ -424,7 +408,7 @@ public class LpSolverUtils {
 
 			private <T> int computeHash(LpSolution<T> solution) {
 				int hashCode = Objects.hashCode(solution.getProblem(), solution.getProblem());
-				for (T variable : solution.getVariables()) {
+				for (Variable variable : solution.getVariables()) {
 					hashCode += solution.getValue(variable).hashCode();
 				}
 				for (LpConstraint<T> constraint : solution.getConstraints()) {
@@ -435,17 +419,17 @@ public class LpSolverUtils {
 		};
 	}
 
-	static public <V> BiMap<V, Integer> getVariablesIds(LpProblem<V> problem, int startId) {
+	static public BiMap<Variable, Integer> getVariablesIds(LpProblem<?> problem, int startId) {
 		Preconditions.checkNotNull(problem);
-		final Builder<V, Integer> builder = ImmutableBiMap.builder();
+		final Builder<Variable, Integer> builder = ImmutableBiMap.builder();
 		{
 			int i = startId;
-			for (V variable : problem.getVariables()) {
+			for (Variable variable : problem.getVariables()) {
 				builder.put(variable, Integer.valueOf(i));
 				++i;
 			}
 		}
-		final ImmutableBiMap<V, Integer> variableIds = builder.build();
+		final ImmutableBiMap<Variable, Integer> variableIds = builder.build();
 		return variableIds;
 	}
 
@@ -477,7 +461,7 @@ public class LpSolverUtils {
 	 *         variable has the type {@link LpVariableType#BOOL} according to the
 	 *         given problem.
 	 */
-	static public <V> Number getVarLowerBoundBounded(LpProblem<V> problem, V variable) {
+	static public <V> Number getVarLowerBoundBounded(LpProblem<V> problem, Variable variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final LpVariableType type = problem.getVariableType(variable);
 		if (type != LpVariableType.BOOL) {
@@ -518,7 +502,7 @@ public class LpSolverUtils {
 	 *         variable has the type {@link LpVariableType#BOOL} according to the
 	 *         given problem.
 	 */
-	static public <V> Number getVarUpperBoundBounded(LpProblem<V> problem, V variable) {
+	static public Number getVarUpperBoundBounded(LpProblem<?> problem, Variable variable) {
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final LpVariableType type = problem.getVariableType(variable);
 		if (type != LpVariableType.BOOL) {

@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 /**
  * The optimization direction to be followed to improve the objective. Together

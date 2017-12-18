@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
@@ -6,33 +6,33 @@ import com.google.common.base.Objects.ToStringHelper;
 /**
  * An objective function with optimization direction (possibly
  * <code>null</code>s). Immutable.
- * 
+ *
  * @author Olivier Cailloux
- * 
+ *
  * @param <V>
  *            the type of the variables.
  */
-public class LpObjective<V> {
+public class LpObjective {
 	/**
-	 * May be <code>null</code>.
+	 * May be <code>null</code>. TODO check why this is allowed.
 	 */
 	final private LpDirection m_direction;
 
 	/**
 	 * May be <code>null</code>.
 	 */
-	final private LpLinearImmutable<V> m_objectiveFunction;
+	final private LpLinearImmutable m_objectiveFunction;
 
 	/**
 	 * Creates a new objective function with direction.
-	 * 
+	 *
 	 * @param objectiveFunction
 	 *            may be <code>null</code>.
 	 * @param direction
 	 *            may be <code>null</code>.
 	 */
-	public LpObjective(LpLinear<V> objectiveFunction, LpDirection direction) {
-		m_objectiveFunction = objectiveFunction == null ? null : new LpLinearImmutable<V>(objectiveFunction);
+	public LpObjective(LpLinear objectiveFunction, LpDirection direction) {
+		m_objectiveFunction = objectiveFunction == null ? null : new LpLinearImmutable(objectiveFunction);
 		m_direction = direction;
 	}
 
@@ -44,7 +44,7 @@ public class LpObjective<V> {
 		if (!(obj instanceof LpObjective)) {
 			return false;
 		}
-		LpObjective<?> obj2 = (LpObjective<?>) obj;
+		LpObjective obj2 = (LpObjective) obj;
 		if (!Objects.equal(getDirection(), obj2.getDirection())) {
 			return false;
 		}
@@ -56,7 +56,7 @@ public class LpObjective<V> {
 
 	/**
 	 * Retrieves the optimization direction of the objective function to be.
-	 * 
+	 *
 	 * @return possibly <code>null</code>.
 	 */
 	public LpDirection getDirection() {
@@ -65,10 +65,10 @@ public class LpObjective<V> {
 
 	/**
 	 * Retrieves the objective function stored in this object.
-	 * 
+	 *
 	 * @return possibly <code>null</code>. Is a copy or is immutable.
 	 */
-	public LpLinear<V> getFunction() {
+	public LpLinear getFunction() {
 		return m_objectiveFunction;
 	}
 
@@ -80,7 +80,7 @@ public class LpObjective<V> {
 	/**
 	 * Tests whether this objective is fully specified, i.e. has a function and a
 	 * direction set.
-	 * 
+	 *
 	 * @return <code>true</code> iff both the objective function and the direction
 	 *         are non <code>null</code>.
 	 */
@@ -91,7 +91,7 @@ public class LpObjective<V> {
 	/**
 	 * Tests whether this objective is empty, i.e. has neither a function nor a
 	 * direction set.
-	 * 
+	 *
 	 * @return <code>true</code> iff both the objective function and the direction
 	 *         are <code>null</code>.
 	 */

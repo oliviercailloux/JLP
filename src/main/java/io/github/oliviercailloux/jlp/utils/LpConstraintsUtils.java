@@ -2,7 +2,7 @@ package io.github.oliviercailloux.jlp.utils;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.oliviercailloux.jlp.LpOperator;
+import io.github.oliviercailloux.jlp.elements.LpOperator;
 
 public class LpConstraintsUtils {
 	static public void assertSatisfied(double lhs, LpOperator op, double rhs) {

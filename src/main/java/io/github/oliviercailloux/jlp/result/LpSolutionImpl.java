@@ -22,8 +22,9 @@ import java.util.Set;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
-import io.github.oliviercailloux.jlp.LpLinear;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpLinear;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.LpProblem;
 import io.github.oliviercailloux.jlp.problem.LpProblemImmutable;
 import io.github.oliviercailloux.jlp.problem.LpProblems;
@@ -33,26 +34,26 @@ import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
 /**
  * The class {@code ResultImpl} is a {@code Map} based implementation of the
  * {@link LpSolution}.
- * 
+ *
  * @author lukasiewycz
  * @author Olivier Cailloux
  * @param <V>
  *            the type of the variables to be used in the new solver instance.
- * 
+ *
  */
 public class LpSolutionImpl<V> implements LpSolution<V> {
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<LpConstraint<V>, Number> m_dualValues = new HashMap<LpConstraint<V>, Number>();
+	private final Map<LpConstraint<V>, Number> m_dualValues = new HashMap<>();
 
 	private Number m_objectiveValue = null;
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<V, Number> m_primalValues = new HashMap<V, Number>();
+	private final Map<Variable, Number> m_primalValues = new HashMap<>();
 
 	/**
 	 * Not <code>null</code>, immutable.
@@ -62,7 +63,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	/**
 	 * A new solution satisfying the given problem. The new solution is shielded
 	 * from changes to the given problem.
-	 * 
+	 *
 	 * @param problem
 	 *            not <code>null</code>.
 	 */
@@ -85,7 +86,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	 * The new solution is shielded from changes to the given problem and the given
 	 * solution.
 	 * </p>
-	 * 
+	 *
 	 * @param problem
 	 *            not <code>null</code>, must contain the variables for which the
 	 *            given solution has a value.
@@ -96,7 +97,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 		Preconditions.checkNotNull(problem);
 		Preconditions.checkNotNull(solution);
 
-		for (V variable : solution.getVariables()) {
+		for (Variable variable : solution.getVariables()) {
 			final Number value = solution.getValue(variable);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getVariables().contains(variable));
@@ -126,7 +127,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public boolean getBooleanValue(V variable) {
+	public boolean getBooleanValue(Variable variable) {
 		Number number = m_primalValues.get(variable);
 		if (number == null) {
 			throw new IllegalArgumentException("Variable has no value: " + variable + ".");
@@ -143,7 +144,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 
 	@Override
 	public Number getComputedObjectiveValue() {
-		final LpLinear<V> objectiveFunction = m_problem.getObjective().getFunction();
+		final LpLinear objectiveFunction = m_problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
 		}
@@ -172,13 +173,13 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	}
 
 	@Override
-	public Number getValue(V variable) {
+	public Number getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
 		return m_primalValues.get(variable);
 	}
 
 	@Override
-	public Set<V> getVariables() {
+	public Set<Variable> getVariables() {
 		return Collections.unmodifiableSet(m_primalValues.keySet());
 	}
 
@@ -222,7 +223,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 	 *         value set, or the given value is not <code>null</code> and equals the
 	 *         primal value previously associated with the given variable.
 	 */
-	public boolean putValue(V variable, Number value) {
+	public boolean putValue(Variable variable, Number value) {
 		Preconditions.checkNotNull(variable);
 		Preconditions.checkArgument(m_problem.getVariables().contains(variable));
 		final Number previous;
@@ -236,7 +237,7 @@ public class LpSolutionImpl<V> implements LpSolution<V> {
 
 	/**
 	 * The bound problem must have a defined objective.
-	 * 
+	 *
 	 * @param objectiveValue
 	 *            may be <code>null</code>.
 	 */

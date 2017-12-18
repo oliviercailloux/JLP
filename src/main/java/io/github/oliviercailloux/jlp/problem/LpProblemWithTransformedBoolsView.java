@@ -1,6 +1,7 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import io.github.oliviercailloux.jlp.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.LpConstraint;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.utils.LpSolverUtils;
 
 /**
@@ -46,7 +47,7 @@ public class LpProblemWithTransformedBoolsView<V> extends LpProblemForwarder<V> 
 
 	/**
 	 * Creates a view that delegates to the given object.
-	 * 
+	 *
 	 * @param delegate
 	 *            not <code>null</code>.
 	 */
@@ -69,12 +70,12 @@ public class LpProblemWithTransformedBoolsView<V> extends LpProblemForwarder<V> 
 	}
 
 	@Override
-	public Number getVariableLowerBound(V variable) {
+	public Number getVariableLowerBound(Variable variable) {
 		return LpSolverUtils.getVarLowerBoundBounded(delegate(), variable);
 	}
 
 	@Override
-	public LpVariableType getVariableType(V variable) {
+	public LpVariableType getVariableType(Variable variable) {
 		final LpVariableType type = delegate().getVariableType(variable);
 		switch (type) {
 		case BOOL:
