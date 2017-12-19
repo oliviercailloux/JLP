@@ -18,9 +18,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:git://github.com/oliviercailloux/jlp.git</connection>
-		<developerConnection>scm:git:ssh://github.com/oliviercailloux/jlp.git</developerConnection>
-		<url>http://github.com/oliviercailloux/jlp/tree/master</url>
+		<connection>scm:git:git://github.com/oliviercailloux/JLP.git</connection>
+		<developerConnection>scm:git:ssh://github.com/oliviercailloux/JLP.git</developerConnection>
+		<url>http://github.com/oliviercailloux/JLP</url>
 	</scm>
 	<developers>
 		<developer>
