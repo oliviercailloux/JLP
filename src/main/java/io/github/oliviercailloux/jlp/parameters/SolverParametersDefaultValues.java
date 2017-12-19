@@ -10,8 +10,6 @@ public class SolverParametersDefaultValues {
 
 	private static Map<SolverParameterInt, Integer> s_ints = null;
 
-	private static Map<SolverParameterObject, Object> s_objects = null;
-
 	private static Map<SolverParameterString, String> s_strings = null;
 
 	/**
@@ -32,16 +30,6 @@ public class SolverParametersDefaultValues {
 	static public Map<SolverParameterInt, Integer> getDefaultIntValues() {
 		lazyInit();
 		return s_ints;
-	}
-
-	/**
-	 * Retrieves the default object values.
-	 *
-	 * @return a (possibly read-only) copy of the default values as a map.
-	 */
-	static public Map<SolverParameterObject, Object> getDefaultObjectValues() {
-		lazyInit();
-		return s_objects;
 	}
 
 	/**
@@ -88,19 +76,6 @@ public class SolverParametersDefaultValues {
 	 * @return the default value, possibly <code>null</code> as this is a meaningful
 	 *         value for some parameters.
 	 */
-	static public Object getDefaultValue(SolverParameterObject parameter) {
-		lazyInit();
-		return s_objects.get(parameter);
-	}
-
-	/**
-	 * Retrieves the default value associated to the given parameter.
-	 *
-	 * @param parameter
-	 *            not <code>null</code>.
-	 * @return the default value, possibly <code>null</code> as this is a meaningful
-	 *         value for some parameters.
-	 */
 	static public String getDefaultValue(SolverParameterString parameter) {
 		lazyInit();
 		return s_strings.get(parameter);
@@ -110,8 +85,9 @@ public class SolverParametersDefaultValues {
 	 * Retrieves the default value associated to the given parameter. This method
 	 * allows for more flexible use as the caller does not have to distinguish the
 	 * type of the parameter. The type of the parameter argument must be
-	 * {@link SolverParameterInt}, {@link SolverParameterDouble}, {@link SolverParameterString}
-	 * or {@link SolverParameterObject}, otherwise an exception is thrown.
+	 * {@link SolverParameterInt}, {@link SolverParameterDouble},
+	 * {@link SolverParameterString} or {@link SolverParameterObject}, otherwise an
+	 * exception is thrown.
 	 *
 	 * @param parameter
 	 *            not <code>null</code>.
@@ -130,9 +106,6 @@ public class SolverParametersDefaultValues {
 		} else if (parameter instanceof SolverParameterString) {
 			final SolverParameterString paramTyped = (SolverParameterString) parameter;
 			value = s_strings.get(paramTyped);
-		} else if (parameter instanceof SolverParameterObject) {
-			final SolverParameterObject paramTyped = (SolverParameterObject) parameter;
-			value = s_objects.get(paramTyped);
 		} else {
 			throw new IllegalArgumentException("Unknown parameter type.");
 		}
@@ -174,17 +147,9 @@ public class SolverParametersDefaultValues {
 			s_strings.put(SolverParameterString.WORK_DIR, null);
 			s_strings = Collections.unmodifiableMap(s_strings);
 
-			s_objects = Maps.newHashMap();
-			s_objects.put(SolverParameterObject.NAMER_VARIABLES, null);
-			s_objects.put(SolverParameterObject.NAMER_VARIABLES_BY_FORMAT, null);
-			s_objects.put(SolverParameterObject.NAMER_CONSTRAINTS, null);
-			s_objects.put(SolverParameterObject.NAMER_CONSTRAINTS_BY_FORMAT, null);
-			s_objects = Collections.unmodifiableMap(s_objects);
-
 			assert (s_doubles.size() == SolverParameterDouble.values().length);
 			assert (s_ints.size() == SolverParameterInt.values().length);
 			assert (s_strings.size() == SolverParameterString.values().length);
-			assert (s_objects.size() == SolverParameterObject.values().length);
 		}
 	}
 

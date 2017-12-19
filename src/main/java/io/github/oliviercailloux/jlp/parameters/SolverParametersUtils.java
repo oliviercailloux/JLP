@@ -5,12 +5,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Objects;
@@ -59,11 +57,6 @@ public class SolverParametersUtils {
 			properties.setProperty(parameter.toString(), value == null ? "null" : formatter.format(value));
 		}
 
-		for (SolverParameterObject parameter : SolverParametersDefaultValues.getDefaultObjectValues().keySet()) {
-			final Object value = parameters.getValue(parameter);
-			properties.setProperty(parameter.toString(), value == null ? "null" : value.toString());
-		}
-
 		return properties;
 	}
 
@@ -72,7 +65,6 @@ public class SolverParametersUtils {
 		all.addAll(SolverParametersDefaultValues.getDefaultDoubleValues().keySet());
 		all.addAll(SolverParametersDefaultValues.getDefaultIntValues().keySet());
 		all.addAll(SolverParametersDefaultValues.getDefaultStringValues().keySet());
-		all.addAll(SolverParametersDefaultValues.getDefaultObjectValues().keySet());
 		return all;
 		// final SetView<Enum<?>> doublesAndStrings =
 		// Sets.union(LpParametersDefaultValues.getDefaultDoubleValues()
@@ -237,41 +229,6 @@ public class SolverParametersUtils {
 		}
 	}
 
-	static public Predicate<Object> getValidator(SolverParameterObject parameter) {
-		switch (parameter) {
-		case NAMER_VARIABLES:
-			return new Predicate<Object>() {
-				@Override
-				public boolean apply(Object value) {
-					return value == null || value instanceof Function<?, ?>;
-				}
-			};
-		case NAMER_CONSTRAINTS:
-			return new Predicate<Object>() {
-				@Override
-				public boolean apply(Object value) {
-					return value == null || value instanceof Function<?, ?>;
-				}
-			};
-		case NAMER_VARIABLES_BY_FORMAT:
-			return new Predicate<Object>() {
-				@Override
-				public boolean apply(Object value) {
-					return value == null || value instanceof Map<?, ?>;
-				}
-			};
-		case NAMER_CONSTRAINTS_BY_FORMAT:
-			return new Predicate<Object>() {
-				@Override
-				public boolean apply(Object value) {
-					return value == null || value instanceof Map<?, ?>;
-				}
-			};
-		default:
-			throw new IllegalStateException("Unknown parameter.");
-		}
-	}
-
 	static public Predicate<String> getValidator(SolverParameterString parameter) {
 		switch (parameter) {
 		case WORK_DIR:
@@ -334,12 +291,11 @@ public class SolverParametersUtils {
 		final String toStrInts = mapFormatter.join(parameters.getIntParameters());
 		final String toStrDoubles = mapFormatter.join(parameters.getDoubleParameters());
 		final String toStrStrings = mapFormatter.join(parameters.getStringParameters());
-		final String toStrObjects = mapFormatter.join(parameters.getObjectParameters());
 
 		final Joiner joiner = Joiner.on(", ");
 		final Predicate<CharSequence> isNonEmpty = Predicates.contains(Pattern.compile(".+"));
-		final Iterable<String> nonEmptyMaps = Iterables.filter(
-				Arrays.asList(new String[] { toStrInts, toStrDoubles, toStrStrings, toStrObjects }), isNonEmpty);
+		final Iterable<String> nonEmptyMaps = Iterables
+				.filter(Arrays.asList(new String[] { toStrInts, toStrDoubles, toStrStrings }), isNonEmpty);
 		final String res = joiner.join(nonEmptyMaps);
 		helper.addValue(res);
 		return helper.toString();

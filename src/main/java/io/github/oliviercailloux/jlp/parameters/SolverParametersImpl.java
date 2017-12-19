@@ -10,10 +10,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 
 /**
- * A simple implementation of {@link SolverParameters} with {@link HashMap} objects.
- * 
+ * A simple implementation of {@link SolverParameters} with {@link HashMap}
+ * objects.
+ *
  * @author Olivier Cailloux
- * 
+ *
  */
 public class SolverParametersImpl implements SolverParameters {
 
@@ -33,28 +34,23 @@ public class SolverParametersImpl implements SolverParameters {
 			if (!a.getStringParameters().equals(b.getStringParameters())) {
 				return false;
 			}
-			if (!a.getObjectParameters().equals(b.getObjectParameters())) {
-				return false;
-			}
 			return true;
 		}
 
 		@Override
 		public int doHash(SolverParameters t) {
-			return Objects.hashCode(t.getDoubleParameters(), t.getIntParameters(), t.getStringParameters(),
-					t.getObjectParameters());
+			return Objects.hashCode(t.getDoubleParameters(), t.getIntParameters(), t.getStringParameters());
 		}
+	}
+
+	static Equivalence<SolverParameters> getEquivalenceRelation() {
+		return new Equiv();
 	}
 
 	/**
 	 * Does not contain default values. No <code>null</code> key.
 	 */
 	private final Map<SolverParameterDouble, Double> doubleParameters = Maps.newHashMap();
-
-	/**
-	 * Does not contain default values. No <code>null</code> key.
-	 */
-	private final Map<SolverParameterObject, Object> objectParameters = Maps.newHashMap();
 
 	/**
 	 * Does not contain default values. No <code>null</code> key.
@@ -73,7 +69,7 @@ public class SolverParametersImpl implements SolverParameters {
 	/**
 	 * Creates a new object that contains all the values that have been set in the
 	 * source object. The copy is by value.
-	 * 
+	 *
 	 * @param source
 	 *            not <code>null</code>.
 	 */
@@ -81,7 +77,6 @@ public class SolverParametersImpl implements SolverParameters {
 		intParameters.putAll(source.getIntParameters());
 		stringParameters.putAll(source.getStringParameters());
 		doubleParameters.putAll(source.getDoubleParameters());
-		objectParameters.putAll(source.getObjectParameters());
 	}
 
 	@Override
@@ -104,8 +99,8 @@ public class SolverParametersImpl implements SolverParameters {
 	}
 
 	@Override
-	public Map<SolverParameterObject, Object> getObjectParameters() {
-		return Maps.newHashMap(objectParameters);
+	public Map<SolverParameterString, String> getStringParameters() {
+		return Maps.newHashMap(stringParameters);
 	}
 
 	@Override
@@ -123,14 +118,10 @@ public class SolverParametersImpl implements SolverParameters {
 	}
 
 	@Override
-	public Object getValue(SolverParameterObject parameter) {
+	public String getValue(SolverParameterString parameter) {
 		Preconditions.checkNotNull(parameter);
-		if (objectParameters.containsKey(parameter)) {
-			return objectParameters.get(parameter);
-		}
-		final Map<SolverParameterObject, Object> defaults = SolverParametersDefaultValues.getDefaultObjectValues();
-		assert (defaults.containsKey(parameter));
-		return defaults.get(parameter);
+		return stringParameters.containsKey(parameter) ? stringParameters.get(parameter)
+				: SolverParametersDefaultValues.getDefaultStringValues().get(parameter);
 	}
 
 	@Override
@@ -146,9 +137,6 @@ public class SolverParametersImpl implements SolverParameters {
 		} else if (parameter instanceof SolverParameterString) {
 			SolverParameterString stringParameter = (SolverParameterString) parameter;
 			value = getValue(stringParameter);
-		} else if (parameter instanceof SolverParameterObject) {
-			SolverParameterObject objectParameter = (SolverParameterObject) parameter;
-			value = getValue(objectParameter);
 		} else {
 			throw new IllegalArgumentException("Unknown parameter type.");
 		}
@@ -160,9 +148,9 @@ public class SolverParametersImpl implements SolverParameters {
 		return getEquivalenceRelation().hash(this);
 	}
 
-	private boolean isDefaultValue(Object parameter, Object value) {
-		final Object defaultValue = SolverParametersDefaultValues.getDefaultValueObject(parameter);
-		return Objects.equal(value, defaultValue);
+	@Override
+	public boolean setAll(SolverParameters source) {
+		return SolverParametersUtils.setAllValues(this, source);
 	}
 
 	@Override
@@ -182,31 +170,11 @@ public class SolverParametersImpl implements SolverParameters {
 	}
 
 	@Override
-	public boolean setValue(SolverParameterObject parameter, Object value) {
-		Predicate<Object> validator = SolverParametersUtils.getValidator(parameter);
+	public boolean setValue(SolverParameterString parameter, String value) {
+		Predicate<String> validator = SolverParametersUtils.getValidator(parameter);
 		Preconditions.checkArgument(validator.apply(value),
 				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(objectParameters, parameter, value);
-	}
-
-	private <IlpParameter, V> boolean setValue(Map<IlpParameter, V> parametersMap, IlpParameter parameter, V value) {
-		Preconditions.checkNotNull(parameter);
-		final boolean isDefault = isDefaultValue(parameter, value);
-		final boolean changed;
-		if (isDefault) {
-			changed = parametersMap.containsKey(parameter);
-			parametersMap.remove(parameter);
-			/**
-			 * Is equivalent only if contained implies (previous != null), thus, if no null
-			 * values may be stored, which might not be guaranteed.
-			 */
-			// final V previous = parametersMap.remove(parameter);
-			// changed = previous != null;
-		} else {
-			final V previous = parametersMap.put(parameter, value);
-			changed = !Objects.equal(previous, value);
-		}
-		return changed;
+		return setValue(stringParameters, parameter, value);
 	}
 
 	@Override
@@ -228,9 +196,6 @@ public class SolverParametersImpl implements SolverParameters {
 			Preconditions.checkArgument(value == null || (value instanceof String),
 					"Incorrect value type: " + value + ".");
 			changed = setValue(stringParameter, (String) value);
-		} else if (parameter instanceof SolverParameterObject) {
-			SolverParameterObject objectParameter = (SolverParameterObject) parameter;
-			changed = setValue(objectParameter, value);
 		} else {
 			throw new IllegalArgumentException("Unknown parameter type.");
 		}
@@ -242,33 +207,29 @@ public class SolverParametersImpl implements SolverParameters {
 		return SolverParametersUtils.toString(this);
 	}
 
-	@Override
-	public Map<SolverParameterString, String> getStringParameters() {
-		return Maps.newHashMap(stringParameters);
+	private boolean isDefaultValue(Object parameter, Object value) {
+		final Object defaultValue = SolverParametersDefaultValues.getDefaultValueObject(parameter);
+		return Objects.equal(value, defaultValue);
 	}
 
-	@Override
-	public String getValue(SolverParameterString parameter) {
+	private <IlpParameter, V> boolean setValue(Map<IlpParameter, V> parametersMap, IlpParameter parameter, V value) {
 		Preconditions.checkNotNull(parameter);
-		return stringParameters.containsKey(parameter) ? stringParameters.get(parameter)
-				: SolverParametersDefaultValues.getDefaultStringValues().get(parameter);
-	}
-
-	@Override
-	public boolean setValue(SolverParameterString parameter, String value) {
-		Predicate<String> validator = SolverParametersUtils.getValidator(parameter);
-		Preconditions.checkArgument(validator.apply(value),
-				"The given value: " + value + " is not meaningful for the parameter " + parameter + ".");
-		return setValue(stringParameters, parameter, value);
-	}
-
-	static Equivalence<SolverParameters> getEquivalenceRelation() {
-		return new Equiv();
-	}
-
-	@Override
-	public boolean setAll(SolverParameters source) {
-		return SolverParametersUtils.setAllValues(this, source);
+		final boolean isDefault = isDefaultValue(parameter, value);
+		final boolean changed;
+		if (isDefault) {
+			changed = parametersMap.containsKey(parameter);
+			parametersMap.remove(parameter);
+			/**
+			 * Is equivalent only if contained implies (previous != null), thus, if no null
+			 * values may be stored, which might not be guaranteed.
+			 */
+			// final V previous = parametersMap.remove(parameter);
+			// changed = previous != null;
+		} else {
+			final V previous = parametersMap.put(parameter, value);
+			changed = !Objects.equal(previous, value);
+		}
+		return changed;
 	}
 
 }
