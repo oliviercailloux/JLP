@@ -1,0 +1,4 @@
+= JLP
+
+Java Linear Programming: specify and solve linear programs in object-oriented fashion.
+
