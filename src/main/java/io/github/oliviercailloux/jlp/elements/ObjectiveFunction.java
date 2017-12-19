@@ -19,7 +19,7 @@ public class ObjectiveFunction {
 	/**
 	 * May be <code>null</code>.
 	 */
-	final private SumTermsImmutable objectiveFunction;
+	final private SumTerms objectiveFunction;
 
 	/**
 	 * Creates a new objective function with direction.
@@ -30,7 +30,7 @@ public class ObjectiveFunction {
 	 *            may be <code>null</code>.
 	 */
 	public ObjectiveFunction(SumTerms objectiveFunction, OptimizationDirection direction) {
-		this.objectiveFunction = objectiveFunction == null ? null : new SumTermsImmutable(objectiveFunction);
+		this.objectiveFunction = objectiveFunction;
 		this.direction = direction;
 	}
 

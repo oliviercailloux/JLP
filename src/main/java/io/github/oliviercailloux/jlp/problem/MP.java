@@ -20,7 +20,6 @@ import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
-import io.github.oliviercailloux.jlp.elements.SumTermsImmutable;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableType;
@@ -268,12 +267,10 @@ public class MP implements IMP {
 	public boolean setObjective(SumTerms objectiveFunction, OptimizationDirection direction) {
 		final boolean equivFct = Equivalence.equals().equivalent(this.objectiveFunction, objectiveFunction);
 		if (!equivFct) {
-			if (objectiveFunction == null) {
-				this.objectiveFunction = null;
-			} else {
+			if (objectiveFunction != null) {
 				addVariables(objectiveFunction);
-				this.objectiveFunction = new SumTermsImmutable(objectiveFunction);
 			}
+			this.objectiveFunction = objectiveFunction;
 		}
 		final boolean equalDirs = optType == direction;
 		optType = direction;

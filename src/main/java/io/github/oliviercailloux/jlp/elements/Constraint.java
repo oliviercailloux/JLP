@@ -50,7 +50,7 @@ public class Constraint {
 	 */
 	private final String descr;
 
-	private final SumTermsImmutable lhs;
+	private final SumTerms lhs;
 
 	private final ComparisonOperator op;
 
@@ -73,7 +73,7 @@ public class Constraint {
 		Preconditions.checkArgument(!Double.isNaN(rhs));
 		Preconditions.checkArgument(lhs.size() >= 1);
 		this.descr = requireNonNull(descr);
-		this.lhs = SumTermsImmutable.of(lhs);
+		this.lhs = lhs;
 		this.op = op;
 		this.rhs = rhs;
 	}

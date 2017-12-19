@@ -14,14 +14,10 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
-import com.google.common.collect.Iterables;
 
 import io.github.oliviercailloux.jlp.SolverException;
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.SumTerms;
-import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.elements.VariableType;
 import io.github.oliviercailloux.jlp.parameters.SolverParameters;
 import io.github.oliviercailloux.jlp.parameters.SolverParametersUtils;
 import io.github.oliviercailloux.jlp.problem.IMP;
@@ -182,10 +178,6 @@ public class SolverUtils {
 		return true;
 	}
 
-	static public boolean equivalent(SumTerms a, SumTerms b) {
-		return getLinearEquivalence().equivalent(a, b);
-	}
-
 	static public int getAsInteger(double number) throws SolverException {
 		final long lValue = Math.round(number);
 		if (lValue > Integer.MAX_VALUE) {
@@ -261,24 +253,6 @@ public class SolverUtils {
 			@Override
 			public int doHash(Number t) {
 				return Double.valueOf(t.doubleValue()).hashCode();
-			}
-		};
-	}
-
-	static public Equivalence<SumTerms> getLinearEquivalence() {
-		return new Equivalence<SumTerms>() {
-			@Override
-			public boolean doEquivalent(SumTerms a, SumTerms b) {
-				return Iterables.elementsEqual(a, b);
-			}
-
-			@Override
-			public int doHash(SumTerms t) {
-				int hashCode = 1;
-				for (Term term : t) {
-					hashCode = 31 * hashCode + term.hashCode();
-				}
-				return hashCode;
 			}
 		};
 	}

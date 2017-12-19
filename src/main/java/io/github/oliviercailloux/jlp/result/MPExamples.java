@@ -1,11 +1,9 @@
 package io.github.oliviercailloux.jlp.result;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
-import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
-import io.github.oliviercailloux.jlp.elements.SumTermsImmutable;
-import io.github.oliviercailloux.jlp.elements.SumTermsImpl;
+import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.MP;
 import io.github.oliviercailloux.jlp.problem.MPs;
 
@@ -32,25 +30,10 @@ public class MPExamples {
 		problem.addVariable(x);
 		problem.addVariable(y);
 
-		SumTerms obj = new SumTermsImpl();
-		obj.addTerm(143, x);
-		obj.addTerm(60, y);
-		problem.setObjective(obj, OptimizationDirection.MAX);
-
-		SumTerms c1 = new SumTermsImpl();
-		c1.addTerm(120, x);
-		c1.addTerm(210, y);
-		problem.add("c1", c1, ComparisonOperator.LE, 15000);
-
-		SumTerms c2 = new SumTermsImpl();
-		c2.addTerm(110, x);
-		c2.addTerm(30, y);
-		problem.add("c2", c2, ComparisonOperator.LE, 4000);
-
-		SumTerms c3 = new SumTermsImpl();
-		c3.addTerm(1, x);
-		c3.addTerm(1, y);
-		problem.add("c3", c3, ComparisonOperator.LE, 75);
+		problem.setObjective(SumTerms.of(143, x, 60, y), OptimizationDirection.MAX);
+		problem.add("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000);
+		problem.add("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000);
+		problem.add("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75);
 
 		return problem;
 	}
@@ -58,7 +41,7 @@ public class MPExamples {
 	public static MP getIntOneFourThreeLowX() {
 		final MP problem = getIntOneFourThree();
 		final Variable x = Variable.newInt("x");
-		problem.add("low x", SumTermsImmutable.of(1, x), ComparisonOperator.LE, 16d);
+		problem.add("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d);
 		return problem;
 	}
 

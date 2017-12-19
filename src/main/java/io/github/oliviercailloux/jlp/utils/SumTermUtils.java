@@ -3,14 +3,13 @@ package io.github.oliviercailloux.jlp.utils;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 
 import io.github.oliviercailloux.jlp.elements.SumTerms;
-import io.github.oliviercailloux.jlp.elements.SumTermsImpl;
+import io.github.oliviercailloux.jlp.elements.SumTermsBuilder;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
@@ -46,38 +45,14 @@ public class SumTermUtils {
 	}
 
 	/**
-	 * Retrieves a new, mutable object representing an empty linear expression.
-	 *
-	 * @return a new linear object.
-	 */
-	static public SumTerms newLinear() {
-		return new SumTermsImpl();
-	}
-
-	/**
-	 * Retrieves a linear, mutable object containing the given terms.
-	 *
-	 * @param terms
-	 *            not <code>null</code>.
-	 * @return a linear object.
-	 */
-	static public SumTerms newLinear(Collection<Term> terms) {
-		checkNotNull(terms);
-		return new SumTermsImpl(terms);
-	}
-
-	/**
 	 * <p>
 	 * Returns a new linear expression, proportional to the given one. The new one
 	 * equals the given factor times the source one, thus all of its terms have a
 	 * coefficient that is equal to the source coefficient multiplied by the given
 	 * factor. This implies that the returned object may contain terms with a
-	 * coefficient equal to zero, either because of the given factor is zero,
-	 * because the source contains terms with a coefficient of zero, or because of
-	 * imprecision of the floating point multiplication.
-	 * </p>
-	 * <p>
-	 * The returned object keeps no reference to the source collection.
+	 * coefficient equal to zero, either because the given factor is zero, because
+	 * the source contains terms with a coefficient of zero, or because of
+	 * imprecision of the floating point multiplication (?).
 	 * </p>
 	 *
 	 * @param factor
@@ -86,13 +61,13 @@ public class SumTermUtils {
 	 *            not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms newMult(double factor, Collection<Term> source) {
+	static public SumTerms newMult(double factor, SumTerms source) {
 		checkNotNull(source);
 		checkArgument(Doubles.isFinite(factor));
-		final SumTermsImpl result = new SumTermsImpl();
+		final SumTermsBuilder result = SumTerms.builder();
 		for (Term term : source) {
 			result.addTerm(factor * term.getCoefficient(), term.getVariable());
 		}
-		return result;
+		return result.build();
 	}
 }
