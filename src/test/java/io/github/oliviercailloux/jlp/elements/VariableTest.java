@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.elements;
 
 import org.junit.Test;
 
