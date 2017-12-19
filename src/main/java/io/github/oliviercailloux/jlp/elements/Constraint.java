@@ -2,9 +2,9 @@ package io.github.oliviercailloux.jlp.elements;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
+import java.util.Objects;
 
-import io.github.oliviercailloux.jlp.utils.SolverUtils;
+import com.google.common.base.Preconditions;
 
 /**
  * <p>
@@ -14,17 +14,31 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
  * {@link ComparisonOperator}) in between.
  * </p>
  * <p>
- * A constraint has a description. It is recommended to use descriptions that
- * identify with no ambiguity one constraint. Thus, two constraints should be
- * equal, as judged per {@link #equals(Object)}, iff they have the same
- * descriptions.
+ * A constraint has a description. It is recommended for clarity (but not
+ * mandatory) to use descriptions that identify with no ambiguity one
+ * constraint. Thus, two constraints should be equal, as judged per
+ * {@link #equals(Object)}, iff they have the same descriptions. (This object
+ * guarantees anyway that equality implies same description, the other direction
+ * is up to the user.)
  * </p>
  * <p>
  * A constraint {@link #equals(Object)} an other constraint iff they have the
- * same left hand side, operator, and right hand side. The id is not considered.
+ * same description, left hand side, operator, and right hand side.
  * </p>
  * <p>
  * Objects of this class are immutable (provided variables are).
+ * </p>
+ * <p>
+ * Rationale for equality: we want to allow that the user does not use
+ * descriptions, by choosing (for example) an empty description for every
+ * constraints. Hence, equality has to rely on the rest of the attributes at
+ * least. But we also want to permit for the following case. Constraint
+ * “structural x”: x < y. Constraint “conjonctural x”: x < y. The second
+ * constraint might be perceived as different than the first one, and the user
+ * might genuinely want both of them to appear in the MP, because the second
+ * constraint might have a general form x < C×y, with a value C depending on
+ * some data of the problem, and C=1 being one possibility. In such a case, only
+ * the description would permit to distinguish both constraints.
  * </p>
  *
  * @author Olivier Cailloux
@@ -74,8 +88,11 @@ public class Constraint {
 		if (!(obj instanceof Constraint)) {
 			return false;
 		}
-		Constraint c2 = (Constraint) obj;
-		return SolverUtils.equivalent(this, c2);
+		final Constraint c2 = (Constraint) obj;
+		if (c2 == this) {
+			return true;
+		}
+		return toString().equals(c2.toString()) && lhs.equals(c2.lhs) && op.equals(c2.op) && rhs == c2.rhs;
 	}
 
 	/**
@@ -101,7 +118,7 @@ public class Constraint {
 
 	@Override
 	public int hashCode() {
-		return SolverUtils.getConstraintEquivalence().hash(this);
+		return Objects.hash(descr, lhs, op, rhs);
 	}
 
 	/**
