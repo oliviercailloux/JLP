@@ -17,6 +17,10 @@ import com.google.common.base.Preconditions;
  *
  */
 public class Term {
+	static public Term of(double coefficient, Variable variable) {
+		return new Term(coefficient, variable);
+	}
+
 	private final double coefficient;
 
 	private final Variable variable;
@@ -27,7 +31,7 @@ public class Term {
 	 * @param variable
 	 *            not <code>null</code>.
 	 */
-	public Term(double coefficient, Variable variable) {
+	private Term(double coefficient, Variable variable) {
 		Preconditions.checkNotNull(variable);
 		Preconditions.checkArgument(!Double.isInfinite(coefficient));
 		Preconditions.checkArgument(!Double.isNaN(coefficient));

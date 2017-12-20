@@ -44,21 +44,6 @@ public class MPUtils {
 		return solutionValue.doubleValue();
 	}
 
-	static public <V> void logProblemContents(IMP problem) {
-		checkNotNull(problem);
-		s_logger.info("Problem {}, {}.", problem.getName(), problem.getDimension());
-		final Set<Variable> variables = problem.getVariables();
-		for (Variable variable : variables) {
-			s_logger.info("Variable {} in problem: type " + variable.getType() + ", bounds " + variable.getLowerBound()
-					+ " to " + variable.getUpperBound() + ".", variable.toString());
-		}
-		final Set<Constraint> constraints = problem.getConstraints();
-		for (Constraint constraint : constraints) {
-			s_logger.info("Constraint {}.", constraint);
-		}
-		s_logger.info("Objective: {}.", problem.getObjective());
-	}
-
 	static public void logSolutionValues(Solution solution) {
 		checkNotNull(solution);
 		final Set<Variable> variables = solution.getVariables();
@@ -79,7 +64,7 @@ public class MPUtils {
 		if (sourceDirection.equals(newDirection)) {
 			return source;
 		}
-		return new ObjectiveFunction(SumTermUtils.newMult(-1d, sourceFunction), newDirection);
+		return ObjectiveFunction.of(SumTermUtils.newMult(-1d, sourceFunction), newDirection);
 	}
 
 }

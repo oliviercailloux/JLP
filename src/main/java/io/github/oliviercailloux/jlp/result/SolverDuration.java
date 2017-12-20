@@ -11,6 +11,11 @@ import com.google.common.base.Objects.ToStringHelper;
  */
 public class SolverDuration {
 
+	static public SolverDuration of(Long wallDuration_ms, Long threadDuration_ms, Long solverWallDuration_ms,
+			Long solverCpuDuration_ms) {
+		return new SolverDuration(wallDuration_ms, threadDuration_ms, solverWallDuration_ms, solverCpuDuration_ms);
+	}
+
 	private final Long solverCpuDuration_ms;
 
 	private final Long solverWallDuration_ms;
@@ -33,7 +38,7 @@ public class SolverDuration {
 	 *            the CPU duration, as computed from the solver (thus takes into
 	 *            account all the threads the solver uses).
 	 */
-	public SolverDuration(Long wallDuration_ms, Long threadDuration_ms, Long solverWallDuration_ms,
+	private SolverDuration(Long wallDuration_ms, Long threadDuration_ms, Long solverWallDuration_ms,
 			Long solverCpuDuration_ms) {
 		if (wallDuration_ms == null && threadDuration_ms == null && solverWallDuration_ms == null
 				&& solverCpuDuration_ms == null) {

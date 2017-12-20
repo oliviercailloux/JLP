@@ -37,8 +37,7 @@ public class SumTermUtils {
 			if (!values.containsKey(variable)) {
 				return null;
 			}
-			/** TODO change to double. */
-			final double value = values.get(variable).doubleValue();
+			final double value = values.get(variable);
 			expr += term.getCoefficient() * value;
 		}
 		return Double.valueOf(expr);

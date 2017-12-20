@@ -11,6 +11,10 @@ import com.google.common.base.Objects.ToStringHelper;
  *
  */
 public class MPDimension {
+	static public MPDimension of(int binaries, int integersNonBinary, int continuous, int constraints) {
+		return new MPDimension(binaries, integersNonBinary, continuous, constraints);
+	}
+
 	private final int binaries;
 
 	private final int constraints;
@@ -29,7 +33,7 @@ public class MPDimension {
 	 * @param constraints
 	 *            at least zero.
 	 */
-	public MPDimension(int binaries, int integersNonBinary, int continuous, int constraints) {
+	private MPDimension(int binaries, int integersNonBinary, int continuous, int constraints) {
 		if (binaries < 0 || integersNonBinary < 0 || continuous < 0 || constraints < 0) {
 			throw new IllegalArgumentException(
 					"Must be positive or null:" + binaries + integersNonBinary + continuous + constraints + ".");

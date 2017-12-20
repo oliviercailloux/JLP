@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.Variable;
@@ -54,6 +56,58 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  */
 public interface IMP {
+
+	/**
+	 * Retrieves a long description, with line breaks, of the given problem.
+	 *
+	 * @param <T>
+	 *            the type of the variables in the problem.
+	 * @param problem
+	 *            not <code>null</code>.
+	 * @return not <code>null</code>, not empty.
+	 */
+	static public String getLongDescription(IMP problem) {
+		Preconditions.checkNotNull(problem);
+		String N = System.getProperty("line.separator");
+		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
+		String s = "Problem" + name + N;
+
+		if (!problem.getObjective().isEmpty()) {
+			s += problem.getObjective().getDirection() + N;
+			s += " " + problem.getObjective().getFunction() + N;
+		} else {
+			s += "Find one solution" + N;
+		}
+		s += "Subject To" + N;
+		for (Constraint constraint : problem.getConstraints()) {
+			s += "\t" + constraint + N;
+		}
+		s += "Bounds" + N;
+		for (Variable variable : problem.getVariables()) {
+			final double lb = variable.getLowerBound();
+			final double ub = variable.getUpperBound();
+
+			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
+				s += "\t";
+				if (lb != Double.NEGATIVE_INFINITY) {
+					s += lb + " <= ";
+				}
+				s += variable;
+				if (ub != Double.POSITIVE_INFINITY) {
+					s += " <= " + ub;
+				}
+				s += N;
+			}
+		}
+
+		s += "Variables" + N;
+		for (Variable variable : problem.getVariables()) {
+			s += "\t" + variable + " " + variable.getType() + N;
+		}
+
+		return s;
+
+	}
 
 	/**
 	 * Two problems are considered equal when they define the same variables (as per

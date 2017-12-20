@@ -15,7 +15,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
-import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
@@ -60,7 +59,7 @@ public class MP implements IMP {
 		return mp;
 	}
 
-	static public MP newMP() {
+	static public MP create() {
 		return new MP();
 	}
 
@@ -115,31 +114,6 @@ public class MP implements IMP {
 	}
 
 	/**
-	 * Adds a constraint, or does nothing if the given constraint is already in the
-	 * problem. The variables used in the constraint are added to this problem.
-	 *
-	 * @param id
-	 *            the id of the constraint. If <code>null</code>, a no-id constraint
-	 *            is used.
-	 * @param lhs
-	 *            the left-hand-side linear expression. Not <code>null</code>.
-	 * @param operator
-	 *            the operator. Not <code>null</code>.
-	 * @param rhs
-	 *            the right-hand-side number. A real value (not NaN or infinite).
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 *         Equivalently, returns <code>false</code> iff the given constraint
-	 *         already was in the problem.
-	 */
-	public boolean add(String id, SumTerms lhs, ComparisonOperator operator, double rhs) {
-		Preconditions.checkNotNull(lhs, "" + operator + rhs);
-		Preconditions.checkNotNull(operator, "" + lhs + rhs);
-		Preconditions.checkArgument(!Double.isNaN(rhs) && !Double.isInfinite(rhs));
-		final Constraint constraint = new Constraint(id, lhs, operator, rhs);
-		return add(constraint);
-	}
-
-	/**
 	 * Adds the variable to this problem if it is not already in.
 	 *
 	 * @param variable
@@ -187,7 +161,7 @@ public class MP implements IMP {
 
 	@Override
 	public MPDimension getDimension() {
-		return new MPDimension(varCount.count(VariableType.BOOL), varCount.count(VariableType.INT),
+		return MPDimension.of(varCount.count(VariableType.BOOL), varCount.count(VariableType.INT),
 				varCount.count(VariableType.REAL), getConstraints().size());
 	}
 
@@ -198,7 +172,7 @@ public class MP implements IMP {
 
 	@Override
 	public ObjectiveFunction getObjective() {
-		return new ObjectiveFunction(objectiveFunction, optType);
+		return ObjectiveFunction.of(objectiveFunction, optType);
 	}
 
 	@Override
@@ -291,6 +265,53 @@ public class MP implements IMP {
 		final boolean equalDir = this.optType == optType;
 		this.optType = optType;
 		return !equalDir;
+	}
+
+	/**
+	 * Retrieves a long description, with line breaks, of this problem.
+	 *
+	 * @return not <code>null</code>, not empty.
+	 */
+	public String toLongDescription() {
+		String N = System.getProperty("line.separator");
+		final String name = getName().equals("") ? "" : " " + getName();
+		String s = "Problem" + name + N;
+
+		if (!getObjective().isEmpty()) {
+			s += getObjective().getDirection() + N;
+			s += " " + getObjective().getFunction() + N;
+		} else {
+			s += "Find one solution" + N;
+		}
+		s += "Subject To" + N;
+		for (Constraint constraint : getConstraints()) {
+			s += "\t" + constraint + N;
+		}
+		s += "Bounds" + N;
+		for (Variable variable : getVariables()) {
+			final double lb = variable.getLowerBound();
+			final double ub = variable.getUpperBound();
+
+			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
+				s += "\t";
+				if (lb != Double.NEGATIVE_INFINITY) {
+					s += lb + " ≤ ";
+				}
+				s += variable;
+				if (ub != Double.POSITIVE_INFINITY) {
+					s += " ≤ " + ub;
+				}
+				s += N;
+			}
+		}
+
+		s += "Variables" + N;
+		for (Variable variable : getVariables()) {
+			s += "\t" + variable + " " + variable.getType() + N;
+		}
+
+		return s;
+
 	}
 
 	@Override

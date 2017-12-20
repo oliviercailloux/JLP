@@ -24,7 +24,7 @@ public class TimingHelper {
 
 	private Double solverCpuStart_ms;
 
-	private final Map<TimingType, Long> solverDurations_ms = new HashMap<TimingType, Long>();
+	private final Map<TimingType, Long> solverDurations_ms = new HashMap<>();
 
 	private Double solverWallEnd_ms;
 
@@ -55,21 +55,14 @@ public class TimingHelper {
 		ended = false;
 	}
 
-	private void assertEndCalled() {
-		if (!ended) {
-			throw new IllegalStateException("End has not been called before duration is asked.");
-		}
-	}
-
 	public Long getCpuDuration_ms() {
 		assertEndCalled();
-		return mgmt == null ? null
-				: Long.valueOf(Math.round((cpuEnd_ns.longValue() - cpuStart_ns.longValue()) / 1e6d));
+		return mgmt == null ? null : Long.valueOf(Math.round((cpuEnd_ns.longValue() - cpuStart_ns.longValue()) / 1e6d));
 	}
 
 	public SolverDuration getDuration() {
 		assertEndCalled();
-		return new SolverDuration(Long.valueOf(getWallDuration_ms()), getCpuDuration_ms(), getSolverWallDuration_ms(),
+		return SolverDuration.of(Long.valueOf(getWallDuration_ms()), getCpuDuration_ms(), getSolverWallDuration_ms(),
 				getSolverCpuDuration_ms());
 	}
 
@@ -110,7 +103,7 @@ public class TimingHelper {
 	 * in a different thread than the thread that has created the object, or than
 	 * the thread that has been used to call other methods on this object, the
 	 * result is not guaranteed to be correct.
-	 * 
+	 *
 	 * @return <code>true</code> if the Java virtual machine supports CPU time
 	 *         measurement for current thread; <code>false</code> otherwise.
 	 */
@@ -188,5 +181,11 @@ public class TimingHelper {
 		wallEnd_ns = System.nanoTime();
 		cpuEnd_ns = mgmt == null ? null : Long.valueOf(mgmt.getCurrentThreadCpuTime());
 		ended = true;
+	}
+
+	private void assertEndCalled() {
+		if (!ended) {
+			throw new IllegalStateException("End has not been called before duration is asked.");
+		}
 	}
 }

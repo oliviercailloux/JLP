@@ -3,7 +3,6 @@ package io.github.oliviercailloux.jlp.elements;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.Lists;
 
@@ -39,7 +38,7 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 	 *            not <code>null</code>.
 	 */
 	public SumTermsBuilder addTerm(double coefficient, Variable variable) {
-		final Term term = new Term(coefficient, variable);
+		final Term term = Term.of(coefficient, variable);
 		add(term);
 		return this;
 	}
@@ -49,15 +48,13 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 	}
 
 	/**
-	 * Returns a string representation of the given linear expression.
+	 * Returns a string representation of the state of this builder.
 	 *
-	 * @param linear
-	 *            not <code>null</code>
-	 * @return not <code>null</code>, may be empty
+	 * @return not <code>null</code>, not empty
 	 */
 	@Override
 	public String toString() {
-		return Joiner.on(" + ").join(this);
+		return delegate.toString();
 	}
 
 	@Override

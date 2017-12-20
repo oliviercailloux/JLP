@@ -21,7 +21,6 @@ import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.parameters.SolverParameters;
 import io.github.oliviercailloux.jlp.parameters.SolverParametersUtils;
 import io.github.oliviercailloux.jlp.problem.IMP;
-import io.github.oliviercailloux.jlp.problem.MPs;
 import io.github.oliviercailloux.jlp.result.Solution;
 import io.github.oliviercailloux.jlp.result.SolutionAlone;
 

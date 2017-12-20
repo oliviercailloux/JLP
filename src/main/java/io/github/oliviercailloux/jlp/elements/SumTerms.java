@@ -49,22 +49,22 @@ public class SumTerms extends ForwardingList<Term> {
 
 	static public SumTerms of(double c1, Variable v1) {
 		final List<Term> asList = Lists.newLinkedList();
-		asList.add(new Term(c1, v1));
+		asList.add(Term.of(c1, v1));
 		return new SumTerms(asList);
 	}
 
 	static public SumTerms of(double c1, Variable v1, double c2, Variable v2) {
 		final List<Term> asList = Lists.newLinkedList();
-		asList.add(new Term(c1, v1));
-		asList.add(new Term(c2, v2));
+		asList.add(Term.of(c1, v1));
+		asList.add(Term.of(c2, v2));
 		return new SumTerms(asList);
 	}
 
 	static public SumTerms of(double c1, Variable v1, double c2, Variable v2, double c3, Variable v3) {
 		final List<Term> asList = Lists.newLinkedList();
-		asList.add(new Term(c1, v1));
-		asList.add(new Term(c2, v2));
-		asList.add(new Term(c3, v3));
+		asList.add(Term.of(c1, v1));
+		asList.add(Term.of(c2, v2));
+		asList.add(Term.of(c3, v3));
 		return new SumTerms(asList);
 	}
 

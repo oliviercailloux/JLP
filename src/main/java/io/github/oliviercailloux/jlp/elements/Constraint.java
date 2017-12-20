@@ -45,6 +45,10 @@ import com.google.common.base.Preconditions;
  *
  */
 public class Constraint {
+	static public Constraint of(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
+		return new Constraint(descr, lhs, op, rhs);
+	}
+
 	/**
 	 * Not <code>null</code>.
 	 */
@@ -66,7 +70,7 @@ public class Constraint {
 	 * @param rhs
 	 *            a valid number (not infinite, not NaN).
 	 */
-	public Constraint(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
+	private Constraint(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
 		Preconditions.checkNotNull(lhs);
 		Preconditions.checkNotNull(op);
 		Preconditions.checkArgument(!Double.isInfinite(rhs));

@@ -11,6 +11,10 @@ import com.google.common.base.Objects.ToStringHelper;
  *
  */
 public class ObjectiveFunction {
+	static public ObjectiveFunction of(SumTerms objectiveFunction, OptimizationDirection direction) {
+		return new ObjectiveFunction(objectiveFunction, direction);
+	}
+
 	/**
 	 * May be <code>null</code>. TODO check why this is allowed.
 	 */
@@ -29,7 +33,7 @@ public class ObjectiveFunction {
 	 * @param direction
 	 *            may be <code>null</code>.
 	 */
-	public ObjectiveFunction(SumTerms objectiveFunction, OptimizationDirection direction) {
+	private ObjectiveFunction(SumTerms objectiveFunction, OptimizationDirection direction) {
 		this.objectiveFunction = objectiveFunction;
 		this.direction = direction;
 	}

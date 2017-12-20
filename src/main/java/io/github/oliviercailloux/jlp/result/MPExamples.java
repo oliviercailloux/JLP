@@ -1,11 +1,11 @@
 package io.github.oliviercailloux.jlp.result;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
+import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.MP;
-import io.github.oliviercailloux.jlp.problem.MPs;
 
 public class MPExamples {
 	/**
@@ -23,7 +23,7 @@ public class MPExamples {
 	 * @return a new problem.
 	 */
 	static public MP getIntOneFourThree() {
-		MP problem = MPs.newProblem();
+		MP problem = MP.create();
 		problem.setName("OneFourThree");
 		final Variable x = Variable.newInt("x");
 		final Variable y = Variable.newInt("y");
@@ -31,9 +31,9 @@ public class MPExamples {
 		problem.addVariable(y);
 
 		problem.setObjective(SumTerms.of(143, x, 60, y), OptimizationDirection.MAX);
-		problem.add("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000);
-		problem.add("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000);
-		problem.add("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75);
+		problem.add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
+		problem.add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
+		problem.add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));
 
 		return problem;
 	}
@@ -41,7 +41,7 @@ public class MPExamples {
 	public static MP getIntOneFourThreeLowX() {
 		final MP problem = getIntOneFourThree();
 		final Variable x = Variable.newInt("x");
-		problem.add("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d);
+		problem.add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
 		return problem;
 	}
 
