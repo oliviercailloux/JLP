@@ -87,13 +87,13 @@ public class Variable {
 		return new Variable(name, VariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
 	}
 
-	static public Variable newVariable(String name, VariableType type, Number lowerBound, Number upperBound,
+	static public Variable newVariable(String name, VariableType type, double lowerBound, double upperBound,
 			Object... references) {
 		/** TODO provide static constructors for all types. */
 		return new Variable(name, type, lowerBound, upperBound, references);
 	}
 
-	private Number lowerBound;
+	private double lowerBound;
 
 	/**
 	 * Not <code>null</code>, may be empty (an empty description).
@@ -105,7 +105,7 @@ public class Variable {
 
 	private VariableType type;
 
-	private Number upperBound;
+	private double upperBound;
 
 	/**
 	 * Builds a variable of the given name and with the provided references.
@@ -115,17 +115,17 @@ public class Variable {
 	 * @param type
 	 *            not <code>null</code>.
 	 * @param lowerBound
-	 *            not <code>null</code>.
+	 *            not <code>NAN</code>, not positive infinity.
 	 * @param upperBound
-	 *            not <code>null</code>.
+	 *            not <code>NAN</code>, not negative infinity.
 	 * @param references
 	 *            not <code>null</code>, no <code>null</code> reference inside. May
 	 *            be empty.
 	 */
-	private Variable(String name, VariableType type, Number lowerBound, Number upperBound, Object... references) {
+	private Variable(String name, VariableType type, double lowerBound, double upperBound, Object... references) {
 		this.type = requireNonNull(type);
-		this.lowerBound = requireNonNull(lowerBound);
-		this.upperBound = requireNonNull(upperBound);
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 		this.name = requireNonNull(name);
 		/**
 		 * TODO check javadoc warnings, should trigger when type param is unused.
@@ -159,7 +159,7 @@ public class Variable {
 	 * @return minus infinity, for a lower bound equal to minus infinity, may not be
 	 *         positive infinity.
 	 */
-	public Number getLowerBound() {
+	public double getLowerBound() {
 		return lowerBound;
 	}
 
@@ -187,7 +187,7 @@ public class Variable {
 	 * @return positive infinity, for an upper bound equal to positive infinity, may
 	 *         not be negative infinity, may not be smaller than the lower bound.
 	 */
-	public Number getUpperBound() {
+	public double getUpperBound() {
 		return upperBound;
 	}
 

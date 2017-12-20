@@ -21,11 +21,11 @@ public class SolutionImmutable implements Solution {
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<Constraint, Number> dualValues;
+	private final Map<Constraint, Double> dualValues;
 
-	private final Number objectiveValue;
+	private final double objectiveValue;
 
-	private final ImmutableMap<Variable, Number> primalValues;
+	private final ImmutableMap<Variable, Double> primalValues;
 
 	private final IMP problem;
 
@@ -65,27 +65,27 @@ public class SolutionImmutable implements Solution {
 
 	private SolutionImmutable(IMP problem, SolutionAlone solution, boolean protectProblem) {
 		Preconditions.checkNotNull(solution);
-		final Builder<Variable, Number> primalValues = ImmutableMap.builder();
-		final Builder<Constraint, Number> dualValues = ImmutableMap.builder();
+		final Builder<Variable, Double> primalValuesB = ImmutableMap.builder();
+		final Builder<Constraint, Double> dualValuesB = ImmutableMap.builder();
 
 		for (Variable variable : solution.getVariables()) {
-			final Number value = solution.getValue(variable);
+			final Double value = solution.getValue(variable);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getVariables().contains(variable),
 						"Solution contains a variable that is not in the problem: " + variable + ".");
-				primalValues.put(variable, value);
+				primalValuesB.put(variable, value);
 			}
 		}
 		for (Constraint constraint : solution.getConstraints()) {
-			final Number value = solution.getDualValue(constraint);
+			final Double value = solution.getDualValue(constraint);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getConstraints().contains(constraint));
-				dualValues.put(constraint, value);
+				dualValuesB.put(constraint, value);
 			}
 		}
 		objectiveValue = solution.getObjectiveValue();
-		this.primalValues = primalValues.build();
-		this.dualValues = dualValues.build();
+		this.primalValues = primalValuesB.build();
+		this.dualValues = dualValuesB.build();
 		if (protectProblem) {
 			this.problem = ImmutableMP.copyOf(problem);
 		} else {
@@ -124,7 +124,7 @@ public class SolutionImmutable implements Solution {
 	}
 
 	@Override
-	public Number getComputedObjectiveValue() {
+	public Double getComputedObjectiveValue() {
 		final SumTerms objectiveFunction = problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
@@ -138,13 +138,13 @@ public class SolutionImmutable implements Solution {
 	}
 
 	@Override
-	public Number getDualValue(Constraint constraint) {
+	public Double getDualValue(Constraint constraint) {
 		Preconditions.checkNotNull(constraint);
 		return dualValues.get(constraint);
 	}
 
 	@Override
-	public Number getObjectiveValue() {
+	public Double getObjectiveValue() {
 		return objectiveValue;
 	}
 
@@ -154,7 +154,7 @@ public class SolutionImmutable implements Solution {
 	}
 
 	@Override
-	public Number getValue(Variable variable) {
+	public Double getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
 		return primalValues.get(variable);
 	}

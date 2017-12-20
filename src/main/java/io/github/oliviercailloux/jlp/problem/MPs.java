@@ -66,16 +66,16 @@ public class MPs {
 		}
 		s += "Bounds" + N;
 		for (Variable variable : problem.getVariables()) {
-			final Number lb = variable.getLowerBound();
-			final Number ub = variable.getUpperBound();
+			final double lb = variable.getLowerBound();
+			final double ub = variable.getUpperBound();
 
-			if (lb.doubleValue() != Double.NEGATIVE_INFINITY || ub.doubleValue() != Double.POSITIVE_INFINITY) {
+			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
 				s += "\t";
-				if (lb.doubleValue() != Double.NEGATIVE_INFINITY) {
+				if (lb != Double.NEGATIVE_INFINITY) {
 					s += lb + " <= ";
 				}
 				s += variable;
-				if (ub.doubleValue() != Double.POSITIVE_INFINITY) {
+				if (ub != Double.POSITIVE_INFINITY) {
 					s += " <= " + ub;
 				}
 				s += N;

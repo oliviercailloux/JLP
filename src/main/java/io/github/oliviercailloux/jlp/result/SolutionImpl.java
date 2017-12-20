@@ -43,14 +43,14 @@ public class SolutionImpl implements Solution {
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<Constraint, Number> dualValues = new HashMap<>();
+	private final Map<Constraint, Double> dualValues = new HashMap<>();
 
-	private Number objectiveValue = null;
+	private Double objectiveValue = null;
 
 	/**
 	 * No <code>null</code> key or value.
 	 */
-	private final Map<Variable, Number> primalValues = new HashMap<>();
+	private final Map<Variable, Double> primalValues = new HashMap<>();
 
 	/**
 	 * Not <code>null</code>, immutable.
@@ -95,14 +95,14 @@ public class SolutionImpl implements Solution {
 		Preconditions.checkNotNull(solution);
 
 		for (Variable variable : solution.getVariables()) {
-			final Number value = solution.getValue(variable);
+			final Double value = solution.getValue(variable);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getVariables().contains(variable));
 				primalValues.put(variable, value);
 			}
 		}
 		for (Constraint constraint : solution.getConstraints()) {
-			final Number value = solution.getDualValue(constraint);
+			final Double value = solution.getDualValue(constraint);
 			if (value != null) {
 				Preconditions.checkArgument(problem.getConstraints().contains(constraint));
 				dualValues.put(constraint, value);
@@ -140,7 +140,7 @@ public class SolutionImpl implements Solution {
 	}
 
 	@Override
-	public Number getComputedObjectiveValue() {
+	public Double getComputedObjectiveValue() {
 		final SumTerms objectiveFunction = problem.getObjective().getFunction();
 		if (objectiveFunction == null) {
 			return null;
@@ -154,13 +154,13 @@ public class SolutionImpl implements Solution {
 	}
 
 	@Override
-	public Number getDualValue(Constraint constraint) {
+	public Double getDualValue(Constraint constraint) {
 		Preconditions.checkNotNull(constraint);
 		return dualValues.get(constraint);
 	}
 
 	@Override
-	public Number getObjectiveValue() {
+	public Double getObjectiveValue() {
 		return objectiveValue;
 	}
 
@@ -170,7 +170,7 @@ public class SolutionImpl implements Solution {
 	}
 
 	@Override
-	public Number getValue(Variable variable) {
+	public Double getValue(Variable variable) {
 		Preconditions.checkNotNull(variable);
 		return primalValues.get(variable);
 	}
@@ -196,7 +196,7 @@ public class SolutionImpl implements Solution {
 	 *         set, or the given value is not <code>null</code> and equals the dual
 	 *         value previously associated with the given variable.
 	 */
-	public boolean putDualValue(Constraint constraint, Number value) {
+	public boolean putDualValue(Constraint constraint, Double value) {
 		Preconditions.checkNotNull(constraint);
 		Preconditions.checkArgument(problem.getConstraints().contains(constraint));
 		dualValues.put(constraint, value);
@@ -220,7 +220,7 @@ public class SolutionImpl implements Solution {
 	 *         value set, or the given value is not <code>null</code> and equals the
 	 *         primal value previously associated with the given variable.
 	 */
-	public boolean putValue(Variable variable, Number value) {
+	public boolean putValue(Variable variable, Double value) {
 		Preconditions.checkNotNull(variable);
 		Preconditions.checkArgument(problem.getVariables().contains(variable));
 		final Number previous;
@@ -238,7 +238,7 @@ public class SolutionImpl implements Solution {
 	 * @param objectiveValue
 	 *            may be <code>null</code>.
 	 */
-	public void setObjectiveValue(Number objectiveValue) {
+	public void setObjectiveValue(Double objectiveValue) {
 		Preconditions.checkState(problem.getObjective().isComplete(),
 				"Objective value only with complete objective please.");
 		this.objectiveValue = objectiveValue;

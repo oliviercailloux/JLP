@@ -55,14 +55,14 @@ public interface SolutionAlone {
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated dual value.
 	 */
-	public Number getDualValue(Constraint constraint);
+	public Double getDualValue(Constraint constraint);
 
 	/**
 	 * Returns the objective value.
 	 *
 	 * @return <code>null</code> if not set.
 	 */
-	public Number getObjectiveValue();
+	public Double getObjectiveValue();
 
 	/**
 	 * Returns the primal value of the variable, if it is known. TODO indicate what
@@ -72,7 +72,7 @@ public interface SolutionAlone {
 	 *            not <code>null</code>.
 	 * @return <code>null</code> iff the variable has no associated primal value.
 	 */
-	public Number getValue(Variable variable);
+	public Double getValue(Variable variable);
 
 	/**
 	 * Retrieves a copy or read-only view of the variables which have their primal

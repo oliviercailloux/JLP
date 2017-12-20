@@ -27,7 +27,7 @@ public class SumTermUtils {
 	 *         linear expression has no associated value, zero if the given linear
 	 *         is empty.
 	 */
-	static public Double evaluate(SumTerms linear, Map<Variable, Number> values) {
+	static public Double evaluate(SumTerms linear, Map<Variable, Double> values) {
 		Preconditions.checkNotNull(linear);
 		Preconditions.checkNotNull(values);
 

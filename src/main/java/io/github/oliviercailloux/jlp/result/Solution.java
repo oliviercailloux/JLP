@@ -10,10 +10,10 @@ import io.github.oliviercailloux.jlp.problem.IMP;
 
 /**
  * <p>
- * A feasible, but not necessarily optimal, result of a {@link IMP}. The
- * problem that this solution satisfies is bound to this solution object. This
- * permits to also query for, e.g., constraints values, provided the adequate
- * variables have a value set.
+ * A feasible, but not necessarily optimal, result of a {@link IMP}. The problem
+ * that this solution satisfies is bound to this solution object. This permits
+ * to also query for, e.g., constraints values, provided the adequate variables
+ * have a value set.
  * </p>
  * <p>
  * The type of the objects used for the variables should have their
@@ -22,9 +22,9 @@ import io.github.oliviercailloux.jlp.problem.IMP;
  * be correctly implemented. The variables should be immutable.
  * </p>
  * <p>
- * Two solutions are {@link #equals(Object)} iff they have the same values after
- * conversion by {@link Number#doubleValue()} for the objective value and the
- * variables (primal and dual) values, and their bound problem is equal.
+ * Two solutions are {@link #equals(Object)} iff they have the same values for
+ * the objective value and the variables (primal and dual) values, and their
+ * bound problem is equal.
  * </p>
  * <p>
  * This interface has been designed for use with immutable numbers. The types
@@ -71,7 +71,7 @@ public interface Solution extends SolutionAlone {
 	 *
 	 * @return possibly <code>null</code>.
 	 */
-	public Number getComputedObjectiveValue();
+	public Double getComputedObjectiveValue();
 
 	/**
 	 * Returns, if it is known, the value corresponding to the dual variable
@@ -83,7 +83,7 @@ public interface Solution extends SolutionAlone {
 	 * @return <code>null</code> iff the variable has no associated dual value.
 	 */
 	@Override
-	public Number getDualValue(Constraint constraint);
+	public Double getDualValue(Constraint constraint);
 
 	/**
 	 * Returns the objective value. Returns necessarily <code>null</code> if the
@@ -92,7 +92,7 @@ public interface Solution extends SolutionAlone {
 	 * @return <code>null</code> if not set.
 	 */
 	@Override
-	public Number getObjectiveValue();
+	public Double getObjectiveValue();
 
 	/**
 	 * Retrieves the problem that this solution solves.
@@ -110,7 +110,7 @@ public interface Solution extends SolutionAlone {
 	 * @return <code>null</code> iff the variable has no associated primal value.
 	 */
 	@Override
-	public Number getValue(Variable variable);
+	public Double getValue(Variable variable);
 
 	/**
 	 * Retrieves a copy or read-only view of the variables which have a solution

@@ -54,9 +54,9 @@ public class MPExamples {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThreeLowX());
 		final Variable x = Variable.newInt("x");
 		final Variable y = Variable.newInt("y");
-		solution.setObjectiveValue(Integer.valueOf(5828));
-		solution.putValue(x, Integer.valueOf(16));
-		solution.putValue(y, Integer.valueOf(59));
+		solution.setObjectiveValue(5828d);
+		solution.putValue(x, 16d);
+		solution.putValue(y, 59d);
 		assert (solution.getComputedObjectiveValue().doubleValue() == solution.getObjectiveValue().doubleValue());
 		return solution;
 	}
@@ -70,9 +70,9 @@ public class MPExamples {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThree());
 		final Variable x = Variable.newInt("x");
 		final Variable y = Variable.newInt("y");
-		solution.setObjectiveValue(Integer.valueOf(6266));
-		solution.putValue(x, Integer.valueOf(22));
-		solution.putValue(y, Integer.valueOf(52));
+		solution.setObjectiveValue(6266d);
+		solution.putValue(x, 22d);
+		solution.putValue(y, 52d);
 		assert (solution.getComputedObjectiveValue().doubleValue() == solution.getObjectiveValue().doubleValue());
 		return solution;
 	}

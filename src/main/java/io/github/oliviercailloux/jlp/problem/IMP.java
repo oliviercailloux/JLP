@@ -42,13 +42,12 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * <p>
  * Two such problems are considered equal when they define the same variables
  * (as per {@link #equals}), constraints, objective function, and bounds for the
- * variables as determined by the {@link Number#doubleValue()} method. The
- * equality between two problems does not take the names into account: neither
- * the problem, variables or constraints names are considered. Two equal
- * problems, as determined by this class {@link #equals(Object)} method, have
- * the same set of feasible solutions, although a non equality between two
- * problems does <em>not</em> imply that they have different sets of feasible
- * solutions.
+ * variables. The equality between two problems does not take the names into
+ * account: neither the problem, variables or constraints names are considered.
+ * Two equal problems, as determined by this class {@link #equals(Object)}
+ * method, have the same set of feasible solutions, although a non equality
+ * between two problems does <em>not</em> imply that they have different sets of
+ * feasible solutions.
  * </p>
  *
  * @author Olivier Cailloux
