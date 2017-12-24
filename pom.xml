@@ -6,7 +6,7 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<name>JLP</name>
 	<description>Java Linear Programming: specify and solve linear programs in object-oriented fashion.</description>
-	<url>http://github.com/oliviercailloux/jlp</url>
+	<url>http://github.com/oliviercailloux/JLP</url>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License version 3</name>
