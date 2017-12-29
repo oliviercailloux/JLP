@@ -12,6 +12,9 @@ import com.google.common.base.Preconditions;
  * as immutable. An object of this class is indeed immutable iff the variable is
  * immutable.
  * </p>
+ * <p>
+ * TODO consider forbidding zero coef.
+ * </p>
  *
  * @author Olivier Cailloux
  *
@@ -27,14 +30,13 @@ public class Term {
 
 	/**
 	 * @param coefficient
-	 *            a valid number.
+	 *            a finite number.
 	 * @param variable
 	 *            not <code>null</code>.
 	 */
 	private Term(double coefficient, Variable variable) {
 		Preconditions.checkNotNull(variable);
-		Preconditions.checkArgument(!Double.isInfinite(coefficient));
-		Preconditions.checkArgument(!Double.isNaN(coefficient));
+		Preconditions.checkArgument(Double.isFinite(coefficient));
 		this.coefficient = coefficient;
 		this.variable = variable;
 	}
@@ -62,7 +64,7 @@ public class Term {
 	/**
 	 * Retrieves the coefficient that multiplies the variable in this term.
 	 *
-	 * @return a valid number.
+	 * @return a finite number.
 	 */
 	public double getCoefficient() {
 		return coefficient;

@@ -7,6 +7,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
@@ -17,6 +19,56 @@ import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPUtils {
 	private static final Logger s_logger = LoggerFactory.getLogger(MPUtils.class);
+
+	/**
+	 * Retrieves a long description, with line breaks, of the given problem.
+	 *
+	 * @param problem
+	 *            not <code>null</code>.
+	 * @return not <code>null</code>, not empty.
+	 */
+	static public String getLongDescription(IMP problem) {
+		Preconditions.checkNotNull(problem);
+		String N = System.getProperty("line.separator");
+		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
+		String s = "Problem" + name + N;
+
+		if (!problem.getObjective().isEmpty()) {
+			s += problem.getObjective().getDirection() + N;
+			s += " " + problem.getObjective().getFunction() + N;
+		} else {
+			s += "Find one solution" + N;
+		}
+		s += "Subject To" + N;
+		for (Constraint constraint : problem.getConstraints()) {
+			s += "\t" + constraint + N;
+		}
+		s += "Bounds" + N;
+		for (Variable variable : problem.getVariables()) {
+			final double lb = variable.getLowerBound();
+			final double ub = variable.getUpperBound();
+
+			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
+				s += "\t";
+				if (lb != Double.NEGATIVE_INFINITY) {
+					s += lb + " <= ";
+				}
+				s += variable;
+				if (ub != Double.POSITIVE_INFINITY) {
+					s += " <= " + ub;
+				}
+				s += N;
+			}
+		}
+
+		s += "Variables" + N;
+		for (Variable variable : problem.getVariables()) {
+			s += "\t" + variable + " " + variable.getType() + N;
+		}
+
+		return s;
+
+	}
 
 	/**
 	 * <p>

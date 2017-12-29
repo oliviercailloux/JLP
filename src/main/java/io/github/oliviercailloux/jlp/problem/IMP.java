@@ -1,11 +1,7 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Set;
-
-import com.google.common.base.Preconditions;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
@@ -31,23 +27,16 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * reused when reading variables and constraints sets.
  * </p>
  * <p>
- * This interface has been designed for use with immutable numbers: the types
- * {@link Double}, {@link Integer}, {@link BigDecimal}, {@link BigInteger} will
- * pose no problem. Using other types of numbers is unsupported.
- * </p>
- * <p>
  * Some implementations of this interface may be read-only (either because they
- * are immutable or because they are a read-only view), in which case an attempt
- * to change the state of this object will throw
- * {@link UnsupportedOperationException}.
+ * are immutable or because they are a read-only view).
  * </p>
  * <p>
- * Two such problems are considered equal when they define the same variables
- * (as per {@link #equals}), constraints, objective function, and bounds for the
- * variables. The equality between two problems does not take the names into
+ * Two such problems are considered equal when they define the same (as per
+ * {@link #equals}) variables, constraints, objective function, and bounds for
+ * the variables. The equality between two problems does not take the names into
  * account: neither the problem, variables or constraints names are considered.
- * Two equal problems, as determined by this class {@link #equals(Object)}
- * method, have the same set of feasible solutions, although a non equality
+ * Two equal problems, as determined by this interface {@link #equals(Object)}
+ * contract, have the same set of feasible solutions, although a non equality
  * between two problems does <em>not</em> imply that they have different sets of
  * feasible solutions.
  * </p>
@@ -56,58 +45,6 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  *
  */
 public interface IMP {
-
-	/**
-	 * Retrieves a long description, with line breaks, of the given problem.
-	 *
-	 * @param <T>
-	 *            the type of the variables in the problem.
-	 * @param problem
-	 *            not <code>null</code>.
-	 * @return not <code>null</code>, not empty.
-	 */
-	static public String getLongDescription(IMP problem) {
-		Preconditions.checkNotNull(problem);
-		String N = System.getProperty("line.separator");
-		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
-		String s = "Problem" + name + N;
-
-		if (!problem.getObjective().isEmpty()) {
-			s += problem.getObjective().getDirection() + N;
-			s += " " + problem.getObjective().getFunction() + N;
-		} else {
-			s += "Find one solution" + N;
-		}
-		s += "Subject To" + N;
-		for (Constraint constraint : problem.getConstraints()) {
-			s += "\t" + constraint + N;
-		}
-		s += "Bounds" + N;
-		for (Variable variable : problem.getVariables()) {
-			final double lb = variable.getLowerBound();
-			final double ub = variable.getUpperBound();
-
-			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
-				s += "\t";
-				if (lb != Double.NEGATIVE_INFINITY) {
-					s += lb + " <= ";
-				}
-				s += variable;
-				if (ub != Double.POSITIVE_INFINITY) {
-					s += " <= " + ub;
-				}
-				s += N;
-			}
-		}
-
-		s += "Variables" + N;
-		for (Variable variable : problem.getVariables()) {
-			s += "\t" + variable + " " + variable.getType() + N;
-		}
-
-		return s;
-
-	}
 
 	/**
 	 * Two problems are considered equal when they define the same variables (as per
