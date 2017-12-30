@@ -1,8 +1,10 @@
 package io.github.oliviercailloux.jlp.elements;
 
-import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.Lists;
 
@@ -16,24 +18,21 @@ import com.google.common.collect.Lists;
  */
 public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> {
 
-	private static final long serialVersionUID = 1L;
-
 	private final List<Term> delegate;
 
 	SumTermsBuilder() {
-		/** Public no argument constructor. */
-		delegate = Lists.newLinkedList();
+		delegate = Lists.newArrayList();
 	}
 
-	SumTermsBuilder(Collection<Term> terms) {
-		delegate = Lists.newLinkedList(terms);
+	SumTermsBuilder(Iterable<Term> terms) {
+		delegate = Lists.newArrayList(terms);
 	}
 
 	/**
 	 * Adds a term to this linear expression.
 	 *
 	 * @param coefficient
-	 *            a valid double.
+	 *            a finite number.
 	 * @param variable
 	 *            not <code>null</code>.
 	 */
@@ -48,13 +47,16 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 	}
 
 	/**
-	 * Returns a string representation of the state of this builder.
+	 * Returns a string representation of this sum. This should be used for debug
+	 * purposes only as this method gives no control on the number of decimal digits
+	 * shown.
 	 *
-	 * @return not <code>null</code>, not empty
 	 */
 	@Override
 	public String toString() {
-		return delegate.toString();
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.addValue(Joiner.on(" + ").join(this));
+		return helper.toString();
 	}
 
 	@Override

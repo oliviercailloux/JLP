@@ -32,8 +32,8 @@ import com.google.common.collect.ImmutableList;
  *
  */
 public class SumTerms extends ForwardingList<Term> {
-	static public SumTermsBuilder builder() {
-		return new SumTermsBuilder();
+	static public SumTermsBuilder builder(Term... terms) {
+		return new SumTermsBuilder(Arrays.asList(terms));
 	}
 
 	/**
