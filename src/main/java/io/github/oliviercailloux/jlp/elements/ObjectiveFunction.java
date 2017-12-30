@@ -1,9 +1,11 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static io.github.oliviercailloux.jlp.elements.OptimizationDirection.MAX;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
 
 /**
  * An objective function with optimization direction.
@@ -17,21 +19,21 @@ import com.google.common.base.Objects.ToStringHelper;
  *
  */
 public class ObjectiveFunction {
-	private static final ObjectiveFunction ZERO_MAX = new ObjectiveFunction(SumTerms.of(), OptimizationDirection.MAX);
+	private static final ObjectiveFunction ZERO_MAX = new ObjectiveFunction(SumTerms.of(), MAX);
 
 	/**
-	 * Creates a new objective function with direction
+	 * Creates a new objective function with optimization direction
 	 * {@link OptimizationDirection#MAX}.
 	 *
 	 * @param objectiveFunction
 	 *            not <code>null</code>.
 	 */
 	static public ObjectiveFunction max(SumTerms objectiveFunction) {
-		return new ObjectiveFunction(objectiveFunction, OptimizationDirection.MAX);
+		return new ObjectiveFunction(objectiveFunction, MAX);
 	}
 
 	/**
-	 * Creates a new objective function with direction
+	 * Creates a new objective function with optimization direction
 	 * {@link OptimizationDirection#MIN}.
 	 *
 	 * @param objectiveFunction
@@ -42,7 +44,7 @@ public class ObjectiveFunction {
 	}
 
 	/**
-	 * Creates a new objective function with direction.
+	 * Creates a new objective function.
 	 *
 	 * @param objectiveFunction
 	 *            not <code>null</code>.
@@ -53,6 +55,12 @@ public class ObjectiveFunction {
 		return new ObjectiveFunction(objectiveFunction, direction);
 	}
 
+	/**
+	 * Returns the objective function with an empty sum of terms and a
+	 * {@link OptimizationDirection#MAX} optimization direction.
+	 *
+	 * @return a zero objective function.
+	 */
 	static public ObjectiveFunction zero() {
 		return ZERO_MAX;
 	}
@@ -79,20 +87,11 @@ public class ObjectiveFunction {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
 		if (!(obj instanceof ObjectiveFunction)) {
 			return false;
 		}
 		ObjectiveFunction obj2 = (ObjectiveFunction) obj;
-		if (!Objects.equal(getDirection(), obj2.getDirection())) {
-			return false;
-		}
-		if (!Objects.equal(getFunction(), obj2.getFunction())) {
-			return false;
-		}
-		return true;
+		return (obj == this) || (direction.equals(obj2.direction) && objectiveFunction.equals(obj2.objectiveFunction));
 	}
 
 	/**
@@ -119,17 +118,6 @@ public class ObjectiveFunction {
 	}
 
 	/**
-	 * Tests whether this objective is fully specified, i.e. has a function and a
-	 * direction set.
-	 *
-	 * @return <code>true</code> iff both the objective function and the direction
-	 *         are non <code>null</code>.
-	 */
-	public boolean isComplete() {
-		return objectiveFunction != null && direction != null;
-	}
-
-	/**
 	 * Tests whether this objective is zero, i.e. has an empty function.
 	 *
 	 * @return <code>true</code> iff the function is an empty sum.
@@ -140,9 +128,9 @@ public class ObjectiveFunction {
 
 	@Override
 	public String toString() {
-		final ToStringHelper helper = Objects.toStringHelper(this);
-		helper.add("Function", objectiveFunction);
-		helper.add("Direction", direction);
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.addValue(direction);
+		helper.add("function", objectiveFunction);
 		return helper.toString();
 	}
 }
