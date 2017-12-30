@@ -5,6 +5,7 @@ import com.google.common.base.Objects.ToStringHelper;
 
 /**
  * The dimension of a problem, in numbers of variables and constraints.
+ *
  * Immutable.
  *
  * @author Olivier Cailloux

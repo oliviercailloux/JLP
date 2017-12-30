@@ -24,16 +24,17 @@ import com.google.common.collect.ImmutableList;
  * </p>
  * <p>
  * A variable {@link #equals(Object)} an other one when both descriptions are
- * equal. (This is why it is important to make the description unique.)
+ * equal and they have the same bounds and type. (This is why it is important to
+ * make the description unique.)
  * </p>
  * <p>
  * It is expected that this object be immutable. In particular, it is important
- * that their description should not change once they have been added to a
+ * that their description do not change once they have been added to a
  * constraint, or a problem. (This is because hashcode, or equality status viz
  * other variables, should not change, and because it will also be referred to
- * in solutions of problems.) Hence, the bounds (or type) of this variable
- * should be considered as a structural property of the variable, that will
- * never change.
+ * in solutions of problems.) Hence, the bounds and type of this variable should
+ * be considered as a structural property of the variable, that will never
+ * change.
  * </p>
  * <p>
  * A variable bounds may be set to anything, as long as the lower bound is lower
@@ -56,22 +57,21 @@ import com.google.common.collect.ImmutableList;
  * this documentation.
  * </p>
  * <p>
- * Rationale for the uniqueness constraint of the description: this permits to
- * the user to retrieve the variable knowing only its description, given a
- * problem. We could also have made equality depend on its name and references,
- * to make it possible to retrieve the variable knowing its name and references.
- * But this has no advantage: we would then have to mandate as especially
- * important that the references do not change and identify uniquely the
- * variable, in which case it is anyway probably easy to provide a unique string
- * description; and furthermore the user would have to have underhand a
- * reference equal to the original reference in order to retrieve the variable,
- * not just a description of it. In any case, ensuring uniqueness of the
- * description is a good idea to make the MP contents clear, and provides for a
- * cleaner interface and concept. Furthermore, the user may with the adopted
- * solution refer to mutable objects, provided that the description itself does
- * not change. Finally, it is probably easy for the user to retrieve the
- * description from the variable name and references, though the converse may
- * not hold as indicated above.
+ * Rationale for the uniqueness constraint of the description: this makes it
+ * possible for the user to retrieve the variable knowing only its description,
+ * given a problem. We could also have made equality depend on its name and
+ * references, to make it possible to retrieve the variable knowing its name and
+ * references. But this has no advantage: we would then have to mandate as
+ * especially important that the references do not change and identify uniquely
+ * the variable, in which case it is anyway probably easy to provide a unique
+ * string description; and furthermore the user would have to hold a reference
+ * equal to the original reference in order to retrieve the variable, not just a
+ * description of it. In any case, ensuring uniqueness of the description is a
+ * good idea to make the MP contents clear, and provides for a cleaner interface
+ * and concept. Furthermore, the user may with the adopted solution refer to
+ * mutable objects, provided that the description itself does not change.
+ * Finally, it is probably easier for the user to retrieve the description from
+ * the variable name and references than the converse.
  * </p>
  *
  * @author Olivier Cailloux
@@ -152,7 +152,8 @@ public class Variable {
 			return false;
 		}
 		final Variable v2 = (Variable) obj;
-		return this == v2 || toString().equals(v2.toString());
+		return this == v2 || (toString().equals(v2.toString()) && lowerBound == v2.lowerBound
+				&& upperBound == v2.upperBound && type.equals(v2.type));
 	}
 
 	/**
@@ -193,7 +194,7 @@ public class Variable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, refs);
+		return Objects.hash(name, refs, lowerBound, upperBound, type);
 	}
 
 	/**

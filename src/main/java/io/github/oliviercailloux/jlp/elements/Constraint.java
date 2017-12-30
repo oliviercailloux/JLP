@@ -37,8 +37,8 @@ import com.google.common.base.Preconditions;
  * constraint might be perceived as different than the first one, and the user
  * might genuinely want both of them to appear in the MP, because the second
  * constraint might have a general form x < C×y, with a value C depending on
- * some data of the problem, and C=1 being one possibility. In such a case, only
- * the description would permit to distinguish both constraints.
+ * some data of the problem, with C=1 being one possibility. In such a case,
+ * only the description would permit to distinguish both constraints.
  * </p>
  *
  * @author Olivier Cailloux
