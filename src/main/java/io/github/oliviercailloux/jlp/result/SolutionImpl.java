@@ -239,8 +239,6 @@ public class SolutionImpl implements Solution {
 	 *            may be <code>null</code>.
 	 */
 	public void setObjectiveValue(Double objectiveValue) {
-		Preconditions.checkState(problem.getObjective().isComplete(),
-				"Objective value only with complete objective please.");
 		this.objectiveValue = objectiveValue;
 	}
 
