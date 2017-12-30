@@ -17,11 +17,11 @@ import com.google.common.collect.Sets;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
-import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableType;
+import io.github.oliviercailloux.jlp.utils.MPUtils;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
 /**
@@ -51,7 +51,7 @@ public class MP implements IMP {
 		for (Variable variable : source.getVariables()) {
 			mp.addVariable(variable);
 		}
-		mp.setObjective(source.getObjective().getFunction(), source.getObjective().getDirection());
+		mp.setObjective(source.getObjective());
 		for (Constraint constraint : source.getConstraints()) {
 			mp.add(constraint);
 		}
@@ -74,16 +74,13 @@ public class MP implements IMP {
 	 */
 	private String mpName;
 
-	private SumTerms objectiveFunction;
-
-	private OptimizationDirection optType;
+	private ObjectiveFunction obj;
 
 	private final Multiset<VariableType> varCount = EnumMultiset.create(VariableType.class);
 
-	public MP() {
+	private MP() {
 		mpName = "";
-		objectiveFunction = null;
-		optType = null;
+		obj = ObjectiveFunction.zero();
 		final HashBiMap<String, Variable> b = HashBiMap.create();
 		descrToVar = b;
 	}
@@ -139,18 +136,17 @@ public class MP implements IMP {
 	 */
 	public void clear() {
 		mpName = "";
-		objectiveFunction = null;
-		optType = null;
+		obj = ObjectiveFunction.zero();
 		constraints.clear();
 		varCount.clear();
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof IMP)) {
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof IMP)) {
 			return false;
 		}
-		IMP p2 = (IMP) obj;
+		IMP p2 = (IMP) o2;
 		return SolverUtils.equivalent(this, p2);
 	}
 
@@ -172,7 +168,7 @@ public class MP implements IMP {
 
 	@Override
 	public ObjectiveFunction getObjective() {
-		return ObjectiveFunction.of(objectiveFunction, optType);
+		return obj;
 	}
 
 	@Override
@@ -236,35 +232,10 @@ public class MP implements IMP {
 	 * @param direction
 	 *            <code>null</code> for not set (removes a possibly set optimization
 	 *            direction).
-	 * @return <code>true</code> iff the call modified the state of this object.
 	 */
-	public boolean setObjective(SumTerms objectiveFunction, OptimizationDirection direction) {
-		final boolean equivFct = Equivalence.equals().equivalent(this.objectiveFunction, objectiveFunction);
-		if (!equivFct) {
-			if (objectiveFunction != null) {
-				addVariables(objectiveFunction);
-			}
-			this.objectiveFunction = objectiveFunction;
-		}
-		final boolean equalDirs = optType == direction;
-		optType = direction;
-		return !equivFct || !equalDirs;
-	}
-
-	/**
-	 * Sets or removes the optimization direction. The objective function itself
-	 * (without direction), if set, is unchanged: only the direction possibly
-	 * changes.
-	 *
-	 * @param dir
-	 *            <code>null</code> to remove, if set, the optimization direction
-	 *            information.
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 */
-	public boolean setObjectiveDirection(OptimizationDirection optType) {
-		final boolean equalDir = this.optType == optType;
-		this.optType = optType;
-		return !equalDir;
+	public void setObjective(ObjectiveFunction obj) {
+		addVariables(obj.getFunction());
+		this.obj = requireNonNull(obj);
 	}
 
 	/**
@@ -273,45 +244,7 @@ public class MP implements IMP {
 	 * @return not <code>null</code>, not empty.
 	 */
 	public String toLongDescription() {
-		String N = System.getProperty("line.separator");
-		final String name = getName().equals("") ? "" : " " + getName();
-		String s = "Problem" + name + N;
-
-		if (!getObjective().isEmpty()) {
-			s += getObjective().getDirection() + N;
-			s += " " + getObjective().getFunction() + N;
-		} else {
-			s += "Find one solution" + N;
-		}
-		s += "Subject To" + N;
-		for (Constraint constraint : getConstraints()) {
-			s += "\t" + constraint + N;
-		}
-		s += "Bounds" + N;
-		for (Variable variable : getVariables()) {
-			final double lb = variable.getLowerBound();
-			final double ub = variable.getUpperBound();
-
-			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
-				s += "\t";
-				if (lb != Double.NEGATIVE_INFINITY) {
-					s += lb + " ≤ ";
-				}
-				s += variable;
-				if (ub != Double.POSITIVE_INFINITY) {
-					s += " ≤ " + ub;
-				}
-				s += N;
-			}
-		}
-
-		s += "Variables" + N;
-		for (Variable variable : getVariables()) {
-			s += "\t" + variable + " " + variable.getType() + N;
-		}
-
-		return s;
-
+		return MPUtils.getLongDescription(this);
 	}
 
 	@Override

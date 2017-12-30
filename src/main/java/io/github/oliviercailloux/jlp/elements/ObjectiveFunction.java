@@ -1,43 +1,82 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 
 /**
- * An objective function with optimization direction (possibly
- * <code>null</code>s). Immutable.
+ * An objective function with optimization direction.
+ *
+ * The objective function may be zero, meaning an empty sum of terms. This may
+ * be used to indicate that any solution is looked for.
+ *
+ * Immutable.
  *
  * @author Olivier Cailloux
  *
  */
 public class ObjectiveFunction {
-	static public ObjectiveFunction of(SumTerms objectiveFunction, OptimizationDirection direction) {
-		return new ObjectiveFunction(objectiveFunction, direction);
+	private static final ObjectiveFunction ZERO_MAX = new ObjectiveFunction(SumTerms.of(), OptimizationDirection.MAX);
+
+	/**
+	 * Creates a new objective function with direction
+	 * {@link OptimizationDirection#MAX}.
+	 *
+	 * @param objectiveFunction
+	 *            not <code>null</code>.
+	 */
+	static public ObjectiveFunction max(SumTerms objectiveFunction) {
+		return new ObjectiveFunction(objectiveFunction, OptimizationDirection.MAX);
 	}
 
 	/**
-	 * May be <code>null</code>. TODO check why this is allowed.
+	 * Creates a new objective function with direction
+	 * {@link OptimizationDirection#MIN}.
+	 *
+	 * @param objectiveFunction
+	 *            not <code>null</code>.
 	 */
-	final private OptimizationDirection direction;
-
-	/**
-	 * May be <code>null</code>.
-	 */
-	final private SumTerms objectiveFunction;
+	static public ObjectiveFunction min(SumTerms objectiveFunction) {
+		return new ObjectiveFunction(objectiveFunction, OptimizationDirection.MIN);
+	}
 
 	/**
 	 * Creates a new objective function with direction.
 	 *
 	 * @param objectiveFunction
-	 *            may be <code>null</code>.
+	 *            not <code>null</code>.
 	 * @param direction
-	 *            may be <code>null</code>.
+	 *            not <code>null</code>.
 	 */
-	private ObjectiveFunction(SumTerms objectiveFunction, OptimizationDirection direction) {
-		this.objectiveFunction = objectiveFunction;
-		this.direction = direction;
+	static public ObjectiveFunction of(SumTerms objectiveFunction, OptimizationDirection direction) {
+		return new ObjectiveFunction(objectiveFunction, direction);
 	}
 
+	static public ObjectiveFunction zero() {
+		return ZERO_MAX;
+	}
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	final private OptimizationDirection direction;
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	final private SumTerms objectiveFunction;
+
+	private ObjectiveFunction(SumTerms objectiveFunction, OptimizationDirection direction) {
+		this.objectiveFunction = requireNonNull(objectiveFunction);
+		this.direction = requireNonNull(direction);
+	}
+
+	/**
+	 * Two objective functions are equal iff they have equal functions and
+	 * directions.
+	 *
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
@@ -57,9 +96,9 @@ public class ObjectiveFunction {
 	}
 
 	/**
-	 * Retrieves the optimization direction of the objective function to be.
+	 * Retrieves the optimization direction of the objective.
 	 *
-	 * @return possibly <code>null</code>.
+	 * @return not <code>null</code>.
 	 */
 	public OptimizationDirection getDirection() {
 		return direction;
@@ -68,7 +107,7 @@ public class ObjectiveFunction {
 	/**
 	 * Retrieves the objective function stored in this object.
 	 *
-	 * @return possibly <code>null</code>. Is a copy or is immutable.
+	 * @return not <code>null</code>, possibly zero.
 	 */
 	public SumTerms getFunction() {
 		return objectiveFunction;
@@ -91,14 +130,12 @@ public class ObjectiveFunction {
 	}
 
 	/**
-	 * Tests whether this objective is empty, i.e. has neither a function nor a
-	 * direction set.
+	 * Tests whether this objective is zero, i.e. has an empty function.
 	 *
-	 * @return <code>true</code> iff both the objective function and the direction
-	 *         are <code>null</code>.
+	 * @return <code>true</code> iff the function is an empty sum.
 	 */
-	public boolean isEmpty() {
-		return objectiveFunction == null && direction == null;
+	public boolean isZero() {
+		return getFunction().isEmpty();
 	}
 
 	@Override

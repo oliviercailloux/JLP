@@ -83,9 +83,7 @@ public interface IMP {
 	public String getName();
 
 	/**
-	 * Retrieves a copy or a read-only view of the objective function. It is
-	 * possible that the objective function or the direction inside is
-	 * <code>null</code>, or that both are <code>null</code>.
+	 * Retrieves the objective function.
 	 *
 	 * @return not <code>null</code>.
 	 */

@@ -33,7 +33,7 @@ public class MPUtils {
 		final String name = problem.getName().equals("") ? "" : " " + problem.getName();
 		String s = "Problem" + name + N;
 
-		if (!problem.getObjective().isEmpty()) {
+		if (!problem.getObjective().isZero()) {
 			s += problem.getObjective().getDirection() + N;
 			s += " " + problem.getObjective().getFunction() + N;
 		} else {

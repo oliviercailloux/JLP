@@ -202,7 +202,7 @@ public class SolverUtils {
 	static public String getAsString(IMP problem) {
 		final ToStringHelper helper = Objects.toStringHelper(problem);
 		helper.addValue('\'' + problem.getName() + '\'');
-		if (!problem.getObjective().isEmpty()) {
+		if (!problem.getObjective().isZero()) {
 			helper.addValue("" + problem.getObjective().getDirection() + " " + problem.getObjective().getFunction());
 		}
 		helper.addValue("" + problem.getVariables().size() + " variables");
