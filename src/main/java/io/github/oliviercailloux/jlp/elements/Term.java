@@ -1,5 +1,8 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import com.google.common.base.Preconditions;
 
 /**
@@ -92,12 +95,34 @@ public class Term {
 	 */
 	@Override
 	public String toString() {
+		final String formattedCoef;
+
 		if (getCoefficient() == 1d) {
-			return getVariable().toString();
+			formattedCoef = "";
+		} else if (getCoefficient() == -1d) {
+			formattedCoef = "-";
+		} else {
+			/**
+			 * Using DecimalFormat I get a suffix of E0 when the decimal exponent is zero,
+			 * which I do not want.
+			 */
+//		final DecimalFormat formatter = new DecimalFormat("0.##E0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+//		formatter.applyPattern("#.##E0");
+//		final String formattedCoef = formatter.format(coefficient);
+
+			/**
+			 * TODO think about a better representation. Use space efficiently, 3 digits
+			 * precision is enough. We want to print 0.5d as 0.5 and 0.50000001d as 0.500.
+			 * We want to use E notation only if necessary or clearer (smaller than 0.1,
+			 * scale 2 or more; ≥ 1E6). Use thousands separator for big numbers. Better
+			 * write 100 001 than 1.00E+5 (both taking 7 chars anyway). Write 1E+6 instead
+			 * of 1.00E+6 when value is exactly 1E+6.
+			 */
+			final MathContext c = new MathContext(3);
+			final BigDecimal cD = new BigDecimal(coefficient);
+			formattedCoef = cD.round(c).toString() + ' ';
 		}
-		if (getCoefficient() == -1d) {
-			return "−" + getVariable().toString();
-		}
-		return getCoefficient() + "×" + getVariable().toString();
+
+		return formattedCoef + variable.toString();
 	}
 }

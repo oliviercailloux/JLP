@@ -2,9 +2,9 @@ package io.github.oliviercailloux.jlp.elements;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Arrays;
 import java.util.Objects;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -208,7 +208,9 @@ public class Variable {
 	@Override
 	public String toString() {
 		/** TODO. */
-		return name + "-" + Arrays.toString(refs.toArray());
+		final String suff = Joiner.on('-').join(refs);
+		final String sep = suff.isEmpty() ? "" : "-";
+		return name + sep + suff;
 	}
 
 }
