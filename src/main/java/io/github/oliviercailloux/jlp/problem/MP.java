@@ -179,16 +179,6 @@ public class MP implements IMP {
 
 	@Override
 	public List<Variable> getVariables() {
-		/**
-		 * TODO add getVarByName! (So that the problem is self-contained: I get a
-		 * problem, I want to add a cstr including vars x and y, how? Better: how to
-		 * retrieve a namedVar according to its name and refs? Better: change variable
-		 * to namedvariable, because anyway using own domain objects as vars would be
-		 * inappropriate as domain objects do not have bounds or domains.
-		 *
-		 * We could also use Guava’s interner, but we probably need to wait that it gets
-		 * richer.
-		 */
 		return Collections.unmodifiableList(variables);
 	}
 

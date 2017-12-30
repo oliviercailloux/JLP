@@ -197,8 +197,10 @@ public class Variable {
 	}
 
 	/**
-	 * Returns a short description of this variable, using its name and its
-	 * references.
+	 * Returns the description of this variable, using its name and its references.
+	 *
+	 * TODO provide a reusable algorithm so that user can get descr from name and
+	 * refs.
 	 *
 	 * @return not <code>null</code>.
 	 */
