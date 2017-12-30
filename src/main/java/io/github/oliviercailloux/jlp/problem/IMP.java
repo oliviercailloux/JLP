@@ -1,7 +1,7 @@
 package io.github.oliviercailloux.jlp.problem;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
@@ -59,13 +59,11 @@ public interface IMP {
 	public boolean equals(Object obj);
 
 	/**
-	 * Retrieves a copy or read-only view of the constraints in this problem. The
-	 * returned set uses insertion order, thus is iterated in the order the
-	 * constraints have been added to this problem.
+	 * Retrieves a copy or read-only view of the constraints in this problem.
 	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
-	public Set<Constraint> getConstraints();
+	public List<Constraint> getConstraints();
 
 	/**
 	 * Retrieves the dimension of this problem in number of variables and
@@ -102,11 +100,9 @@ public interface IMP {
 	public Optional<Variable> getVariable(String description);
 
 	/**
-	 * Retrieves a copy or a read-only view of the variables. The returned set uses
-	 * insertion order, thus is iterated in the order the variables have been added
-	 * to this problem.
+	 * Retrieves a copy or a read-only view of the variables.
 	 *
 	 * @return not <code>null</code>, but may be empty.
 	 */
-	public Set<Variable> getVariables();
+	public List<Variable> getVariables();
 }

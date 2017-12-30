@@ -3,7 +3,8 @@ package io.github.oliviercailloux.jlp.problem;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
-import java.util.Set;
+
+import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
@@ -31,13 +32,19 @@ public class ImmutableMP implements IMP {
 		return new ImmutableMP(MP.copyOf(source));
 	}
 
+	private final ImmutableList<Constraint> constraintsImmutable;
+
 	/**
 	 * Private (not shared).
 	 */
 	private IMP delegate;
 
+	private final ImmutableList<Variable> variablesImmutable;
+
 	private ImmutableMP(IMP delegate) {
 		this.delegate = requireNonNull(delegate);
+		constraintsImmutable = ImmutableList.copyOf(delegate.getConstraints());
+		variablesImmutable = ImmutableList.copyOf(delegate.getVariables());
 	}
 
 	@Override
@@ -46,8 +53,8 @@ public class ImmutableMP implements IMP {
 	}
 
 	@Override
-	public Set<Constraint> getConstraints() {
-		return delegate.getConstraints();
+	public ImmutableList<Constraint> getConstraints() {
+		return constraintsImmutable;
 	}
 
 	@Override
@@ -71,8 +78,8 @@ public class ImmutableMP implements IMP {
 	}
 
 	@Override
-	public Set<Variable> getVariables() {
-		return delegate.getVariables();
+	public ImmutableList<Variable> getVariables() {
+		return variablesImmutable;
 	}
 
 	@Override

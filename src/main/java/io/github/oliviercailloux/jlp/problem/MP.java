@@ -3,17 +3,16 @@ package io.github.oliviercailloux.jlp.problem;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.google.common.base.Equivalence;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
-import com.google.common.collect.Sets;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
@@ -63,9 +62,7 @@ public class MP implements IMP {
 		return new MP();
 	}
 
-	public Function<Variable, String> TO_STRING_NAMER = Variable::toString;
-
-	private final Set<Constraint> constraints = Sets.newLinkedHashSet();
+	private final List<Constraint> constraints = Lists.newLinkedList();
 
 	private BiMap<String, Variable> descrToVar;
 
@@ -77,6 +74,8 @@ public class MP implements IMP {
 	private ObjectiveFunction obj;
 
 	private final Multiset<VariableType> varCount = EnumMultiset.create(VariableType.class);
+
+	private final List<Variable> variables = Lists.newLinkedList();
 
 	private MP() {
 		mpName = "";
@@ -126,6 +125,7 @@ public class MP implements IMP {
 		}
 		descrToVar.put(descr, variable);
 		varCount.add(variable.getType());
+		variables.add(variable);
 		return true;
 	}
 
@@ -138,6 +138,7 @@ public class MP implements IMP {
 		mpName = "";
 		obj = ObjectiveFunction.zero();
 		constraints.clear();
+		variables.clear();
 		varCount.clear();
 	}
 
@@ -151,8 +152,8 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public Set<Constraint> getConstraints() {
-		return Collections.unmodifiableSet(constraints);
+	public List<Constraint> getConstraints() {
+		return Collections.unmodifiableList(constraints);
 	}
 
 	@Override
@@ -177,7 +178,7 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public Set<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		/**
 		 * TODO add getVarByName! (So that the problem is self-contained: I get a
 		 * problem, I want to add a cstr including vars x and y, how? Better: how to
@@ -188,7 +189,7 @@ public class MP implements IMP {
 		 * We could also use Guava’s interner, but we probably need to wait that it gets
 		 * richer.
 		 */
-		return Collections.unmodifiableSet(descrToVar.values());
+		return Collections.unmodifiableList(variables);
 	}
 
 	@Override
