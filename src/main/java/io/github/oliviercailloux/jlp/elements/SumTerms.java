@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
 
@@ -144,14 +146,16 @@ public class SumTerms extends ForwardingList<Term> {
 	}
 
 	/**
-	 * Returns a short string representation of this sum. This should be used for
-	 * debug purposes only as this method gives no control on the number of decimal
-	 * digits shown.
+	 * Returns a string representation of this sum. This should be used for debug
+	 * purposes only as this method gives no control on the number of decimal digits
+	 * shown.
 	 *
 	 */
 	@Override
 	public String toString() {
-		return Joiner.on(" + ").join(this);
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.addValue(Joiner.on(" + ").join(this));
+		return helper.toString();
 	}
 
 	private void initVariables() {

@@ -126,6 +126,12 @@ public class ObjectiveFunction {
 		return getFunction().isEmpty();
 	}
 
+	/**
+	 * Returns a string representation of this object. This should be used for debug
+	 * purposes only as this method gives no control on the number of decimal digits
+	 * shown in the function.
+	 *
+	 */
 	@Override
 	public String toString() {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
