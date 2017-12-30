@@ -13,7 +13,7 @@ import com.google.common.base.Objects;
  * The objective function may be zero, meaning an empty sum of terms. This may
  * be used to indicate that any solution is looked for.
  *
- * Immutable.
+ * Immutable (provided variables are immutable).
  *
  * @author Olivier Cailloux
  *

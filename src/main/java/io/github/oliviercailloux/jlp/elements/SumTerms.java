@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
  * structure a constraint of the kind ax+by, even though a might (on a given
  * instance) equal zero.
  * <p>
- * Immutable.
+ * Immutable (provided variables are immutable).
  * </p>
  *
  * @author Olivier Cailloux

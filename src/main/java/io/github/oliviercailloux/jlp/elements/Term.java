@@ -5,15 +5,10 @@ import com.google.common.base.Preconditions;
 /**
  * <p>
  * A term in a linear expression in a linear program or mixed integer program,
- * consisting of a coefficient multiplying a variable.
+ * consisting in a coefficient multiplying a variable.
  * </p>
  * <p>
- * Such terms should be used with immutable variables, and should be considered
- * as immutable. An object of this class is indeed immutable iff the variable is
- * immutable.
- * </p>
- * <p>
- * TODO consider forbidding zero coef.
+ * Terms are immutable (provided variables are).
  * </p>
  *
  * @author Olivier Cailloux
