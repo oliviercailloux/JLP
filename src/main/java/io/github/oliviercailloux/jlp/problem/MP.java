@@ -1,5 +1,8 @@
 package io.github.oliviercailloux.jlp.problem;
 
+import static io.github.oliviercailloux.jlp.elements.VariableKind.BOOL_KIND;
+import static io.github.oliviercailloux.jlp.elements.VariableKind.INT_KIND;
+import static io.github.oliviercailloux.jlp.elements.VariableKind.REAL_KIND;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
@@ -19,7 +22,7 @@ import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.elements.VariableType;
+import io.github.oliviercailloux.jlp.elements.VariableKind;
 import io.github.oliviercailloux.jlp.utils.MPUtils;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
@@ -73,7 +76,7 @@ public class MP implements IMP {
 
 	private ObjectiveFunction obj;
 
-	private final Multiset<VariableType> varCount = EnumMultiset.create(VariableType.class);
+	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
 
 	private final List<Variable> variables = Lists.newLinkedList();
 
@@ -124,7 +127,7 @@ public class MP implements IMP {
 			return false;
 		}
 		descrToVar.put(descr, variable);
-		varCount.add(variable.getType());
+		varCount.add(variable.getKind());
 		variables.add(variable);
 		return true;
 	}
@@ -158,8 +161,8 @@ public class MP implements IMP {
 
 	@Override
 	public MPDimension getDimension() {
-		return MPDimension.of(varCount.count(VariableType.BOOL), varCount.count(VariableType.INT),
-				varCount.count(VariableType.REAL), getConstraints().size());
+		return MPDimension.of(varCount.count(BOOL_KIND), varCount.count(INT_KIND), varCount.count(REAL_KIND),
+				getConstraints().size());
 	}
 
 	@Override

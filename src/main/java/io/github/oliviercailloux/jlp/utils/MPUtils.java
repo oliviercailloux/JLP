@@ -45,8 +45,8 @@ public class MPUtils {
 		}
 		s += "Bounds" + N;
 		for (Variable variable : problem.getVariables()) {
-			final double lb = variable.getLowerBound();
-			final double ub = variable.getUpperBound();
+			final double lb = variable.getBounds().lowerEndpoint();
+			final double ub = variable.getBounds().upperEndpoint();
 
 			if (lb != Double.NEGATIVE_INFINITY || ub != Double.POSITIVE_INFINITY) {
 				s += "\t";
@@ -63,7 +63,7 @@ public class MPUtils {
 
 		s += "Variables" + N;
 		for (Variable variable : problem.getVariables()) {
-			s += "\t" + variable + " " + variable.getType() + N;
+			s += "\t" + variable + " " + variable.getDomain() + N;
 		}
 
 		return s;

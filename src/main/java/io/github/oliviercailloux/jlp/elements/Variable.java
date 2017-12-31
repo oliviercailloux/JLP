@@ -1,60 +1,80 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static io.github.oliviercailloux.jlp.elements.FiniteRange.ALL_FINITE;
+import static io.github.oliviercailloux.jlp.elements.FiniteRange.ZERO_ONE_RANGE;
+import static io.github.oliviercailloux.jlp.elements.VariableDomain.INT_DOMAIN;
+import static io.github.oliviercailloux.jlp.elements.VariableDomain.REAL_DOMAIN;
+import static io.github.oliviercailloux.jlp.elements.VariableKind.BOOL_KIND;
+import static io.github.oliviercailloux.jlp.elements.VariableKind.INT_KIND;
+import static io.github.oliviercailloux.jlp.elements.VariableKind.REAL_KIND;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Range;
 
 /**
  * <p>
  * An object which may be used to refer to a variable in a linear programming
  * context. A variable in a linear program often refers to other objects from
  * some set. Consider for example the set of variables x_i with i being taken
- * from some set I. The indice i may refer to, e.g., a product, and x refer to
- * the cost of that product. In such a case the variable name would be "x", and
- * the reference object would be a product.
+ * from some set I. The index i may refer to a product, and x refer to the cost
+ * of that product. In such a case the variable name would be "x", and the
+ * reference object would be a product.
  * </p>
  * <p>
  * A variable has a description, given by the {@link #toString()} method. The
  * description should be unique to that variable (in objects in which the
  * variable will appear). It is suggested to make it a short description, for
- * example, "c-p1" for a variable representing the cost of the product number 1.
+ * example, "c_p1" for a variable representing the cost of the product number 1.
  * </p>
  * <p>
  * A variable {@link #equals(Object)} an other one when both descriptions are
- * equal and they have the same bounds and type. (This is why it is important to
- * make the description unique.)
+ * equal and they have the same bounds and domain.
  * </p>
  * <p>
  * It is expected that this object be immutable. In particular, it is important
- * that their description do not change once they have been added to a
+ * that the description does not change once a variable has been added to a
  * constraint, or a problem. (This is because hashcode, or equality status viz
  * other variables, should not change, and because it will also be referred to
- * in solutions of problems.) Hence, the bounds and type of this variable should
- * be considered as a structural property of the variable, that will never
- * change.
+ * in solutions of problems.) Hence, the bounds and domain of this variable
+ * should be considered as a structural property of the variable, meaning, a
+ * property that will never change.
  * </p>
  * <p>
- * A variable bounds may be set to anything, as long as the lower bound is lower
- * than or equal to the upper bound, independently of the variable type. For
- * example, a boolean typed variable may have a lower bound of -3 and upper
- * bound of 0.8. When solving the problem, the variable will be considered as
- * having the most restrictive bounds imposed by either its bounds or its type.
- * In the example, the variable would be constrained to zero.
+ * A variable has a domain (integer or real), and bounds which may further
+ * restrict its domain. We call this its bounded domain. For example, an integer
+ * variable with a lower bound of -3.1 and upper bound of 0.8 has as bounded
+ * domain the integers between -3 and 0. The bounds can be set freely, as long
+ * as they are finite numbers and that it leaves at least one finite number
+ * within the bounds. Thus, the lower bound must be lower than or equal to the
+ * upper bound, and, in the case of integers, the range defined by the bounds
+ * must contain an integer (for example lower bound 3.2 and upper bound 3.3 is
+ * forbidden).
+ * </p>
+ * <p>
+ * Supplementary to its domain, this library further partitions the variables
+ * into three kinds of variable. A variable is of kind
+ * {@link VariableKind#BOOL_KIND} iff its domain is the integers and its bounds
+ * are exactly zero and one. A variable is of kind {@link VariableKind#INT_KIND}
+ * iff its domain is the integers and its bounds are anything else than [0, 1].
+ * A variable is of kind {@link VariableKind#REAL_KIND} iff its domain is real.
+ * It follows that boolean variables have a bounded domain equal to {0, 1}, but
+ * the converse does not hold: a variable of kind integer with bounds [-0.5,
+ * 1.5] also has a {0, 1} bounded domain.
  * </p>
  * <p>
  * Assume you want a variable to refer to a Truck in your domain model, but
  * truck has an inappropriately long toString description. Then you can subclass
  * this class and create a TruckVariable class, with a reference to a Truck, and
- * an overridden toString.
- * </p>
- * <p>
- * If this class is inherited, the inheriting class must honor the contracts of
- * this class (objects of this library count on it), except that it may use a
- * different {@link #toString()} implementation, subject to the constraints in
- * this documentation.
+ * an overridden toString. If this class is inherited, the inheriting class must
+ * honor the contracts of this class (objects of this library count on it),
+ * except that it may provide a different description (as implementation of
+ * {@link #toString()}), subject to the constraints in this documentation.
  * </p>
  * <p>
  * Rationale for the uniqueness constraint of the description: this makes it
@@ -79,71 +99,132 @@ import com.google.common.collect.ImmutableList;
  */
 public class Variable {
 
+	/**
+	 * Returns an {@link VariableDomain#INT} variable of the given name and with the
+	 * provided references, with bounds set at zero and one.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 */
+	static public Variable newBool(String name, Object... references) {
+		return new Variable(name, INT_DOMAIN, ZERO_ONE_RANGE, references);
+	}
+
+	/**
+	 * Returns an {@link VariableDomain#INT} variable of the given name and with the
+	 * provided references, with maximal bounds.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 */
 	static public Variable newInt(String name, Object... references) {
-		return new Variable(name, VariableType.INT, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
+		return new Variable(name, INT_DOMAIN, ALL_FINITE, references);
 	}
 
+	/**
+	 * Returns a {@link VariableDomain#REAL} variable of the given name and with the
+	 * provided references, with infinite bounds.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 */
 	static public Variable newReal(String name, Object... references) {
-		return new Variable(name, VariableType.REAL, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, references);
+		return new Variable(name, REAL_DOMAIN, ALL_FINITE, references);
 	}
 
-	static public Variable newVariable(String name, VariableType type, double lowerBound, double upperBound,
-			Object... references) {
-		/** TODO provide static constructors for all types. */
-		return new Variable(name, type, lowerBound, upperBound, references);
+	/**
+	 * Returns a variable with the given data. The bounds must be set as to contain
+	 * at least one valid value for the variable (see {@link Variable}). Use
+	 * {@link Variable#ALL_FINITE} for the maximal bounds.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param domain
+	 *            not <code>null</code>.
+	 * @param bounds
+	 *            not <code>null</code>, each bound in this range must be of type
+	 *            closed iff it is a finite number different than (positive or
+	 *            negative) {@link Double#MAX_VALUE}, the lower bound must be open
+	 *            iff it is negative infinity and the upper bound must be open iff
+	 *            it is positive infinity.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 * @see {@link FiniteRange}.
+	 */
+	static public Variable newVariable(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
+		return new Variable(name, domain, bounds, references);
 	}
 
-	private double lowerBound;
+	private final VariableKind kind;
 
 	/**
 	 * Not <code>null</code>, may be empty (an empty description).
 	 */
 	private String name;
 
+	private final Range<Double> bounds;
+
 	/** Does not contain <code>null</code>. */
 	private final ImmutableList<Object> refs;
-
-	private VariableType type;
-
-	private double upperBound;
 
 	/**
 	 * Builds a variable of the given name and with the provided references.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
-	 * @param type
+	 * @param domain
 	 *            not <code>null</code>.
-	 * @param lowerBound
-	 *            not <code>NAN</code>, not positive infinity.
-	 * @param upperBound
-	 *            not <code>NAN</code>, not negative infinity.
+	 * @param bounds
+	 *            not <code>null</code>, each bound in this range must be of type
+	 *            closed iff it is a finite number different than (positive or
+	 *            negative) {@link Double#MAX_VALUE}, the lower bound must be open
+	 *            iff it is negative infinity and the upper bound must be open iff
+	 *            it is positive infinity.
 	 * @param references
 	 *            not <code>null</code>, no <code>null</code> reference inside. May
 	 *            be empty.
 	 */
-	private Variable(String name, VariableType type, double lowerBound, double upperBound, Object... references) {
-		this.type = requireNonNull(type);
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+	private Variable(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
 		this.name = requireNonNull(name);
+		requireNonNull(domain);
+		this.bounds = requireNonNull(bounds);
+		final boolean lowClosedFinite = bounds.hasLowerBound() && bounds.lowerBoundType() == BoundType.CLOSED
+				&& Double.isFinite(bounds.lowerEndpoint()) && (Math.abs(bounds.lowerEndpoint()) != Double.MAX_VALUE);
+		final boolean lowOpenInfinite = bounds.hasLowerBound() && bounds.lowerBoundType() == BoundType.OPEN
+				&& bounds.lowerEndpoint().equals(Double.NEGATIVE_INFINITY);
+		checkArgument(lowClosedFinite || lowOpenInfinite);
+
+		final boolean upClosedFinite = bounds.hasUpperBound() && bounds.upperBoundType() == BoundType.CLOSED
+				&& Double.isFinite(bounds.upperEndpoint()) && (Math.abs(bounds.upperEndpoint()) != Double.MAX_VALUE);
+		final boolean upOpenInfinite = bounds.hasUpperBound() && bounds.upperBoundType() == BoundType.OPEN
+				&& bounds.upperEndpoint().equals(Double.POSITIVE_INFINITY);
+		checkArgument(upClosedFinite || upOpenInfinite);
+
+		assert ALL_FINITE.encloses(bounds);
 		/**
 		 * TODO check javadoc warnings, should trigger when type param is unused.
-		 *
-		 * TODO update javadoc in this constructor. Provide other constructors.
 		 */
 		requireNonNull(references);
 		/** Note ImmutableList is hostile to nulls. */
 		refs = ImmutableList.copyOf(references);
+
+		kind = domain == INT_DOMAIN ? (bounds.equals(ZERO_ONE_RANGE) ? BOOL_KIND : INT_KIND) : REAL_KIND;
+
+		checkBounds(domain, bounds);
 	}
 
 	/**
 	 * Indicates whether the given object represents the same variable as this one.
-	 *
-	 * @param obj
-	 *            the reference object with which to compare.
-	 * @return <code>true</code> iff this variable represents the same variable as
-	 *         the obj argument (as judged by their description).
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -152,16 +233,26 @@ public class Variable {
 			return false;
 		}
 		final Variable v2 = (Variable) obj;
-		return this == v2 || (toString().equals(v2.toString()) && lowerBound == v2.lowerBound
-				&& upperBound == v2.upperBound && type.equals(v2.type));
+		return this == v2 || (toString().equals(v2.toString()) && kind.equals(v2.kind) && bounds == v2.bounds);
 	}
 
 	/**
-	 * @return minus infinity, for a lower bound equal to minus infinity, may not be
-	 *         positive infinity.
+	 * Returns the bounds of this variable.
+	 *
+	 * @return not <code>null</code>, a range of finite values.
+	 *
+	 * @see {@link FiniteRange}.
 	 */
-	public double getLowerBound() {
-		return lowerBound;
+	public Range<Double> getBounds() {
+		return bounds;
+	}
+
+	public VariableDomain getDomain() {
+		return kind.getDomain();
+	}
+
+	public VariableKind getKind() {
+		return kind;
 	}
 
 	/**
@@ -180,21 +271,9 @@ public class Variable {
 		return refs;
 	}
 
-	public VariableType getType() {
-		return type;
-	}
-
-	/**
-	 * @return positive infinity, for an upper bound equal to positive infinity, may
-	 *         not be negative infinity, may not be smaller than the lower bound.
-	 */
-	public double getUpperBound() {
-		return upperBound;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, refs, lowerBound, upperBound, type);
+		return Objects.hash(toString(), kind, bounds);
 	}
 
 	/**
@@ -211,6 +290,24 @@ public class Variable {
 		final String suff = Joiner.on('-').join(refs);
 		final String sep = suff.isEmpty() ? "" : "-";
 		return name + sep + suff;
+	}
+
+	/**
+	 * Checks that the bounded domain is non empty, thus, that the bounds contain at
+	 * least one number in the domain. (This is only necessary for integer
+	 * variables, given the other checks in this class.)
+	 */
+	private void checkBounds(VariableDomain d, Range<Double> r) throws IllegalArgumentException {
+		if (d == REAL_DOMAIN) {
+			return;
+		}
+		/**
+		 * Example with lowerBound = 3.2, upperBound = 3.4. effUp = 3, effDown = 4,
+		 * crash.
+		 */
+		final double effUp = Math.floor(r.upperEndpoint());
+		final double effDown = Math.ceil(r.lowerEndpoint());
+		checkArgument(effDown <= effUp);
 	}
 
 }
