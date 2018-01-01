@@ -26,10 +26,16 @@ import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableKind;
 
 /**
+ * <p>
  * A modifiable mathematical program.
- *
- * This object forbids adding two different variables with the same description
- * (e.g., "x" int and "x" real).
+ * </p>
+ * <p>
+ * For performance reasons, this object does not check whether two different
+ * variables are added to an MP with the same description. The user should
+ * however make sure different variables have different descriptions, or
+ * confusion will most certainly result. The method {@link #setDebug} may be
+ * used to enforce checks.
+ * </p>
  *
  * @author Olivier Cailloux
  * @see IMP
@@ -75,6 +81,8 @@ public class MP implements IMP {
 
 	private final List<Constraint> constraints = new ArrayList<>();
 
+	private boolean debug;
+
 	private final BiMap<String, Variable> descrToVar = HashBiMap.create();
 
 	/**
@@ -94,6 +102,7 @@ public class MP implements IMP {
 	private MP() {
 		mpName = "";
 		objective = Objective.ZERO;
+		debug = false;
 	}
 
 	/**
@@ -134,19 +143,9 @@ public class MP implements IMP {
 		final String descr = variable.getDescription();
 		requireNonNull(descr);
 
-		final boolean hasDescr = descrToVar.containsKey(descr);
-		final boolean hasVar = variables.contains(variable);
-		/** We know: hasVar ⇒ hasDescr. */
-		assert !hasVar || hasDescr;
-		/**
-		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
-		 * corresponding variable.
-		 */
-		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
-				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
-		assert hasVar == hasDescr;
+		checkExistDesc(variable);
 
-		if (hasVar) {
+		if (descrToVar.containsKey(descr)) {
 			return false;
 		}
 
@@ -228,6 +227,25 @@ public class MP implements IMP {
 	}
 
 	/**
+	 * <p>
+	 * Toggles debug checks that this object may operate (at the time of calling
+	 * this method and during functioning afterwards), at the price of a (big)
+	 * performance hit. Debug is disabled by default.
+	 * </p>
+	 * <p>
+	 * More specifically, when debug is enabled, this object will forbid adding two
+	 * different variables with the same description (e.g., "x" int and "x" real).
+	 * This makes adding variables an O(n) operation instead of O(1).
+	 * </p>
+	 *
+	 * @param debug
+	 *            <code>true</code> to enable debug checks.
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	/**
 	 * Sets or removes the name of this problem.
 	 *
 	 * @param name
@@ -291,6 +309,36 @@ public class MP implements IMP {
 			added = added || nowAdded;
 		}
 		return added;
+	}
+
+	/**
+	 * <p>
+	 * Checks (if debug) whether the given variable is already in this MP iff its
+	 * description is already in this MP, or in short, whether hasVar iff hasDescr.
+	 * </p>
+	 * <p>
+	 * Direction hasVar ⇒ hasDescr is guaranteed by the logic of this class, but the
+	 * other one is satisfied only if the user provides unique descriptions.
+	 * </p>
+	 *
+	 * @param variable
+	 *            not <code>null</code>.
+	 */
+	private void checkExistDesc(Variable variable) {
+		if (debug) {
+			final String descr = variable.getDescription();
+			final boolean hasDescr = descrToVar.containsKey(descr);
+			final boolean hasVar = variables.contains(variable);
+			/** We know: hasVar ⇒ hasDescr. */
+			assert !hasVar || hasDescr;
+			/**
+			 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
+			 * corresponding variable.
+			 */
+			checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
+					+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
+			assert hasVar == hasDescr;
+		}
 	}
 
 }
