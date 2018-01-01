@@ -40,7 +40,7 @@ public class MPExamples {
 
 	public static MP getIntOneFourThreeLowX() {
 		final MP problem = getIntOneFourThree();
-		final Variable x = Variable.newInt("x");
+		final Variable x = problem.getVariable("x").get();
 		problem.add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
 		return problem;
 	}

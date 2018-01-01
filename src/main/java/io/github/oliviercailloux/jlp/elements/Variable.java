@@ -49,12 +49,12 @@ import com.google.common.collect.Range;
  * A variable has a domain (integer or real), and bounds which may further
  * restrict its domain. We call this its bounded domain. For example, an integer
  * variable with a lower bound of -3.1 and upper bound of 0.8 has as bounded
- * domain the integers between -3 and 0. The bounds can be set freely, as long
- * as they are finite numbers and that it leaves at least one finite number
- * within the bounds. Thus, the lower bound must be lower than or equal to the
- * upper bound, and, in the case of integers, the range defined by the bounds
- * must contain an integer (for example lower bound 3.2 and upper bound 3.3 is
- * forbidden).
+ * domain {-3, -2, -1, 0}, the integers between -3 and 0. The bounds can be set
+ * freely, as long as they are finite numbers and that it leaves at least one
+ * finite number within the bounds. Thus, the lower bound must be lower than or
+ * equal to the upper bound, and, in the case of integers, the range defined by
+ * the bounds must contain an integer (for example lower bound 3.2 and upper
+ * bound 3.3 is forbidden).
  * </p>
  * <p>
  * Supplementary to its domain, this library further partitions the variables
@@ -89,9 +89,14 @@ import com.google.common.collect.Range;
  * description of it. In any case, ensuring uniqueness of the description is a
  * good idea to make the MP contents clear, and provides for a cleaner interface
  * and concept. Furthermore, the user may with the adopted solution refer to
- * mutable objects, provided that the description itself does not change.
- * Finally, it is probably easier for the user to retrieve the description from
- * the variable name and references than the converse.
+ * mutable objects, provided that the description itself does not change. And it
+ * is probably easier for the user to retrieve the description from the variable
+ * name and references than the converse. Finally, we could also rely on default
+ * equality implementation (equality as identity), but this would result in two
+ * variables being created with Variable.int("x") as being confusingly treated
+ * as different variables, and would provide an advantage only if the user does
+ * not use descriptions (e.g. uses only empty names and descriptions), which
+ * renders any printing of the problem unreadable.
  * </p>
  *
  * @author Olivier Cailloux
@@ -144,7 +149,7 @@ public class Variable {
 
 	/**
 	 * Returns a {@link VariableDomain#REAL} variable of the given name and with the
-	 * provided references, with infinite bounds.
+	 * provided references, with maximal bounds.
 	 *
 	 * @param name
 	 *            not <code>null</code>.

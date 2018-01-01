@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.base.Equivalence;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.HashBiMap;
@@ -87,17 +86,17 @@ public class MP implements IMP {
 	}
 
 	/**
-	 * Adds a constraint, or does nothing if the given constraint is already in the
-	 * problem. The variables used in the objective are added to this problem.
+	 * Adds a constraint, or does nothing if the given constraint is already in this
+	 * MP. The variables used in the constraint are added to this MP if not present
+	 * yet, in the order they are found in the given constraint.
 	 *
 	 * @param constraint
-	 *            the constraint to be added. Not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 *         Equivalently, returns <code>false</code> iff the given constraint
-	 *         already was in the problem.
+	 *            not <code>null</code>.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given constraint was already in this MP.
 	 */
 	public boolean add(Constraint constraint) {
-		Preconditions.checkNotNull(constraint);
+		requireNonNull(constraint);
 		final SumTerms sumTerms = constraint.getLhs();
 		final boolean addedV = addVariables(sumTerms);
 		final boolean addedC = constraints.add(constraint);
@@ -112,11 +111,12 @@ public class MP implements IMP {
 	}
 
 	/**
-	 * Adds the variable to this problem if it is not already in.
+	 * Adds the variable to this MP if it is not already in.
 	 *
 	 * @param variable
 	 *            not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given variable was already in this MP.
 	 */
 	public boolean addVariable(Variable variable) {
 		requireNonNull(variable);
