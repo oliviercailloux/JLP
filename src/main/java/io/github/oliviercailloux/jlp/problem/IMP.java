@@ -24,8 +24,13 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * equal to the objective function value of any other feasible solution, for a
  * maximization sense, or a value lower than or equal to, for a minimization
  * sense). An MP (as representable by this object) has no optimal solutions iff
- * it has no feasible solution or it is unbounded. For an MP with the
- * {@link Objective#zero()} objective, all feasible solutions are optimal.
+ * it has no feasible solution or it is unbounded.
+ * </p>
+ * <p>
+ * An MP may have the {@link Objective#ZERO} objective, which indicates that it
+ * does not care about optimizing anything, only about finding a feasible
+ * solution. For an MP with the {@link Objective#ZERO} objective, all feasible
+ * solutions are optimal.
  * </p>
  * <p>
  * Two MPs are considered equal when they define the same (as per

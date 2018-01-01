@@ -85,9 +85,8 @@ public class MP implements IMP {
 
 	private MP() {
 		mpName = "";
-		objective = Objective.zero();
-		final HashBiMap<String, Variable> b = HashBiMap.create();
-		descrToVar = b;
+		objective = Objective.ZERO;
+		descrToVar = HashBiMap.create();
 	}
 
 	/**
@@ -142,10 +141,11 @@ public class MP implements IMP {
 	 */
 	public void clear() {
 		mpName = "";
-		objective = Objective.zero();
-		constraints.clear();
 		variables.clear();
+		descrToVar.clear();
 		varCount.clear();
+		constraints.clear();
+		objective = Objective.ZERO;
 	}
 
 	@Override

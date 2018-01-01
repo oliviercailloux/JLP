@@ -1,5 +1,6 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static io.github.oliviercailloux.jlp.elements.Sense.MAX;
 import static java.util.Objects.requireNonNull;
 
@@ -16,6 +17,12 @@ import com.google.common.base.Objects;
  * sum of terms. This may be used to indicate that any solution is looked for.
  * </p>
  * <p>
+ * If an objective has an empty sum of terms, then it has sense
+ * {@link Sense#MAX}. This ensures there is only one zero objective. (Thus
+ * testing equality to ZERO is equivalent to asking whether an objective is
+ * zero.)
+ * </p>
+ * <p>
  * Immutable (provided variables are immutable).
  * </p>
  *
@@ -23,15 +30,20 @@ import com.google.common.base.Objects;
  *
  */
 public class Objective {
-	private static final Objective ZERO_MAX = new Objective(SumTerms.of(), MAX);
+	/**
+	 * The zero objective: the objective with an empty sum of terms as objective
+	 * function and a {@link Sense#MAX} optimization sense.
+	 */
+	public static final Objective ZERO = new Objective(SumTerms.of(), MAX);
 
 	/**
 	 * Returns an objective with optimization sense {@link Sense#MAX}.
 	 *
 	 * @param objectiveFunction
-	 *            not <code>null</code>.
+	 *            not <code>null</code>, not empty.
 	 */
 	static public Objective max(SumTerms objectiveFunction) {
+		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, MAX);
 	}
 
@@ -39,9 +51,10 @@ public class Objective {
 	 * Returns an objective with optimization sense {@link Sense#MIN}.
 	 *
 	 * @param objectiveFunction
-	 *            not <code>null</code>.
+	 *            not <code>null</code>, not empty.
 	 */
 	static public Objective min(SumTerms objectiveFunction) {
+		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, Sense.MIN);
 	}
 
@@ -49,22 +62,13 @@ public class Objective {
 	 * Returns an objective with the given function and optimization sense
 	 *
 	 * @param objectiveFunction
-	 *            not <code>null</code>.
+	 *            not <code>null</code>, not empty.
 	 * @param sense
 	 *            not <code>null</code>.
 	 */
 	static public Objective of(SumTerms objectiveFunction, Sense sense) {
+		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, sense);
-	}
-
-	/**
-	 * Returns the objective with an empty sum of terms as objective function and a
-	 * {@link Sense#MAX} optimization sense.
-	 *
-	 * @return a zero objective.
-	 */
-	static public Objective zero() {
-		return ZERO_MAX;
 	}
 
 	/**
@@ -98,7 +102,7 @@ public class Objective {
 	/**
 	 * Retrieves the objective function of this objective.
 	 *
-	 * @return not <code>null</code>, possibly empty.
+	 * @return not <code>null</code>, empty iff this objective is {@link #ZERO}.
 	 */
 	public SumTerms getFunction() {
 		return objectiveFunction;
