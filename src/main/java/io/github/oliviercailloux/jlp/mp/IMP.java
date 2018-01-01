@@ -27,10 +27,10 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * it has no feasible solution or it is unbounded.
  * </p>
  * <p>
- * An MP may have the {@link Objective#ZERO} objective, which indicates that it
- * does not care about optimizing anything, only about finding a feasible
- * solution. For an MP with the {@link Objective#ZERO} objective, all feasible
- * solutions are optimal.
+ * An MP may have the {@link Objective#ZERO ZERO} objective, which indicates
+ * that it does not care about optimizing anything, only about finding a
+ * feasible solution. For an MP with the <code>ZERO</code> objective, all
+ * feasible solutions are optimal.
  * </p>
  * <p>
  * Two MPs are considered equal when they define the same (as per
@@ -70,7 +70,7 @@ public interface IMP {
 
 	/**
 	 * Returns the dimension of this MP as a number of variables and constraints.
-	 * The bounds do not count as constraints.
+	 * The variable bounds do not count as constraints.
 	 *
 	 * @return not <code>null</code>.
 	 */
@@ -84,23 +84,25 @@ public interface IMP {
 	public String getName();
 
 	/**
-	 * Retrieves the objective function.
+	 * Returns the objective of this MP, which may be the {@link Objective#ZERO
+	 * ZERO} objective to indicate that no objective function is associated to this
+	 * MP.
 	 *
 	 * @return not <code>null</code>.
 	 */
 	public Objective getObjective();
 
 	/**
-	 * Returns the variable corresponding to the given description, or an absent
-	 * optional if no variable have the given description. Note that the description
-	 * of a variable generally differs from its name.
+	 * Returns the variable corresponding to the given description, or an empty
+	 * optional if no variable have the given description in this MP. Note that the
+	 * description of a variable generally differs from its name.
 	 *
 	 * @param description
 	 *            the description of the variable, as given by
-	 *            {@link Variable#toString()}.
+	 *            {@link Variable#getDescription()}.
 	 * @return an optional containing a variable, if found, otherwise an empty
 	 *         optional.
-	 * @see {@link Variable#getDescription}.
+	 * @see {@link Variable#getDefaultDescription}.
 	 */
 	public Optional<Variable> getVariable(String description);
 
@@ -110,4 +112,10 @@ public interface IMP {
 	 * @return not <code>null</code>, may be empty.
 	 */
 	public List<Variable> getVariables();
+
+	/**
+	 * Returns a (reasonably) short description of this MP.
+	 */
+	@Override
+	String toString();
 }

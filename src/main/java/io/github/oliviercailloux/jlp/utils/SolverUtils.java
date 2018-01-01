@@ -187,25 +187,6 @@ public class SolverUtils {
 		return iValue;
 	}
 
-	/**
-	 * Provides an implementation of toString for debugging use. For a more user
-	 * friendly string description, see class {@link MPs}.
-	 *
-	 * @param problem
-	 *            not <code>null</code>.
-	 * @return a debug description.
-	 */
-	static public String getAsString(IMP problem) {
-		final ToStringHelper helper = Objects.toStringHelper(problem);
-		helper.addValue('\'' + problem.getName() + '\'');
-		if (!problem.getObjective().isZero()) {
-			helper.addValue("" + problem.getObjective().getSense() + " " + problem.getObjective().getFunction());
-		}
-		helper.addValue("" + problem.getVariables().size() + " variables");
-		helper.addValue(problem.getConstraints().size() + " constraints");
-		return helper.toString();
-	}
-
 	static public <V> String getAsString(Solution solution) {
 		final ToStringHelper helper = Objects.toStringHelper(solution);
 		helper.add("Problem", solution.getProblem());

@@ -188,9 +188,9 @@ public class MPDimension {
 	public String toString() {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		for (VariableKind variableKind : VariableKind.values()) {
-			helper.add(variableKind.toString(), variablesCounts.count(variableKind));
+			helper.add(variableKind.toString() + " nb", variablesCounts.count(variableKind));
 		}
-		helper.add("constraints", constraintsCount);
+		helper.add("constraints nb", constraintsCount);
 		return helper.toString();
 	}
 }

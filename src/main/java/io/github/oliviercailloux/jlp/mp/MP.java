@@ -1,6 +1,7 @@
 package io.github.oliviercailloux.jlp.mp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.github.oliviercailloux.jlp.elements.Objective.ZERO;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
@@ -8,7 +9,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.google.common.base.Equivalence;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.HashBiMap;
@@ -21,8 +24,6 @@ import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.elements.VariableKind;
-import io.github.oliviercailloux.jlp.utils.MPUtils;
-import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
 /**
  * A modifiable mathematical program.
@@ -37,12 +38,10 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
 public class MP implements IMP {
 
 	/**
-	 * A copy constructor, by value. No reference is shared between the new problem
-	 * and the given one.
-	 * <p>
-	 * The variables and constraints sets iteration order will be the same as the
-	 * sets iteration order of the source.
-	 * </p>
+	 * Returns an MP that is a copy of the given source, in the sense that it
+	 * contains the same data, but is not linked to the source: modifying the
+	 * resulting MP will not change the source. (Variables are shared however, so
+	 * this is only true if the variables are immutable.)
 	 *
 	 * @param source
 	 *            not <code>null</code>.
@@ -52,10 +51,10 @@ public class MP implements IMP {
 
 		final MP mp = new MP();
 		mp.setName(source.getName());
+		mp.setObjective(source.getObjective());
 		for (Variable variable : source.getVariables()) {
 			mp.addVariable(variable);
 		}
-		mp.setObjective(source.getObjective());
 		for (Constraint constraint : source.getConstraints()) {
 			mp.add(constraint);
 		}
@@ -63,19 +62,28 @@ public class MP implements IMP {
 		return mp;
 	}
 
+	/**
+	 * Returns an empty MP with an empty name and the {@link Objective#ZERO}
+	 * objective.
+	 *
+	 * @return a new writable MP.
+	 */
 	static public MP create() {
 		return new MP();
 	}
 
 	private final List<Constraint> constraints = Lists.newLinkedList();
 
-	private BiMap<String, Variable> descrToVar;
+	private final BiMap<String, Variable> descrToVar = HashBiMap.create();
 
 	/**
-	 * Never <code>null</code>.
+	 * Not <code>null</code>.
 	 */
 	private String mpName;
 
+	/**
+	 * Not <code>null</code>.
+	 */
 	private Objective objective;
 
 	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
@@ -85,13 +93,12 @@ public class MP implements IMP {
 	private MP() {
 		mpName = "";
 		objective = Objective.ZERO;
-		descrToVar = HashBiMap.create();
 	}
 
 	/**
 	 * Adds a constraint, or does nothing if the given constraint is already in this
 	 * MP. The variables used in the constraint are added to this MP if not present
-	 * yet, in the order they are found in the given constraint.
+	 * already, in the order they are found in the given constraint.
 	 *
 	 * @param constraint
 	 *            not <code>null</code>.
@@ -151,8 +158,8 @@ public class MP implements IMP {
 
 	/**
 	 * Removes all the variables and constraints, objective function, name set in
-	 * this problem. As a result of this call, this problem has the same visible
-	 * state as a newly created, empty problem.
+	 * this MP. As a result of this call, this MP has the same visible state as a
+	 * newly created, empty MP.
 	 */
 	public void clear() {
 		mpName = "";
@@ -225,20 +232,14 @@ public class MP implements IMP {
 	 * @param name
 	 *            <code>null</code> or empty string for no name. A <code>null</code>
 	 *            string is converted to an empty string.
-	 * @return <code>true</code> iff the call modified the state of this object.
-	 *         Equivalently, returns <code>false</code> iff the given name was
-	 *         different than this problem name.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff this MP name was already equal to the given
+	 *         name.
 	 *
 	 */
 	public boolean setName(String name) {
-		final String newName;
-		if (name == null) {
-			newName = "";
-		} else {
-			newName = name;
-		}
-		final boolean equivalent = Equivalence.equals().equivalent(this.mpName, newName);
-		if (equivalent) {
+		final String newName = Strings.nullToEmpty(name);
+		if (mpName.equals(newName)) {
 			return false;
 		}
 		this.mpName = name;
@@ -246,33 +247,39 @@ public class MP implements IMP {
 	}
 
 	/**
+	 * <p>
 	 * Sets or removes the objective bound to this problem. The variables used in
-	 * the objective function are added to this problem. Setting both parameters to
-	 * <code>null</code> is legal.
+	 * the objective function are added to this MP, if not present already, in the
+	 * order they are found in the given objective function.
+	 * </p>
+	 * <p>
+	 * If set to <code>null</code>, the objective of this MP is replaced by the
+	 * {@link Objective#ZERO ZERO} objective.
+	 * </p>
 	 *
-	 * @param objectiveFunction
-	 *            <code>null</code> to remove a possibly set objective function.
-	 * @param direction
-	 *            <code>null</code> for not set (removes a possibly set optimization
-	 *            direction).
+	 * @param objective
+	 *            <code>null</code> or (preferably) {@link Objective#ZERO ZERO} to
+	 *            remove a possibly set objective.
 	 */
-	public void setObjective(Objective obj) {
-		addVariables(obj.getFunction());
-		this.objective = requireNonNull(obj);
-	}
-
-	/**
-	 * Retrieves a long description, with line breaks, of this problem.
-	 *
-	 * @return not <code>null</code>, not empty.
-	 */
-	public String toLongDescription() {
-		return MPUtils.getLongDescription(this);
+	public void setObjective(Objective objective) {
+		final Objective effObj;
+		if (objective == null) {
+			effObj = ZERO;
+		} else {
+			effObj = objective;
+		}
+		addVariables(effObj.getFunction());
+		assert effObj != null;
+		this.objective = effObj;
 	}
 
 	@Override
 	public String toString() {
-		return SolverUtils.getAsString(this);
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.add("name", mpName);
+		helper.addValue(objective);
+		helper.addValue(getDimension());
+		return helper.toString();
 	}
 
 	private boolean addVariables(SumTerms sumTerms) {

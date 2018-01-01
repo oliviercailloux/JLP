@@ -141,7 +141,7 @@ public class Objective {
 	public String toString() {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		helper.addValue(sense);
-		helper.add("function", objectiveFunction);
+		helper.addValue(objectiveFunction);
 		return helper.toString();
 	}
 }
