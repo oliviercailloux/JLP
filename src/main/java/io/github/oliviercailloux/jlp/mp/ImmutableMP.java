@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
@@ -11,11 +13,13 @@ import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
- * An immutable problem. To obtain such a problem, use {@link MPs#newProblem()},
- * populate the problem, then use {@link MPs#newImmutable(IMP)}.
+ * An immutable MP. To obtain such a problem, use {@link MP#create()}, populate
+ * the problem, then use {@link ImmutableMP#copyOf(IMP)}. Immutability is only
+ * guaranteed if variables are immutable.
  *
  * @author Olivier Cailloux
- *
+ * @see IMP
+ * @see Variable
  */
 public class ImmutableMP implements IMP {
 
@@ -85,6 +89,15 @@ public class ImmutableMP implements IMP {
 	@Override
 	public int hashCode() {
 		return delegate.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.add("name", getName());
+		helper.addValue(getObjective());
+		helper.addValue(getDimension());
+		return helper.toString();
 	}
 
 }

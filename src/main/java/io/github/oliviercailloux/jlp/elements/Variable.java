@@ -183,7 +183,7 @@ public class Variable {
 	 * @param references
 	 *            not <code>null</code>, no <code>null</code> reference inside. May
 	 *            be empty.
-	 * @see FiniteRange.
+	 * @see FiniteRange
 	 */
 	static public Variable of(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
 		return new Variable(name, domain, bounds, references);
@@ -279,7 +279,7 @@ public class Variable {
 	 *
 	 * @return not <code>null</code>, a range of finite values.
 	 *
-	 * @see {@link FiniteRange}.
+	 * @see FiniteRange
 	 */
 	public Range<Double> getBounds() {
 		return bounds;

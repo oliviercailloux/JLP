@@ -32,16 +32,17 @@ import io.github.oliviercailloux.jlp.elements.VariableKind;
  * (e.g., "x" int and "x" real).
  *
  * @author Olivier Cailloux
- * @see {@link IMP}, {@link Variable}.
+ * @see IMP
+ * @see Variable
  *
  */
 public class MP implements IMP {
 
 	/**
 	 * Returns an MP that is a copy of the given source, in the sense that it
-	 * contains the same data, but is not linked to the source: modifying the
-	 * resulting MP will not change the source. (Variables are shared however, so
-	 * this is only true if the variables are immutable.)
+	 * contains the same data, but is not linked to the source, in the sense that
+	 * modifying the resulting MP will not change the source. (Variables are shared
+	 * however, so this is only true if the variables are immutable.)
 	 *
 	 * @param source
 	 *            not <code>null</code>.
@@ -63,7 +64,7 @@ public class MP implements IMP {
 	}
 
 	/**
-	 * Returns an empty MP with an empty name and the {@link Objective#ZERO}
+	 * Returns an empty MP with an empty name and the {@link Objective#ZERO ZERO}
 	 * objective.
 	 *
 	 * @return a new writable MP.
