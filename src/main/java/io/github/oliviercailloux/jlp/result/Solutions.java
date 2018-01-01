@@ -2,7 +2,7 @@ package io.github.oliviercailloux.jlp.result;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.github.oliviercailloux.jlp.problem.IMP;
+import io.github.oliviercailloux.jlp.mp.IMP;
 
 /**
  * Utilities methods related to a {@link Solution}.

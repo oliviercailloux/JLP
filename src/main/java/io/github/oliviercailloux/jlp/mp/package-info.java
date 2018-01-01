@@ -3,4 +3,4 @@
  * Classes for defining and dealing with a mathematical program (MP).
  * </p>
  */
-package io.github.oliviercailloux.jlp.problem;
+package io.github.oliviercailloux.jlp.mp;

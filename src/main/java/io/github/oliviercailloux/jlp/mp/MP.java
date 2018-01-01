@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp.problem;
+package io.github.oliviercailloux.jlp.mp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -123,25 +123,29 @@ public class MP implements IMP {
 	 */
 	public boolean addVariable(Variable variable) {
 		requireNonNull(variable);
-		final String descr = variable.toString();
+		final String descr = variable.getDescription();
 		requireNonNull(descr);
+
 		final boolean hasDescr = descrToVar.containsKey(descr);
 		final boolean hasVar = variables.contains(variable);
 		/** We know: hasVar ⇒ hasDescr. */
 		assert !hasVar || hasDescr;
 		/**
-		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no corr
-		 * var.
+		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
+		 * corresponding variable.
 		 */
 		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
 				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
 		assert hasVar == hasDescr;
-		if (hasDescr) {
+
+		if (hasVar) {
 			return false;
 		}
+
 		descrToVar.put(descr, variable);
 		varCount.add(variable.getKind());
 		variables.add(variable);
+
 		return true;
 	}
 

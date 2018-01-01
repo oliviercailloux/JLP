@@ -18,9 +18,9 @@ import com.google.common.collect.ImmutableBiMap.Builder;
 import io.github.oliviercailloux.jlp.SolverException;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Variable;
+import io.github.oliviercailloux.jlp.mp.IMP;
 import io.github.oliviercailloux.jlp.parameters.SolverParameters;
 import io.github.oliviercailloux.jlp.parameters.SolverParametersUtils;
-import io.github.oliviercailloux.jlp.problem.IMP;
 import io.github.oliviercailloux.jlp.result.Solution;
 import io.github.oliviercailloux.jlp.result.SolutionAlone;
 

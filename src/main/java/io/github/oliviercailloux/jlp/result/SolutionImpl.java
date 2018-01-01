@@ -25,8 +25,8 @@ import com.google.common.base.Preconditions;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.IMP;
-import io.github.oliviercailloux.jlp.problem.ImmutableMP;
+import io.github.oliviercailloux.jlp.mp.IMP;
+import io.github.oliviercailloux.jlp.mp.ImmutableMP;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 import io.github.oliviercailloux.jlp.utils.SumTermUtils;
 

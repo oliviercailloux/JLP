@@ -6,7 +6,7 @@ import java.util.Set;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.IMP;
+import io.github.oliviercailloux.jlp.mp.IMP;
 
 /**
  * <p>

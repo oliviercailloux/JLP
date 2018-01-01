@@ -14,7 +14,7 @@ import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.Sense;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.IMP;
+import io.github.oliviercailloux.jlp.mp.IMP;
 import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPUtils {

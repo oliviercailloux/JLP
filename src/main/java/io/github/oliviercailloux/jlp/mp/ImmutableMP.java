@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp.problem;
+package io.github.oliviercailloux.jlp.mp;
 
 import static java.util.Objects.requireNonNull;
 

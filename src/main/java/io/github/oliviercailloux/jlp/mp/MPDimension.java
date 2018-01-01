@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp.problem;
+package io.github.oliviercailloux.jlp.mp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.github.oliviercailloux.jlp.elements.VariableKind.BOOL_KIND;

@@ -5,7 +5,7 @@ import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.problem.MP;
+import io.github.oliviercailloux.jlp.mp.MP;
 
 public class MPExamples {
 	/**
