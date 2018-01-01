@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static io.github.oliviercailloux.jlp.elements.Objective.ZERO;
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +16,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
@@ -73,7 +73,7 @@ public class MP implements IMP {
 		return new MP();
 	}
 
-	private final List<Constraint> constraints = Lists.newLinkedList();
+	private final List<Constraint> constraints = new ArrayList<>();
 
 	private final BiMap<String, Variable> descrToVar = HashBiMap.create();
 
@@ -89,7 +89,7 @@ public class MP implements IMP {
 
 	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
 
-	private final List<Variable> variables = Lists.newLinkedList();
+	private final List<Variable> variables = new ArrayList<>();
 
 	private MP() {
 		mpName = "";
