@@ -17,26 +17,10 @@ public class MPTest {
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(MPTest.class);
 
-	@Test
-	public void testAddLots() throws Exception {
-		final MP mp = MP.create();
-//		mp.setDebug(true);
-		LOGGER.info("Start add.");
-		for (int i = 0; i < 5000; ++i) {
-			mp.addVariable(Variable.integer("" + i));
-		}
-		/**
-		 * Without debug, adding 5000 variables takes 100 ms, with debug, it takes 17
-		 * seconds. (Very rough measures.)
-		 */
-		LOGGER.info("End add.");
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public void testDuplicateDescr() {
 		final MP mp = MP.create();
-		mp.setDebug(true);
-		mp.addVariable(Variable.bool("b"));
+		mp.putVariable(Variable.bool("b"));
 		final Constraint intBEqZero = Constraint.of("int-b=0", SumTerms.of(1d, Variable.integer("b")),
 				ComparisonOperator.EQ, 0d);
 		try {
