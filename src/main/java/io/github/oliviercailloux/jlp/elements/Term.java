@@ -40,20 +40,20 @@ public class Term {
 	}
 
 	/**
-	 * A term equals another object <code>o2</code> iff <code>o2</code> is a term
+	 * A term equals another object <code>obj</code> iff <code>obj</code> is a term
 	 * and they have equal coefficient and variable.
 	 *
 	 */
 	@Override
-	public boolean equals(Object o2) {
-		if (this == o2) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(o2 instanceof Term)) {
+		if (!(obj instanceof Term)) {
 			return false;
 		}
 
-		Term t2 = (Term) o2;
+		Term t2 = (Term) obj;
 		if (coefficient != t2.coefficient) {
 			return false;
 		}
