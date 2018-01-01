@@ -138,10 +138,6 @@ public class SolverUtils {
 		return getConstraintEquivalence().equivalent(a, b);
 	}
 
-	static public boolean equivalent(IMP a, IMP b) {
-		return getProblemEquivalence().equivalent(a, b);
-	}
-
 	public static boolean equivalent(final Number value1, final Number value2, double epsilon) {
 		return Math.abs(value1.doubleValue() - value2.doubleValue()) <= epsilon;
 	}
@@ -252,34 +248,6 @@ public class SolverUtils {
 			@Override
 			public int doHash(Number t) {
 				return Double.valueOf(t.doubleValue()).hashCode();
-			}
-		};
-	}
-
-	static public Equivalence<IMP> getProblemEquivalence() {
-		return new Equivalence<IMP>() {
-			@Override
-			public boolean doEquivalent(IMP a, IMP b) {
-				return computeEquivalent(a, b);
-			}
-
-			@Override
-			public int doHash(IMP t) {
-				final int hashCode = Objects.hashCode(t.getObjective());
-				return hashCode + t.getConstraints().hashCode() + t.getVariables().hashCode();
-			}
-
-			private boolean computeEquivalent(IMP a, IMP b) {
-				if (!a.getConstraints().equals(b.getConstraints())) {
-					return false;
-				}
-				if (!Objects.equal(a.getObjective(), b.getObjective())) {
-					return false;
-				}
-				if (!a.getVariables().equals(b.getVariables())) {
-					return false;
-				}
-				return true;
 			}
 		};
 	}

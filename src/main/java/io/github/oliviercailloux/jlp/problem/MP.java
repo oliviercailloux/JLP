@@ -7,6 +7,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.base.Equivalence;
@@ -27,7 +28,9 @@ import io.github.oliviercailloux.jlp.utils.MPUtils;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
 /**
- * A simple writeable implementation of {@link IMP}.
+ * A modifiable mathematical program.
+ *
+ * @see {@link IMP}.
  *
  * @author Olivier Cailloux
  *
@@ -74,7 +77,7 @@ public class MP implements IMP {
 	 */
 	private String mpName;
 
-	private Objective obj;
+	private Objective objective;
 
 	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
 
@@ -82,7 +85,7 @@ public class MP implements IMP {
 
 	private MP() {
 		mpName = "";
-		obj = Objective.zero();
+		objective = Objective.zero();
 		final HashBiMap<String, Variable> b = HashBiMap.create();
 		descrToVar = b;
 	}
@@ -139,19 +142,31 @@ public class MP implements IMP {
 	 */
 	public void clear() {
 		mpName = "";
-		obj = Objective.zero();
+		objective = Objective.zero();
 		constraints.clear();
 		variables.clear();
 		varCount.clear();
 	}
 
 	@Override
-	public boolean equals(Object o2) {
-		if (!(o2 instanceof IMP)) {
+	public boolean equals(Object obj) {
+		if (!(obj instanceof IMP)) {
 			return false;
 		}
-		IMP p2 = (IMP) o2;
-		return SolverUtils.equivalent(this, p2);
+		final IMP p2 = (IMP) obj;
+		if (p2 == obj) {
+			return true;
+		}
+		if (!getName().equals(p2.getName())) {
+			return false;
+		}
+		if (!getVariables().equals(p2.getVariables())) {
+			return false;
+		}
+		if (!getConstraints().equals(p2.getConstraints())) {
+			return false;
+		}
+		return getObjective().equals(p2.getObjective());
 	}
 
 	@Override
@@ -172,7 +187,7 @@ public class MP implements IMP {
 
 	@Override
 	public Objective getObjective() {
-		return obj;
+		return objective;
 	}
 
 	@Override
@@ -187,7 +202,7 @@ public class MP implements IMP {
 
 	@Override
 	public int hashCode() {
-		return SolverUtils.getProblemEquivalence().hash(this);
+		return Objects.hash(mpName, getVariables(), getConstraints(), getObjective());
 	}
 
 	/**
@@ -229,7 +244,7 @@ public class MP implements IMP {
 	 */
 	public void setObjective(Objective obj) {
 		addVariables(obj.getFunction());
-		this.obj = requireNonNull(obj);
+		this.objective = requireNonNull(obj);
 	}
 
 	/**

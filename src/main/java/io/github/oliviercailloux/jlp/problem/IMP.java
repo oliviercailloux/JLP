@@ -11,28 +11,28 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * <p>
  * A mathematical program (MP), more precisely a linear program or a mixed
  * integer linear program, consisting of variables (with bounds), constraints,
- * and zero or one objective. Such a mathematical program defines a set of
- * feasible solutions. A feasible solution is an association of a value to each
- * of the variables of the program, satisfying all the constraints in the
- * program. The set of feasible solutions is also called the feasible region.
- * This object may also represent programs that have an empty feasible region,
- * or equivalently, no feasible solutions, or equivalently, that are infeasible.
+ * and an objective. Such a mathematical program defines a set of feasible
+ * solutions. A solution is an association of a value to each of the variables
+ * of the program, the value being within the bounded domain of the variable
+ * (see {@link Variable}). A feasible solution is a solution that satisfies all
+ * the constraints in the program. This object may represent programs that are
+ * infeasible, meaning that they have no feasible solutions.
  * </p>
  * <p>
- * If an MP has an objective, it may have optimal solutions, these are the
- * solutions that have the best value according to its objective function (best
- * meaning highest or smallest depending on the sense of the objective). An MP
- * (as representable by this object) has no objective solutions iff it has no
- * objective function or it has no feasible solution or it is unbounded. For an
- * MP with the {@link Objective#zero()} objective, all feasible solutions are
- * optimal.
+ * A feasible solution is optimal iff it has the best value according to its
+ * objective function (best meaning an objective function value higher than or
+ * equal to the objective function value of any other feasible solution, for a
+ * maximization sense, or a value lower than or equal to, for a minimization
+ * sense). An MP (as representable by this object) has no optimal solutions iff
+ * it has no feasible solution or it is unbounded. For an MP with the
+ * {@link Objective#zero()} objective, all feasible solutions are optimal.
  * </p>
  * <p>
  * Two MPs are considered equal when they define the same (as per
- * {@link #equals}) variables, constraints, objective. TODO add name. Two equal
- * MPs, as determined by this interface {@link #equals(Object)} contract, have
- * the same set of feasible solutions, although a non equality between two MPs
- * does <em>not</em> imply that they have different sets of feasible solutions.
+ * {@link #equals}) name, variables, constraints, and objective. Two equal MPs,
+ * as determined by this interface {@link #equals(Object)} contract, have the
+ * same set of feasible solutions, although a non equality between two MPs does
+ * <em>not</em> imply that they have different sets of feasible solutions.
  * </p>
  * <p>
  * Implementations of this interface may be writeable, immutable or be a
@@ -45,36 +45,35 @@ import io.github.oliviercailloux.jlp.elements.Variable;
 public interface IMP {
 
 	/**
-	 * Two problems are considered equal when they define the same variables (as per
-	 * {@link #equals}), constraints, objective function.
+	 * Two MPs are equal when they have equal name, variables, constraints, and
+	 * objective.
 	 *
 	 * @param obj
 	 *            the reference object with which to compare.
-	 * @return <code>true</code> if this object is the same as the obj argument;
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> iff this object is the same as the obj argument.
 	 */
 	@Override
 	public boolean equals(Object obj);
 
 	/**
-	 * Retrieves a copy or read-only view of the constraints in this problem.
+	 * Returns the constraints in this MP.
 	 *
-	 * @return not <code>null</code>, but may be empty.
+	 * @return not <code>null</code>, may be empty.
 	 */
 	public List<Constraint> getConstraints();
 
 	/**
-	 * Retrieves the dimension of this problem in number of variables and
-	 * constraints. The bounds do not count as constraints.
+	 * Returns the dimension of this MP as a number of variables and constraints.
+	 * The bounds do not count as constraints.
 	 *
 	 * @return not <code>null</code>.
 	 */
 	public MPDimension getDimension();
 
 	/**
-	 * Retrieves the name of the problem.
+	 * Returns the name of this MP.
 	 *
-	 * @return never <code>null</code>, empty if not set.
+	 * @return not <code>null</code>, may be empty.
 	 */
 	public String getName();
 
@@ -86,21 +85,23 @@ public interface IMP {
 	public Objective getObjective();
 
 	/**
-	 * Retrieves the variable corresponding to the given description, or an absent
-	 * optional. Note that the description of the variable generally differs from
-	 * its name.
+	 * Returns the variable corresponding to the given description, or an absent
+	 * optional if no variable have the given description. Note that the description
+	 * of a variable generally differs from its name.
 	 *
 	 * @param description
-	 *            the description of the variable, as given by {@link #toString()}
+	 *            the description of the variable, as given by
+	 *            {@link Variable#toString()}.
 	 * @return an optional containing a variable, if found, otherwise an empty
 	 *         optional.
+	 * @see {@link Variable#getDescription}.
 	 */
 	public Optional<Variable> getVariable(String description);
 
 	/**
-	 * Retrieves a copy or a read-only view of the variables.
+	 * Returns the variables in this MP.
 	 *
-	 * @return not <code>null</code>, but may be empty.
+	 * @return not <code>null</code>, may be empty.
 	 */
 	public List<Variable> getVariables();
 }
