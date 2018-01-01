@@ -100,6 +100,21 @@ import com.google.common.collect.Range;
 public class Variable {
 
 	/**
+	 * Returns the default description of a variable given its name and references.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, may be empty.
+	 * @return the corresponding description.
+	 */
+	static public String getDescription(String name, Object... references) {
+		final String suff = Joiner.on('-').join(references);
+		final String sep = suff.isEmpty() ? "" : "_";
+		return name + sep + suff;
+	}
+
+	/**
 	 * Returns an {@link VariableDomain#INT} variable of the given name and with the
 	 * provided references, with bounds set at zero and one.
 	 *
@@ -165,14 +180,14 @@ public class Variable {
 		return new Variable(name, domain, bounds, references);
 	}
 
+	private final Range<Double> bounds;
+
 	private final VariableKind kind;
 
 	/**
 	 * Not <code>null</code>, may be empty (an empty description).
 	 */
 	private String name;
-
-	private final Range<Double> bounds;
 
 	/** Does not contain <code>null</code>. */
 	private final ImmutableList<Object> refs;
@@ -277,19 +292,16 @@ public class Variable {
 	}
 
 	/**
-	 * Returns the description of this variable, using its name and its references.
+	 * Returns the default description of this variable, using its name and its
+	 * references.
 	 *
-	 * TODO provide a reusable algorithm so that user can get descr from name and
-	 * refs.
+	 * @see #getDescription(String, Object...)
 	 *
 	 * @return not <code>null</code>.
 	 */
 	@Override
 	public String toString() {
-		/** TODO. */
-		final String suff = Joiner.on('-').join(refs);
-		final String sep = suff.isEmpty() ? "" : "-";
-		return name + sep + suff;
+		return getDescription(name, refs);
 	}
 
 	/**
