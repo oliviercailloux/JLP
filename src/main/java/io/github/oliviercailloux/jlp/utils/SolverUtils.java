@@ -2,6 +2,7 @@ package io.github.oliviercailloux.jlp.utils;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 
@@ -9,7 +10,6 @@ import com.google.common.base.Equivalence;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -134,10 +134,6 @@ public class SolverUtils {
 		}
 	}
 
-	static public boolean equivalent(Constraint a, Constraint b) {
-		return getConstraintEquivalence().equivalent(a, b);
-	}
-
 	public static boolean equivalent(final Number value1, final Number value2, double epsilon) {
 		return Math.abs(value1.doubleValue() - value2.doubleValue()) <= epsilon;
 	}
@@ -193,30 +189,6 @@ public class SolverUtils {
 		helper.add("Objective value", solution.getObjectiveValue());
 		helper.add("Valued variables size", Integer.valueOf(solution.getVariables().size()));
 		return helper.toString();
-	}
-
-	static public Equivalence<Constraint> getConstraintEquivalence() {
-		return new Equivalence<Constraint>() {
-
-			@Override
-			public boolean doEquivalent(Constraint a, Constraint b) {
-				if (a.getRhs() != b.getRhs()) {
-					return false;
-				}
-				if (!a.getLhs().equals(b.getLhs())) {
-					return false;
-				}
-				if (!a.getOperator().equals(b.getOperator())) {
-					return false;
-				}
-				return true;
-			}
-
-			@Override
-			public int doHash(Constraint c) {
-				return Objects.hashCode(c.getLhs(), c.getOperator(), Double.valueOf(c.getRhs()));
-			}
-		};
 	}
 
 	static public Equivalence<Number> getEquivalenceByDoubleValue() {
@@ -285,7 +257,7 @@ public class SolverUtils {
 	}
 
 	static public BiMap<Variable, Integer> getVariablesIds(IMP problem, int startId) {
-		Preconditions.checkNotNull(problem);
+		requireNonNull(problem);
 		final Builder<Variable, Integer> builder = ImmutableBiMap.builder();
 		{
 			int i = startId;
