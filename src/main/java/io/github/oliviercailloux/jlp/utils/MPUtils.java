@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
-import io.github.oliviercailloux.jlp.elements.OptimizationDirection;
+import io.github.oliviercailloux.jlp.elements.Objective;
+import io.github.oliviercailloux.jlp.elements.Sense;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.IMP;
@@ -34,7 +34,7 @@ public class MPUtils {
 		String s = "Problem" + name + N;
 
 		if (!problem.getObjective().isZero()) {
-			s += problem.getObjective().getDirection() + N;
+			s += problem.getObjective().getSense() + N;
 			s += " " + problem.getObjective().getFunction() + N;
 		} else {
 			s += "Find one solution" + N;
@@ -106,17 +106,17 @@ public class MPUtils {
 		s_logger.info("Objective value: {}.", solution.getObjectiveValue());
 	}
 
-	static public ObjectiveFunction newWithDirection(ObjectiveFunction source, OptimizationDirection newDirection) {
+	static public Objective newWithDirection(Objective source, Sense newDirection) {
 		checkNotNull(source);
 		checkNotNull(newDirection);
 		final SumTerms sourceFunction = source.getFunction();
 		checkNotNull(sourceFunction);
-		final OptimizationDirection sourceDirection = source.getDirection();
+		final Sense sourceDirection = source.getSense();
 		checkNotNull(sourceDirection);
 		if (sourceDirection.equals(newDirection)) {
 			return source;
 		}
-		return ObjectiveFunction.of(SumTermUtils.newMult(-1d, sourceFunction), newDirection);
+		return Objective.of(SumTermUtils.newMult(-1d, sourceFunction), newDirection);
 	}
 
 }

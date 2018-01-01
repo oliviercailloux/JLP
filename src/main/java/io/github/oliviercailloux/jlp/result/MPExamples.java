@@ -2,7 +2,7 @@ package io.github.oliviercailloux.jlp.result;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
+import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.problem.MP;
@@ -30,7 +30,7 @@ public class MPExamples {
 		problem.addVariable(x);
 		problem.addVariable(y);
 
-		problem.setObjective(ObjectiveFunction.max(SumTerms.of(143, x, 60, y)));
+		problem.setObjective(Objective.max(SumTerms.of(143, x, 60, y)));
 		problem.add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
 		problem.add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
 		problem.add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));

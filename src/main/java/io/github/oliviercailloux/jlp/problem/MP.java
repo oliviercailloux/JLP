@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
+import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Term;
 import io.github.oliviercailloux.jlp.elements.Variable;
@@ -27,7 +27,7 @@ import io.github.oliviercailloux.jlp.utils.MPUtils;
 import io.github.oliviercailloux.jlp.utils.SolverUtils;
 
 /**
- * A simple mutable implementation of {@link IMP}.
+ * A simple writeable implementation of {@link IMP}.
  *
  * @author Olivier Cailloux
  *
@@ -74,7 +74,7 @@ public class MP implements IMP {
 	 */
 	private String mpName;
 
-	private ObjectiveFunction obj;
+	private Objective obj;
 
 	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
 
@@ -82,7 +82,7 @@ public class MP implements IMP {
 
 	private MP() {
 		mpName = "";
-		obj = ObjectiveFunction.zero();
+		obj = Objective.zero();
 		final HashBiMap<String, Variable> b = HashBiMap.create();
 		descrToVar = b;
 	}
@@ -139,7 +139,7 @@ public class MP implements IMP {
 	 */
 	public void clear() {
 		mpName = "";
-		obj = ObjectiveFunction.zero();
+		obj = Objective.zero();
 		constraints.clear();
 		variables.clear();
 		varCount.clear();
@@ -171,7 +171,7 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public ObjectiveFunction getObjective() {
+	public Objective getObjective() {
 		return obj;
 	}
 
@@ -227,7 +227,7 @@ public class MP implements IMP {
 	 *            <code>null</code> for not set (removes a possibly set optimization
 	 *            direction).
 	 */
-	public void setObjective(ObjectiveFunction obj) {
+	public void setObjective(Objective obj) {
 		addVariables(obj.getFunction());
 		this.obj = requireNonNull(obj);
 	}

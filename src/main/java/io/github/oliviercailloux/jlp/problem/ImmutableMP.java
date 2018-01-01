@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
+import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
@@ -68,7 +68,7 @@ public class ImmutableMP implements IMP {
 	}
 
 	@Override
-	public ObjectiveFunction getObjective() {
+	public Objective getObjective() {
 		return delegate.getObjective();
 	}
 

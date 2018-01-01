@@ -203,7 +203,7 @@ public class SolverUtils {
 		final ToStringHelper helper = Objects.toStringHelper(problem);
 		helper.addValue('\'' + problem.getName() + '\'');
 		if (!problem.getObjective().isZero()) {
-			helper.addValue("" + problem.getObjective().getDirection() + " " + problem.getObjective().getFunction());
+			helper.addValue("" + problem.getObjective().getSense() + " " + problem.getObjective().getFunction());
 		}
 		helper.addValue("" + problem.getVariables().size() + " variables");
 		helper.addValue(problem.getConstraints().size() + " constraints");

@@ -4,41 +4,39 @@ import java.util.List;
 import java.util.Optional;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
-import io.github.oliviercailloux.jlp.elements.ObjectiveFunction;
+import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
  * <p>
- * A mathematical program, more precisely a linear program or a mixed integer
- * program, consisting of variables (with bounds), constraints and zero or one
- * objective function. Such a mathematical program defines a set of feasible
- * solutions. A feasible solution is an association of a value to each of the
- * variables of the program, satisfying all the constraints in the program. The
- * set of feasible solutions is also called the feasible region. This object may
- * also represent programs that have an empty feasible region, or equivalently,
- * no feasible solutions, or equivalently, that are infeasible. Some of the
- * feasible solutions are said to be optimal, these are the solutions that have
- * the best value according to the objective function associated with the
- * program. This class uses the name <em>Problem</em> rather than Program
- * because of the (even bigger) ambiguity of the latter word.
+ * A mathematical program (MP), more precisely a linear program or a mixed
+ * integer linear program, consisting of variables (with bounds), constraints,
+ * and zero or one objective. Such a mathematical program defines a set of
+ * feasible solutions. A feasible solution is an association of a value to each
+ * of the variables of the program, satisfying all the constraints in the
+ * program. The set of feasible solutions is also called the feasible region.
+ * This object may also represent programs that have an empty feasible region,
+ * or equivalently, no feasible solutions, or equivalently, that are infeasible.
  * </p>
  * <p>
- * The order of additions of the variables and constraints is retained and
- * reused when reading variables and constraints sets.
+ * If an MP has an objective, it may have optimal solutions, these are the
+ * solutions that have the best value according to its objective function (best
+ * meaning highest or smallest depending on the sense of the objective). An MP
+ * (as representable by this object) has no objective solutions iff it has no
+ * objective function or it has no feasible solution or it is unbounded. For an
+ * MP with the {@link Objective#zero()} objective, all feasible solutions are
+ * optimal.
  * </p>
  * <p>
- * Some implementations of this interface may be read-only (either because they
- * are immutable or because they are a read-only view).
+ * Two MPs are considered equal when they define the same (as per
+ * {@link #equals}) variables, constraints, objective. TODO add name. Two equal
+ * MPs, as determined by this interface {@link #equals(Object)} contract, have
+ * the same set of feasible solutions, although a non equality between two MPs
+ * does <em>not</em> imply that they have different sets of feasible solutions.
  * </p>
  * <p>
- * Two such problems are considered equal when they define the same (as per
- * {@link #equals}) variables, constraints, objective function, and bounds for
- * the variables. The equality between two problems does not take the names into
- * account: neither the problem, variables or constraints names are considered.
- * Two equal problems, as determined by this interface {@link #equals(Object)}
- * contract, have the same set of feasible solutions, although a non equality
- * between two problems does <em>not</em> imply that they have different sets of
- * feasible solutions.
+ * Implementations of this interface may be writeable, immutable or be a
+ * read-only view.
  * </p>
  *
  * @author Olivier Cailloux
@@ -85,7 +83,7 @@ public interface IMP {
 	 *
 	 * @return not <code>null</code>.
 	 */
-	public ObjectiveFunction getObjective();
+	public Objective getObjective();
 
 	/**
 	 * Retrieves the variable corresponding to the given description, or an absent

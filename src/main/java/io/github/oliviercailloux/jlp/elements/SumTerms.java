@@ -15,15 +15,15 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * <p>
- * A linear expression consisting of a possibly empty sum of terms, where a term
- * is a coefficient multiplying a variable. A linear object
+ * A linear expression consisting of a (possibly empty) sum of terms, where a
+ * term is a coefficient multiplying a variable. A sum of terms
  * {@link #equals(Object)} an other one iff they contain the same terms in the
  * same order.
  * </p>
  * <p>
- * This object allows for zero coefficients. It might be useful to store the
- * structure a constraint of the kind ax+by, even though a might (on a given
- * instance) equal zero.
+ * This object allows for zero coefficients. This might be useful to store the
+ * structure of a constraint of the kind <em>ax+by</em>, even though <em>a</em>
+ * might (on a given instance) equal zero.
  * <p>
  * Immutable (provided variables are immutable).
  * </p>

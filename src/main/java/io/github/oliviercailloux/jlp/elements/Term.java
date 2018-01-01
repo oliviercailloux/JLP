@@ -1,9 +1,10 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import com.google.common.base.Preconditions;
 
 /**
  * <p>
@@ -33,22 +34,26 @@ public class Term {
 	 *            not <code>null</code>.
 	 */
 	private Term(double coefficient, Variable variable) {
-		Preconditions.checkNotNull(variable);
-		Preconditions.checkArgument(Double.isFinite(coefficient));
+		checkArgument(Double.isFinite(coefficient));
 		this.coefficient = coefficient;
-		this.variable = variable;
+		this.variable = requireNonNull(variable);
 	}
 
+	/**
+	 * A term equals another object <code>o2</code> iff <code>o2</code> is a term
+	 * and they have equal coefficient and variable.
+	 *
+	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o2) {
+		if (this == o2) {
 			return true;
 		}
-		if (!(obj instanceof Term)) {
+		if (!(o2 instanceof Term)) {
 			return false;
 		}
 
-		Term t2 = (Term) obj;
+		Term t2 = (Term) o2;
 		if (coefficient != t2.coefficient) {
 			return false;
 		}
