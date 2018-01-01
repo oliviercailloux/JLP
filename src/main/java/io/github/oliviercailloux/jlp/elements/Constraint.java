@@ -1,10 +1,11 @@
 package io.github.oliviercailloux.jlp.elements;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
+import com.google.common.base.MoreObjects;
 
 /**
  * <p>
@@ -61,31 +62,31 @@ public class Constraint {
 	private final double rhs;
 
 	/**
-	 * @param descr
+	 * @param description
 	 *            not <code>null</code>.
 	 * @param lhs
 	 *            not <code>null</code>, not empty.
 	 * @param op
 	 *            not <code>null</code>.
 	 * @param rhs
-	 *            a valid number (not infinite, not NaN).
+	 *            a finite number.
 	 */
-	private Constraint(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
-		Preconditions.checkNotNull(lhs);
-		Preconditions.checkNotNull(op);
-		Preconditions.checkArgument(!Double.isInfinite(rhs));
-		Preconditions.checkArgument(!Double.isNaN(rhs));
-		Preconditions.checkArgument(lhs.size() >= 1);
-		this.descr = requireNonNull(descr);
-		this.lhs = lhs;
-		this.op = op;
+	private Constraint(String description, SumTerms lhs, ComparisonOperator op, double rhs) {
+		this.descr = requireNonNull(description);
+
+		checkArgument(lhs.size() >= 1);
+		this.lhs = requireNonNull(lhs);
+
+		this.op = requireNonNull(op);
+
+		checkArgument(Double.isFinite(rhs));
 		this.rhs = rhs;
 	}
 
 	/**
-	 * Tests whether the given object is also a constraint and if it has same left
-	 * hand side, operator, and right hand side as this object. The id is not
-	 * considered.
+	 * Returns <code>true</code> iff the given object is also a constraint and has
+	 * same description, left hand side, operator, and right hand side as this
+	 * object.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -96,7 +97,16 @@ public class Constraint {
 		if (c2 == this) {
 			return true;
 		}
-		return toString().equals(c2.toString()) && lhs.equals(c2.lhs) && op.equals(c2.op) && rhs == c2.rhs;
+		return descr.equals(c2.descr) && lhs.equals(c2.lhs) && op.equals(c2.op) && rhs == c2.rhs;
+	}
+
+	/**
+	 * Retrieves the constraint description.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public String getDescription() {
+		return descr;
 	}
 
 	/**
@@ -125,13 +135,10 @@ public class Constraint {
 		return Objects.hash(descr, lhs, op, rhs);
 	}
 
-	/**
-	 * Retrieves the constraint description.
-	 *
-	 * @return not <code>null</code>.
-	 */
 	@Override
 	public String toString() {
-		return descr;
+		final String expr = lhs + " " + op + " " + rhs;
+		return MoreObjects.toStringHelper(this).add("description", descr).add("expression", expr)
+				.toString();
 	}
 }

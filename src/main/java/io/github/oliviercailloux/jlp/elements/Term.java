@@ -128,6 +128,6 @@ public class Term {
 			formattedCoef = cD.round(c).toString() + ' ';
 		}
 
-		return formattedCoef + variable.toString();
+		return formattedCoef + variable.getDescription();
 	}
 }

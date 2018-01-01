@@ -25,8 +25,8 @@ public class MPExamples {
 	static public MP getIntOneFourThree() {
 		MP problem = MP.create();
 		problem.setName("OneFourThree");
-		final Variable x = Variable.newInt("x");
-		final Variable y = Variable.newInt("y");
+		final Variable x = Variable.integer("x");
+		final Variable y = Variable.integer("y");
 		problem.addVariable(x);
 		problem.addVariable(y);
 
@@ -52,8 +52,8 @@ public class MPExamples {
 	 */
 	static public Solution getIntOneFourThreeLowXSolution() {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThreeLowX());
-		final Variable x = Variable.newInt("x");
-		final Variable y = Variable.newInt("y");
+		final Variable x = Variable.integer("x");
+		final Variable y = Variable.integer("y");
 		solution.setObjectiveValue(5828d);
 		solution.putValue(x, 16d);
 		solution.putValue(y, 59d);
@@ -68,8 +68,8 @@ public class MPExamples {
 	 */
 	static public Solution getIntOneFourThreeSolution() {
 		final SolutionImpl solution = new SolutionImpl(getIntOneFourThree());
-		final Variable x = Variable.newInt("x");
-		final Variable y = Variable.newInt("y");
+		final Variable x = Variable.integer("x");
+		final Variable y = Variable.integer("y");
 		solution.setObjectiveValue(6266d);
 		solution.putValue(x, 22d);
 		solution.putValue(y, 52d);

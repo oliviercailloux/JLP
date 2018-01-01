@@ -10,9 +10,12 @@ import static io.github.oliviercailloux.jlp.elements.VariableKind.INT_KIND;
 import static io.github.oliviercailloux.jlp.elements.VariableKind.REAL_KIND;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
@@ -27,10 +30,10 @@ import com.google.common.collect.Range;
  * reference object would be a product.
  * </p>
  * <p>
- * A variable has a description, given by the {@link #toString()} method. The
- * description should be unique to that variable (in objects in which the
- * variable will appear). It is suggested to make it a short description, for
- * example, "c_p1" for a variable representing the cost of the product number 1.
+ * A variable has a description. The description should be unique to that
+ * variable (in objects in which the variable will appear). It is suggested to
+ * make it a short description, for example, "c_p1" for a variable representing
+ * the cost of the product number 1.
  * </p>
  * <p>
  * A variable {@link #equals(Object)} an other one when both descriptions are
@@ -71,10 +74,11 @@ import com.google.common.collect.Range;
  * Assume you want a variable to refer to a Truck in your domain model, but
  * truck has an inappropriately long toString description. Then you can subclass
  * this class and create a TruckVariable class, with a reference to a Truck, and
- * an overridden toString. If this class is inherited, the inheriting class must
- * honor the contracts of this class (objects of this library count on it),
- * except that it may provide a different description (as implementation of
- * {@link #toString()}), subject to the constraints in this documentation.
+ * an overridden {@link #getDescription()}. If this class is inherited, the
+ * inheriting class must honor the contracts of this class (objects of this
+ * library count on it), except that it may provide a different description (as
+ * implementation of {@link #toString()}), subject to the constraints in this
+ * documentation.
  * </p>
  * <p>
  * Rationale for the uniqueness constraint of the description: this makes it
@@ -105,6 +109,21 @@ import com.google.common.collect.Range;
 public class Variable {
 
 	/**
+	 * Returns a variable of the given name and with the provided references, with
+	 * domain {@link VariableDomain#INT}, bounds set at zero and one, and hence of
+	 * kind {@link VariableKind#BOOL_KIND}.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 */
+	static public Variable bool(String name, Object... references) {
+		return new Variable(name, INT_DOMAIN, ZERO_ONE_RANGE, references);
+	}
+
+	/**
 	 * Returns the default description of a variable given its name and references.
 	 *
 	 * @param name
@@ -113,24 +132,23 @@ public class Variable {
 	 *            not <code>null</code>, may be empty.
 	 * @return the corresponding description.
 	 */
-	static public String getDescription(String name, Object... references) {
+	static public String getDefaultDescription(String name, Iterable<Object> references) {
 		final String suff = Joiner.on('-').join(references);
 		final String sep = suff.isEmpty() ? "" : "_";
 		return name + sep + suff;
 	}
 
 	/**
-	 * Returns an {@link VariableDomain#INT} variable of the given name and with the
-	 * provided references, with bounds set at zero and one.
+	 * Returns the default description of a variable given its name and references.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
 	 * @param references
-	 *            not <code>null</code>, no <code>null</code> reference inside. May
-	 *            be empty.
+	 *            not <code>null</code>, may be empty.
+	 * @return the corresponding description.
 	 */
-	static public Variable newBool(String name, Object... references) {
-		return new Variable(name, INT_DOMAIN, ZERO_ONE_RANGE, references);
+	static public String getDefaultDescription(String name, Object... references) {
+		return getDefaultDescription(name, Arrays.asList(references));
 	}
 
 	/**
@@ -143,22 +161,8 @@ public class Variable {
 	 *            not <code>null</code>, no <code>null</code> reference inside. May
 	 *            be empty.
 	 */
-	static public Variable newInt(String name, Object... references) {
+	static public Variable integer(String name, Object... references) {
 		return new Variable(name, INT_DOMAIN, ALL_FINITE, references);
-	}
-
-	/**
-	 * Returns a {@link VariableDomain#REAL} variable of the given name and with the
-	 * provided references, with maximal bounds.
-	 *
-	 * @param name
-	 *            not <code>null</code>.
-	 * @param references
-	 *            not <code>null</code>, no <code>null</code> reference inside. May
-	 *            be empty.
-	 */
-	static public Variable newReal(String name, Object... references) {
-		return new Variable(name, REAL_DOMAIN, ALL_FINITE, references);
 	}
 
 	/**
@@ -181,8 +185,22 @@ public class Variable {
 	 *            be empty.
 	 * @see {@link FiniteRange}.
 	 */
-	static public Variable newVariable(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
+	static public Variable of(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
 		return new Variable(name, domain, bounds, references);
+	}
+
+	/**
+	 * Returns a {@link VariableDomain#REAL} variable of the given name and with the
+	 * provided references, with maximal bounds.
+	 *
+	 * @param name
+	 *            not <code>null</code>.
+	 * @param references
+	 *            not <code>null</code>, no <code>null</code> reference inside. May
+	 *            be empty.
+	 */
+	static public Variable real(String name, Object... references) {
+		return new Variable(name, REAL_DOMAIN, ALL_FINITE, references);
 	}
 
 	private final Range<Double> bounds;
@@ -267,6 +285,18 @@ public class Variable {
 		return bounds;
 	}
 
+	/**
+	 * Returns the default description of this variable, using its name and its
+	 * references.
+	 *
+	 * @see #getDefaultDescription(String, Object...)
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public String getDescription() {
+		return getDefaultDescription(name, refs);
+	}
+
 	public VariableDomain getDomain() {
 		return kind.getDomain();
 	}
@@ -296,17 +326,11 @@ public class Variable {
 		return Objects.hash(toString(), kind, bounds);
 	}
 
-	/**
-	 * Returns the default description of this variable, using its name and its
-	 * references.
-	 *
-	 * @see #getDescription(String, Object...)
-	 *
-	 * @return not <code>null</code>.
-	 */
 	@Override
 	public String toString() {
-		return getDescription(name, refs);
+		final ToStringHelper helper = MoreObjects.toStringHelper(this).add("name", name).add("domain", kind.getDomain())
+				.add("bounds", bounds).add("refs", refs);
+		return helper.toString();
 	}
 
 	/**

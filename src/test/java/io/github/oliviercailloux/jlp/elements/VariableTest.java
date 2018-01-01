@@ -7,30 +7,38 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
 public class VariableTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testBadBounds() throws Exception {
-		Variable.newVariable("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1));
+		Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1));
+	}
+
+	@Test
+	public void testDefaultDescription() throws Exception {
+		assertEquals("x", Variable.getDefaultDescription("x"));
+		assertEquals("x", Variable.getDefaultDescription("x", ImmutableList.of()));
+		assertEquals("x_1", Variable.getDefaultDescription("x", "1"));
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNullReferenceInside() throws Exception {
 		Object[] refs = new Object[] { "ref1", null, "ref2" };
-		Variable.newReal("cat1", refs);
+		Variable.real("cat1", refs);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNullReferences() throws Exception {
 		Object[] refs = null;
-		Variable.newReal("cat1", refs);
+		Variable.real("cat1", refs);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNullReferencesObj() throws Exception {
 		Object refs = null;
-		Variable.newReal("cat1", refs);
+		Variable.real("cat1", refs);
 	}
 
 	@Test
@@ -65,8 +73,9 @@ public class VariableTest {
 
 	@Test
 	public void testRightBounds() throws Exception {
-		final Variable var = Variable.newVariable("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1));
-		final String descr = var.toString();
-		assertEquals("cat1", descr);
+		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1));
+		assertEquals("cat1", var.getName());
+		assertEquals(ImmutableList.of(), var.getReferences());
+		assertEquals("cat1", var.getDescription());
 	}
 }

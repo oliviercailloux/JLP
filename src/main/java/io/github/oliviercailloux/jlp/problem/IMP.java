@@ -45,6 +45,7 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * </p>
  *
  * @author Olivier Cailloux
+ * @see {@link Variable}.
  *
  */
 public interface IMP {

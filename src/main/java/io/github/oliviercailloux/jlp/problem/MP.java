@@ -1,5 +1,6 @@
 package io.github.oliviercailloux.jlp.problem;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
@@ -26,9 +27,11 @@ import io.github.oliviercailloux.jlp.utils.SolverUtils;
 /**
  * A modifiable mathematical program.
  *
- * @see {@link IMP}.
+ * This object forbids adding two different variables with the same description
+ * (e.g., "x" int and "x" real).
  *
  * @author Olivier Cailloux
+ * @see {@link IMP}, {@link Variable}.
  *
  */
 public class MP implements IMP {
@@ -122,7 +125,18 @@ public class MP implements IMP {
 		requireNonNull(variable);
 		final String descr = variable.toString();
 		requireNonNull(descr);
-		if (descrToVar.containsKey(descr)) {
+		final boolean hasDescr = descrToVar.containsKey(descr);
+		final boolean hasVar = variables.contains(variable);
+		/** We know: hasVar ⇒ hasDescr. */
+		assert !hasVar || hasDescr;
+		/**
+		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no corr
+		 * var.
+		 */
+		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
+				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
+		assert hasVar == hasDescr;
+		if (hasDescr) {
 			return false;
 		}
 		descrToVar.put(descr, variable);
