@@ -1,8 +1,5 @@
 package io.github.oliviercailloux.jlp.problem;
 
-import static io.github.oliviercailloux.jlp.elements.VariableKind.BOOL_KIND;
-import static io.github.oliviercailloux.jlp.elements.VariableKind.INT_KIND;
-import static io.github.oliviercailloux.jlp.elements.VariableKind.REAL_KIND;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
@@ -176,8 +173,7 @@ public class MP implements IMP {
 
 	@Override
 	public MPDimension getDimension() {
-		return MPDimension.of(varCount.count(BOOL_KIND), varCount.count(INT_KIND), varCount.count(REAL_KIND),
-				getConstraints().size());
+		return MPDimension.of(varCount, getConstraints().size());
 	}
 
 	@Override
