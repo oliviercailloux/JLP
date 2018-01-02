@@ -64,7 +64,7 @@ public interface IMP {
 	/**
 	 * Returns the constraints in this MP.
 	 *
-	 * @return not <code>null</code>, may be empty.
+	 * @return not <code>null</code>, may be empty, contains no duplicates.
 	 */
 	public List<Constraint> getConstraints();
 
@@ -109,7 +109,7 @@ public interface IMP {
 	/**
 	 * Returns the variables in this MP.
 	 *
-	 * @return not <code>null</code>, may be empty.
+	 * @return not <code>null</code>, may be empty, contains no duplicates.
 	 */
 	public List<Variable> getVariables();
 

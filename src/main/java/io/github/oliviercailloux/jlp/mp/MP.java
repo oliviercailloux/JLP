@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -56,9 +57,7 @@ public class MP implements IMP {
 		final MP mp = new MP();
 		mp.setName(source.getName());
 		mp.setObjective(source.getObjective());
-		for (Variable variable : source.getVariables()) {
-			mp.putVariable(variable);
-		}
+		mp.getVariables().addAll(source.getVariables());
 		for (Constraint constraint : source.getConstraints()) {
 			mp.add(constraint);
 		}
@@ -92,11 +91,16 @@ public class MP implements IMP {
 
 	private final Multiset<VariableKind> varCount = EnumMultiset.create(VariableKind.class);
 
-	private final List<Variable> variables = new ArrayList<>();
+	private final List<Variable> variables;
+
+	private final VariablesInMP variablesFacade;
 
 	private MP() {
 		mpName = "";
 		objective = Objective.ZERO;
+		final ArrayList<Variable> variablesArrayList = new ArrayList<>();
+		variables = variablesArrayList;
+		variablesFacade = new VariablesInMP(this, variablesArrayList);
 	}
 
 	/**
@@ -185,51 +189,13 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public List<Variable> getVariables() {
-		return Collections.unmodifiableList(variables);
+	public VariablesInMP getVariables() {
+		return variablesFacade;
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(mpName, getVariables(), getConstraints(), getObjective());
-	}
-
-	/**
-	 * Adds the variable to this MP if it is not already in.
-	 *
-	 * @param index
-	 *            an appropriate index.
-	 * @param variable
-	 *            not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff the given variable was already in this MP.
-	 */
-	public boolean putVariable(Variable variable) {
-		requireNonNull(variable);
-		final String descr = variable.getDescription();
-		requireNonNull(descr);
-
-		final boolean hasDescr = descrToVar.containsKey(descr);
-		final boolean hasVar = descrToVar.containsValue(variable);
-		/** We know: hasVar ⇒ hasDescr. */
-		assert !hasVar || hasDescr;
-		/**
-		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
-		 * corresponding variable.
-		 */
-		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
-				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
-		assert hasVar == hasDescr;
-
-		if (hasDescr) {
-			return false;
-		}
-
-		descrToVar.put(descr, variable);
-		varCount.add(variable.getKind());
-		variables.add(variable);
-
-		return true;
 	}
 
 	/**
@@ -292,10 +258,90 @@ public class MP implements IMP {
 		boolean added = false;
 		for (Term term : sumTerms) {
 			final Variable variable = term.getVariable();
-			final boolean nowAdded = putVariable(variable);
+			final boolean nowAdded = putVariable(variables.size(), variable, false);
 			added = added || nowAdded;
 		}
 		return added;
+	}
+
+	/**
+	 * Adds the variable to this MP if it is not already in.
+	 *
+	 * @param index
+	 *            an appropriate index.
+	 * @param variable
+	 *            not <code>null</code>.
+	 * @param expectNew
+	 *            <code>true</code> to ensure that the variable is added (throws an
+	 *            exception if the variable exists already), <code>false</code> to
+	 *            silently do nothing when the variable exists already.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given variable was already in this MP.
+	 */
+	boolean putVariable(int index, Variable variable, boolean expectNew) {
+		requireNonNull(variable);
+		final String descr = variable.getDescription();
+		requireNonNull(descr);
+
+		final boolean hasDescr = descrToVar.containsKey(descr);
+		final boolean hasVar = descrToVar.containsValue(variable);
+		/** We know: hasVar ⇒ hasDescr. */
+		assert !hasVar || hasDescr;
+		/**
+		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
+		 * corresponding variable.
+		 */
+		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
+				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
+		assert hasVar == hasDescr;
+
+		if (hasDescr && !expectNew) {
+			return false;
+		} else if (hasDescr && expectNew) {
+			throw new IllegalArgumentException("Variable already exists.");
+		}
+
+		descrToVar.put(descr, variable);
+		varCount.add(variable.getKind());
+		variables.add(index, variable);
+
+		return true;
+	}
+
+	/**
+	 * Removes the specified variable from this MP, if it is present.
+	 *
+	 * @param variable
+	 *            not <code>null</code>, must not be referred to by any constraint
+	 *            in this MP or by the objective.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given variable was not in this MP.
+	 */
+	boolean removeVariable(Variable variable) {
+		requireNonNull(variable);
+		if (!descrToVar.containsValue(variable)) {
+			return false;
+		}
+
+		final SumTerms objectiveFunction = objective.getFunction();
+		if (objectiveFunction.getVariables().contains(variable)) {
+			throw new IllegalArgumentException(
+					"Can’t remove " + variable + " used in objective function " + objectiveFunction + ".");
+		}
+		final List<Constraint> constraintsUsingVariable = constraints.stream()
+				.filter((c) -> c.getLhs().getVariables().contains(variable)).collect(Collectors.toList());
+		if (!constraintsUsingVariable.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Can’t remove " + variable + " used in constraints: " + constraintsUsingVariable + ".");
+		}
+
+		final boolean removed = variables.remove(variable);
+		assert removed;
+		final String removedDescr = descrToVar.inverse().remove(variable);
+		assert removedDescr != null;
+		final boolean removedKind = varCount.remove(variable.getKind());
+		assert removedKind;
+		return true;
 	}
 
 }

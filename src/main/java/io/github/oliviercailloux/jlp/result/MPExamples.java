@@ -27,8 +27,8 @@ public class MPExamples {
 		problem.setName("OneFourThree");
 		final Variable x = Variable.integer("x");
 		final Variable y = Variable.integer("y");
-		problem.putVariable(x);
-		problem.putVariable(y);
+		problem.getVariables().add(x);
+		problem.getVariables().add(y);
 
 		problem.setObjective(Objective.max(SumTerms.of(143, x, 60, y)));
 		problem.add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
