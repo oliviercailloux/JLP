@@ -28,3 +28,12 @@ Snapshots are published to http://oss.sonatype.org/content/repositories/snapshot
 </repositories>
 ----
 
+== Alternatives
+TODO compile a list.
+
+Here are some more recent or possibly less known alternatives.
+
+* http://jscience.org/ old (java.net)
+* http://www.optaplanner.org/ modern and clean, but much larger than LP. With annotations, XML.
+* http://scpsolver.org/ Ant, not Maven. Last code modification mid-2013.
+
