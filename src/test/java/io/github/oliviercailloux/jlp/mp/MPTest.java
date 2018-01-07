@@ -1,9 +1,10 @@
 package io.github.oliviercailloux.jlp.mp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +22,17 @@ public class MPTest {
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(MPTest.class);
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testDuplicateDescr() {
 		final MP mp = MP.create();
 		mp.getVariables().add(Variable.bool("b"));
 		final Constraint intBEqZero = Constraint.of("int-b=0", SumTerms.of(1d, Variable.integer("b")),
 				ComparisonOperator.EQ, 0d);
-		try {
-			mp.add(intBEqZero);
-		} catch (IllegalArgumentException exc) {
-//			LOGGER.info("Adding constraint.", exc);
-			throw exc;
-		}
+		final IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> mp.add(intBEqZero));
+		LOGGER.debug(exc.getMessage());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testRemoveFromConstraint() throws Exception {
 		final MP mp = MP.create();
 		final Variable b1 = Variable.bool("b1");
@@ -47,15 +44,12 @@ public class MPTest {
 		mp.setObjective(Objective.max(SumTerms.of(1d, b1)));
 		mp.add(Constraint.of("c2", SumTerms.of(2d, b2), ComparisonOperator.LE, 2d));
 		mp.add(Constraint.of("c3", SumTerms.of(3d, b3), ComparisonOperator.LE, 3d));
-		try {
-			mp.getVariables().remove(b3);
-		} catch (IllegalArgumentException exc) {
-			// LOGGER.info("Removing variable.", exc);
-			throw exc;
-		}
+		final IllegalArgumentException exc = assertThrows(IllegalArgumentException.class,
+				() -> mp.getVariables().remove(b3));
+		LOGGER.debug(exc.getMessage());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testRemoveFromObjective() throws Exception {
 		final MP mp = MP.create();
 		final Variable b = Variable.bool("b");
@@ -63,12 +57,9 @@ public class MPTest {
 		mp.getVariables().add(b);
 		assertEquals(1, mp.getVariables().size());
 		mp.setObjective(Objective.max(SumTerms.of(1d, b)));
-		try {
-			mp.getVariables().remove(0);
-		} catch (IllegalArgumentException exc) {
-			// LOGGER.info("Removing variable.", exc);
-			throw exc;
-		}
+		final IllegalArgumentException exc = assertThrows(IllegalArgumentException.class,
+				() -> mp.getVariables().remove(0));
+		LOGGER.debug(exc.getMessage());
 	}
 
 	@Test

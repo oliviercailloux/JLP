@@ -1,19 +1,20 @@
 package io.github.oliviercailloux.jlp.elements;
 
 import static io.github.oliviercailloux.jlp.elements.VariableDomain.INT_DOMAIN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
 public class VariableTest {
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testBadBounds() throws Exception {
-		Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1));
+		assertThrows(IllegalArgumentException.class, () -> Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1)));
 	}
 
 	@Test
@@ -23,22 +24,22 @@ public class VariableTest {
 		assertEquals("x_1", Variable.getDefaultDescription("x", "1"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullReferenceInside() throws Exception {
 		Object[] refs = new Object[] { "ref1", null, "ref2" };
-		Variable.real("cat1", refs);
+		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullReferences() throws Exception {
 		Object[] refs = null;
-		Variable.real("cat1", refs);
+		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullReferencesObj() throws Exception {
 		Object refs = null;
-		Variable.real("cat1", refs);
+		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
 	@Test
