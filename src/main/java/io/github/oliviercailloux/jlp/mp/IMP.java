@@ -102,7 +102,7 @@ public interface IMP {
 	 *            {@link Variable#getDescription()}.
 	 * @return an optional containing a variable, if found, otherwise an empty
 	 *         optional.
-	 * @see {@link Variable#getDefaultDescription}.
+	 * @see Variable#getDefaultDescription.
 	 */
 	public Optional<Variable> getVariable(String description);
 
