@@ -12,11 +12,11 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * A mathematical program (MP), more precisely a linear program or a mixed
  * integer linear program, consisting of variables (with bounds), constraints,
  * and an objective. Such a mathematical program defines a set of feasible
- * solutions. A solution is an association of a value to each of the variables
- * of the program, the value being within the bounded domain of the variable
- * (see {@link Variable}). A feasible solution is a solution that satisfies all
- * the constraints in the program. This object may represent programs that are
- * infeasible, meaning that they have no feasible solutions.
+ * solutions. A candidate solution is an association of a value to each of the
+ * variables of the program, the value being within the bounded domain of the
+ * variable (see {@link Variable}). A feasible solution is a candidate solution
+ * that satisfies all the constraints in the program. This object may represent
+ * programs that are infeasible, meaning that they have no feasible solutions.
  * </p>
  * <p>
  * A feasible solution is optimal iff it has the best value according to its

@@ -1,16 +1,18 @@
 package io.github.oliviercailloux.jlp.result;
 
-import io.github.oliviercailloux.jlp.result.parameters.SolverParameters;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
+import java.util.Optional;
+
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+
+import io.github.oliviercailloux.jlp.parameters.Configuration;
 
 /**
  * <p>
- * A result of a problem solved by a solver, giving informations about the solve
- * attempt result. This is different from a solution: attempting to solve a
- * problem always ends up producing a result object; whereas solving a problem
- * does not necessarily yield a solution to the problem: a solution object only
- * exists if a feasible solution has been found. If the solve attempt resulted
- * in an error, a result object will be produced indicating that an error
- * occurred, but no solution will be produced.
+ * A result of an attempt to solve an mp by a solver.
  * </p>
  * <p>
  * Immutable.
@@ -19,68 +21,109 @@ import io.github.oliviercailloux.jlp.result.parameters.SolverParameters;
  * @author Olivier Cailloux
  *
  */
-/**
- * <p>
- * A result of a problem solved by a solver, giving informations about the solve
- * attempt result. This is different from a solution: attempting to solve a
- * problem always ends up producing a result object; whereas solving a problem
- * does not necessarily yield a solution to the problem: a solution object only
- * exists if a feasible solution has been found. If the solve attempt resulted
- * in an error, a result object will be produced indicating that an error
- * occurred, but no solution will be produced.
- * </p>
- * <p>
- * A transient result has two possible states: up to date and obsolete. When it
- * is created, it is necessarily up to date. At some point it may become
- * obsolete. When it is obsolete, it does not give access to parameters and
- * solution objects, but it still gives access to duration and result status.
- * The object which exposes a {@link LpResultTransient} object should document
- * when the object will become obsolete.
- * </p>
- * <p>
- * If informations contained in such an object are going to be useful after it
- * becomes obsolete, it is advisable to create a copy of this object when it is
- * still up to date through {@link ResultImpl} constructors.
- * </p>
- * </p>
- *
- * @author Olivier Cailloux
- *
- */
-public interface Result {
+public class Result {
+	static public Result noSolution(ResultStatus status, ComputationTime duration, Configuration configuration) {
+		return new Result(status, duration, configuration, Optional.empty());
+	}
+
+	static public Result withSolution(ResultStatus status, ComputationTime duration, Configuration configuration,
+			Solution solution) {
+		return new Result(status, duration, configuration, Optional.of(solution));
+	}
 
 	/**
-	 * The duration of solving the problem. If an error occurred, this is the
-	 * duration until the error.
+	 * Not <code>null</code>.
+	 */
+	private final Configuration configuration;
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	private final ComputationTime duration;
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	private final Optional<Solution> solution;
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	private final ResultStatus status;
+
+	Result(ResultStatus status, ComputationTime duration, Configuration configuration, Optional<Solution> solution) {
+		this.status = requireNonNull(status);
+		this.duration = requireNonNull(duration);
+		this.configuration = requireNonNull(configuration);
+		this.solution = requireNonNull(solution);
+		switch (status) {
+		case FEASIBLE:
+			checkArgument(solution.isPresent());
+			break;
+		case INFEASIBLE:
+			checkArgument(!solution.isPresent());
+			break;
+		case MEMORY_LIMIT_REACHED:
+		case TIME_LIMIT_REACHED:
+			break;
+		case OPTIMAL:
+			checkArgument(solution.isPresent());
+			break;
+		case UNBOUNDED:
+			break;
+		default:
+			throw new IllegalStateException();
+		}
+	}
+
+	/**
+	 * Returns the configuration that has been used to obtain this result.
 	 *
 	 * @return not <code>null</code>.
 	 */
-	public SolverDuration getDuration();
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 
 	/**
-	 * Retrieves the parameters that have been used to obtain this result.
+	 * Returns the duration of this attempt to solve the mp. If an error occurred,
+	 * this is the duration until the error.
 	 *
 	 * @return not <code>null</code>.
 	 */
-	public SolverParameters getParameters();
+	public ComputationTime getDuration() {
+		return duration;
+	}
 
 	/**
-	 * Retrieves the results status obtained when solving the problem.
+	 * Returns the status obtained as a result from the solving attempt.
 	 *
 	 * @return not <code>null</code>.
 	 */
-	public ResultStatus getResultStatus();
+	public ResultStatus getResultStatus() {
+		return status;
+	}
 
 	/**
-	 * Retrieves one solution found to the problem solved. If the result of the
-	 * solve is optimal, the returned solution is an optimal solution. This method
-	 * may <em>not</em> be called if no feasible solution to the problem has been
-	 * found.
+	 * Returns a solution to the mp, if one has been found. If the result of the
+	 * solve is optimal, the returned solution is an optimal solution.
 	 *
-	 * @return not <code>null</code>. Immutable.
+	 * @return not <code>null</code>, a solution if a solution has been found, an
+	 *         empty optional otherwise.
 	 * @see #getResultStatus()
-	 * @see ResultStatus#foundFeasible()
 	 */
-	public Solution getSolution();
+	public Optional<Solution> getSolution() {
+		return solution;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.add("Status", status);
+		helper.add("Duration", duration);
+		helper.add("Configuration", configuration);
+		helper.add("Solution", solution);
+		return helper.toString();
+	}
 
 }

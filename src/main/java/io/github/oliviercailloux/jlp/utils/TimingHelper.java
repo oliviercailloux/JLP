@@ -5,7 +5,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.oliviercailloux.jlp.result.SolverDuration;
+import io.github.oliviercailloux.jlp.result.ComputationTime;
 import io.github.oliviercailloux.jlp.result.parameters.TimingType;
 
 public class TimingHelper {
@@ -58,12 +58,6 @@ public class TimingHelper {
 	public Long getCpuDuration_ms() {
 		assertEndCalled();
 		return mgmt == null ? null : Long.valueOf(Math.round((cpuEnd_ns.longValue() - cpuStart_ns.longValue()) / 1e6d));
-	}
-
-	public SolverDuration getDuration() {
-		assertEndCalled();
-		return SolverDuration.of(Long.valueOf(getWallDuration_ms()), getCpuDuration_ms(), getSolverWallDuration_ms(),
-				getSolverCpuDuration_ms());
 	}
 
 	public Long getSolverCpuDuration_ms() {
