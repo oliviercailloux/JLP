@@ -82,7 +82,7 @@ public class MPTest {
 	public void testStr() throws Exception {
 		final MP mp = MPExamples.getIntOneFourThree();
 		final String descr = mp.toString();
-		LOGGER.info("Descr: {}.", descr);
+		LOGGER.debug("Descr: {}.", descr);
 		assertTrue(descr.length() < 200);
 	}
 
