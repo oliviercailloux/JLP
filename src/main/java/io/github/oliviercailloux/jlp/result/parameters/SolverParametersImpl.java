@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp.parameters;
+package io.github.oliviercailloux.jlp.result.parameters;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -5,8 +5,8 @@ import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.oliviercailloux.jlp.parameters.TimingType;
 import io.github.oliviercailloux.jlp.result.SolverDuration;
+import io.github.oliviercailloux.jlp.result.parameters.TimingType;
 
 public class TimingHelper {
 	private Long cpuEnd_ns;

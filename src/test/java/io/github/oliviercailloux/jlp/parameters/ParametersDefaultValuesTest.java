@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.oliviercailloux.jlp.result.parameters.SolverParameterDouble;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParameterInt;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParameterString;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParametersDefaultValues;
+
 public class ParametersDefaultValuesTest {
 	@Test
 	public void testInit() throws Exception {

@@ -6,8 +6,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 
-import io.github.oliviercailloux.jlp.parameters.SolverParameters;
-import io.github.oliviercailloux.jlp.parameters.SolverParametersUtils;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParameters;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParametersUtils;
 
 public class ResultImpl implements Result {
 

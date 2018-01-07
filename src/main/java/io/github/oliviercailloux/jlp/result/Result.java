@@ -1,6 +1,6 @@
 package io.github.oliviercailloux.jlp.result;
 
-import io.github.oliviercailloux.jlp.parameters.SolverParameters;
+import io.github.oliviercailloux.jlp.result.parameters.SolverParameters;
 
 /**
  * <p>

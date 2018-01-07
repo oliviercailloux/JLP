@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp.parameters;
+package io.github.oliviercailloux.jlp.result.parameters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
