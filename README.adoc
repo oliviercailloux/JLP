@@ -8,6 +8,8 @@ Java Linear Programming: specify and solve linear programs in object-oriented fa
 
 See http://www.javadoc.io/page/io.github.oliviercailloux/jlp/latest/io/github/oliviercailloux/jlp/index.html[Javadoc].
 
+API is _not_ stable. Comments and bug reports are welcome.
+
 == Access
 Releases are published to http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.oliviercailloux%22%20a%3A%22jlp%22[Maven Central].
 
