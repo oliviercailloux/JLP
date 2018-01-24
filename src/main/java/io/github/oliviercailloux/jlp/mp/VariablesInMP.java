@@ -26,7 +26,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 */
 	private final List<Variable> delegate;
 
-	private MP source;
+	private MPBuilder source;
 
 	/**
 	 *
@@ -35,7 +35,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 * @param sourceList
 	 *            will be used to read through the list of variables.
 	 */
-	<T extends List<Variable> & RandomAccess> VariablesInMP(MP source, T sourceList) {
+	<T extends List<Variable> & RandomAccess> VariablesInMP(MPBuilder source, T sourceList) {
 		this.source = requireNonNull(source);
 		delegate = Collections.unmodifiableList(sourceList);
 	}

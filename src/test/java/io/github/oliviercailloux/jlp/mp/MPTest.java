@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.oliviercailloux.jlp.MPExamples;
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
-import io.github.oliviercailloux.jlp.result.MPExamples;
 
 public class MPTest {
 
@@ -24,7 +24,7 @@ public class MPTest {
 
 	@Test
 	public void testDuplicateDescr() {
-		final MP mp = MP.create();
+		final MPBuilder mp = MPBuilder.create();
 		mp.getVariables().add(Variable.bool("b"));
 		final Constraint intBEqZero = Constraint.of("int-b=0", SumTerms.of(1d, Variable.integer("b")),
 				ComparisonOperator.EQ, 0d);
@@ -34,7 +34,7 @@ public class MPTest {
 
 	@Test
 	public void testRemoveFromConstraint() throws Exception {
-		final MP mp = MP.create();
+		final MPBuilder mp = MPBuilder.create();
 		final Variable b1 = Variable.bool("b1");
 		final Variable b2 = Variable.bool("b2");
 		final Variable b3 = Variable.bool("b3");
@@ -51,7 +51,7 @@ public class MPTest {
 
 	@Test
 	public void testRemoveFromObjective() throws Exception {
-		final MP mp = MP.create();
+		final MPBuilder mp = MPBuilder.create();
 		final Variable b = Variable.bool("b");
 		assertEquals(0, mp.getVariables().size());
 		mp.getVariables().add(b);
@@ -64,7 +64,7 @@ public class MPTest {
 
 	@Test
 	public void testRetainAll() throws Exception {
-		final MP mp = MP.create();
+		final MPBuilder mp = MPBuilder.create();
 		final Variable b1 = Variable.bool("b1");
 		final Variable b2 = Variable.bool("b2");
 		final Variable b3 = Variable.bool("b3");
@@ -80,7 +80,7 @@ public class MPTest {
 
 	@Test
 	public void testStr() throws Exception {
-		final MP mp = MPExamples.getIntOneFourThree();
+		final MPBuilder mp = MPExamples.getIntOneFourThree();
 		final String descr = mp.toString();
 		LOGGER.debug("Descr: {}.", descr);
 		assertTrue(descr.length() < 200);

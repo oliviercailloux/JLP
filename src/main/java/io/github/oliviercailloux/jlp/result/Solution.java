@@ -1,41 +1,209 @@
 package io.github.oliviercailloux.jlp.result;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-import io.github.oliviercailloux.jlp.elements.Constraint;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+
+import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.mp.IMP;
+import io.github.oliviercailloux.jlp.mp.MP;
 
 /**
  * <p>
- * A feasible, but not necessarily optimal, result of a {@link IMP}. The problem
- * that this solution satisfies is bound to this solution object. This permits
- * to also query for, e.g., constraints values, provided the adequate variables
- * have a value set.
+ * A feasible, but not necessarily optimal, solution to a mathematical program.
+ * The MP is bound to this solution.
  * </p>
  * <p>
- * The type of the objects used for the variables should have their
- * {@link #equals(Object)} method implemented in a meaningful way as this is
- * used when retrieving the values, and their {@link #hashCode()} method should
- * be correctly implemented. The variables should be immutable.
- * </p>
- * <p>
- * Two solutions are {@link #equals(Object)} iff they have the same values for
- * the objective value and the variables (primal and dual) values, and their
- * bound problem is equal.
- * </p>
- * <p>
- * This interface has been designed for use with immutable numbers. The types
- * {@link Double}, {@link Integer}, {@link BigDecimal}, {@link BigInteger} will
- * pose no problem. Using other types as numbers is unsupported.
+ * Immutable (provided variables are immutable).
  * </p>
  *
  * @author Olivier Cailloux
- *
+ * @see IMP
  */
-public interface Solution extends SolutionAlone {
+public class Solution {
+
+	/**
+	 * Returns a representation of an optimal solution to the given mp, with the
+	 * given values as objective value and variables values.
+	 *
+	 * @param mp
+	 *            not <code>null</code>.
+	 * @param objectiveValue
+	 *            a finite value, must be zero if the given mp has the
+	 *            {@link Objective#ZERO ZERO} objective.
+	 * @param values
+	 *            not <code>null</code>, the keys must match the variables in the
+	 *            given problem.
+	 * @return
+	 */
+	public static Solution optimal(IMP mp, double objectiveValue, Map<Variable, Double> values) {
+		return new Solution(mp, objectiveValue, values, true);
+	}
+
+	/**
+	 * Not <code>null</code>.
+	 */
+	private final MP mp;
+
+	/**
+	 * Finite.
+	 */
+	private final double objectiveValue;
+
+	private final boolean optimal;
+
+	/**
+	 * Not <code>null</code>, containing no <code>null</code> keys or values.
+	 */
+	private final ImmutableMap<Variable, Double> values;
+
+	/**
+	 * @param mp
+	 *            not <code>null</code>.
+	 * @param objectiveValue
+	 *            a finite value, positive zero if the mp objective is
+	 *            {@link Objective#ZERO ZERO}.
+	 * @param variablesValues
+	 *            not <code>null</code>, must correspond to the variables in the
+	 *            given mp.
+	 * @param optimal
+	 *            must be <code>true</code> if the mp objective is
+	 *            {@link Objective#ZERO ZERO}.
+	 */
+	private Solution(IMP mp, double objectiveValue, Map<Variable, Double> variablesValues, boolean optimal) {
+		this.mp = MP.copyOf(mp);
+
+		checkArgument(Double.isFinite(objectiveValue));
+		/** We also check that the given zero is positive. */
+		checkArgument(!mp.getObjective().isZero()
+				|| (objectiveValue == 0d && ((1d / objectiveValue) == Double.POSITIVE_INFINITY)));
+		this.objectiveValue = objectiveValue;
+
+		/**
+		 * We must copy to ensure that the identity concept are the same for the
+		 * symmetric difference.
+		 */
+		final Set<Variable> varsFromMap = ImmutableSet.copyOf(requireNonNull(variablesValues).keySet());
+		final ImmutableSet<Variable> varsFromMp = ImmutableSet.copyOf(this.mp.getVariables());
+		final SetView<Variable> diff = Sets.symmetricDifference(varsFromMap, varsFromMp);
+		checkArgument(diff.isEmpty(),
+				"The following variable (in total, %s variables) are present in the given variables values and not in the given mp, or conversely: %s.",
+				diff.size(), diff.iterator().next());
+		this.values = ImmutableMap.copyOf(variablesValues);
+
+		checkArgument(!mp.getObjective().isZero() || optimal);
+		this.optimal = optimal;
+	}
+
+	/**
+	 * Two solutions are equal iff they have equal bound mathematical programs, they
+	 * have the same values for the objective value and the variables values, and
+	 * one is an optimal solution iff the other one is an optimal solution.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Solution)) {
+			return false;
+		}
+
+		final Solution s2 = (Solution) obj;
+		return objectiveValue == s2.objectiveValue && optimal == s2.optimal && mp.equals(s2.mp)
+				&& values.equals(s2.values);
+	}
+
+	/**
+	 * Returns the MP that this solution is about.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public MP getMP() {
+		return mp;
+	}
+
+	/**
+	 * Returns the value of the objective function with the solution found. Returns
+	 * zero if the bound problem has the {@link Objective#ZERO ZERO} objective.
+	 *
+	 * @return a finite value.
+	 */
+	public double getObjectiveValue() {
+		return objectiveValue;
+	}
+
+	/**
+	 * Returns the value associated to the given variable in this solution.
+	 *
+	 * @param variable
+	 *            not <code>null</code>, must be one of the variables in the MP
+	 *            bound to this solution.
+	 * @return <code>null</code> iff the variable has no associated primal value.
+	 * @see #getVariables()
+	 */
+	public double getValue(Variable variable) {
+		checkArgument(mp.getVariables().contains(requireNonNull(variable)));
+		return values.get(variable);
+	}
+
+	/**
+	 * Returns the variables of the MP bound to this solution. The returned list
+	 * equals the list returned by {@link MP#getVariables()} when called on
+	 * {@link #getMP()}.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public ImmutableList<Variable> getVariables() {
+		return mp.getVariables();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(mp, objectiveValue, optimal, values);
+	}
+
+	/**
+	 * <p>
+	 * Returns <code>true</code> iff this solution is known to be an optimal
+	 * solution.
+	 * </p>
+	 * <p>
+	 * This method returns <code>false</code> iff the solution is not known to be
+	 * optimal, thus, iff the solver giving this solution has not been able to prove
+	 * that it is optimal. It may still be optimal.
+	 * </p>
+	 * <p>
+	 * If the MP bound to this object has the {@link Objective#ZERO ZERO} objective,
+	 * then this method returns <code>true</code>.
+	 * </p>
+	 *
+	 * TODO delete this, not very useful.
+	 *
+	 * @return <code>true</code> if this solution has an objective value that no
+	 *         feasible solution to the bound MP can improve.
+	 */
+	public boolean isOptimal() {
+		return optimal;
+	}
+
+	@Override
+	public String toString() {
+		final ToStringHelper helper = MoreObjects.toStringHelper(this);
+		helper.add("mp", mp);
+		helper.add("objective value", objectiveValue);
+		helper.add("optimal", optimal);
+		return helper.toString();
+	}
 
 	/**
 	 * <p>
@@ -60,66 +228,24 @@ public interface Solution extends SolutionAlone {
 	 *            to zero or one.
 	 * @return <code>true</code> for one, <code>false</code> for zero.
 	 */
-	@Override
-	public boolean getBooleanValue(Variable variable);
+	@SuppressWarnings("unused")
+	private boolean getBooleanValue(Variable variable) {
+		Number number = values.get(variable);
+		if (number == null) {
+			if (!mp.getVariables().contains(variable)) {
+				throw new IllegalArgumentException("Unknown variable: " + variable + ".");
 
-	/**
-	 * Retrieves the value of the objective function computed from the objective
-	 * function itself with the values of the variables set in this solution.
-	 * Returns <code>null</code> if the objective function is not set in the bound
-	 * problem or one of the variables required value is not set.
-	 *
-	 * @return possibly <code>null</code>.
-	 */
-	public Double getComputedObjectiveValue();
-
-	/**
-	 * Returns, if it is known, the value corresponding to the dual variable
-	 * associated to the given primal constraint. Returns necessarily
-	 * <code>null</code> if the constraint is not in the associated problem.
-	 *
-	 * @param constraint
-	 *            not <code>null</code>.
-	 * @return <code>null</code> iff the variable has no associated dual value.
-	 */
-	@Override
-	public Double getDualValue(Constraint constraint);
-
-	/**
-	 * Returns the objective value. Returns necessarily <code>null</code> if the
-	 * bound problem has no objective function.
-	 *
-	 * @return <code>null</code> if not set.
-	 */
-	@Override
-	public Double getObjectiveValue();
-
-	/**
-	 * Retrieves the problem that this solution solves.
-	 *
-	 * @return not <code>null</code>, immutable.
-	 */
-	public IMP getProblem();
-
-	/**
-	 * Returns the primal value of the variable, if it is known. Returns necessarily
-	 * <code>null</code> if the given variable is not in the bound problem.
-	 *
-	 * @param variable
-	 *            not <code>null</code>.
-	 * @return <code>null</code> iff the variable has no associated primal value.
-	 */
-	@Override
-	public Double getValue(Variable variable);
-
-	/**
-	 * Retrieves a copy or read-only view of the variables which have a solution
-	 * value. The returned set is guaranteed to be included in the set of variables
-	 * contained in the bound problem.
-	 *
-	 * @return not <code>null</code>, but may be empty.
-	 */
-	@Override
-	public Set<Variable> getVariables();
+			}
+			throw new IllegalArgumentException("Variable has no value: " + variable + ".");
+		}
+		double v = number.doubleValue();
+		if (Math.abs(v - 0) < 1e-6) {
+			return false;
+		}
+		if (Math.abs(v - 1) < 1e-6) {
+			return true;
+		}
+		throw new IllegalStateException("Variable has a non boolean value: " + variable + ".");
+	}
 
 }

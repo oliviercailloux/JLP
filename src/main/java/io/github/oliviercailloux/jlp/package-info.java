@@ -3,10 +3,6 @@
  * The root package of this library.
  * </p>
  * <p>
- * TODO Add javadoc comments for all packages and public methods (enable
- * relevant compiler warning).
- * </p>
- * <p>
  * This library follows the terms in the
  * <a href="https://glossary.informs.org/">Mathematical Programming Glossary</a>
  * (J. Sauppe, editor, INFORMS Computing Society, 2006-17, originally authored

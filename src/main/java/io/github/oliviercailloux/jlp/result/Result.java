@@ -8,24 +8,67 @@ import java.util.Optional;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
+import io.github.oliviercailloux.jlp.elements.Objective;
+import io.github.oliviercailloux.jlp.mp.IMP;
 import io.github.oliviercailloux.jlp.parameters.Configuration;
 
 /**
  * <p>
- * A result of an attempt to solve an mp by a solver.
+ * A result of an attempt to solve an MP by a solver.
  * </p>
  * <p>
  * Immutable.
  * </p>
  *
+ * @see IMP
+ *
  * @author Olivier Cailloux
  *
  */
 public class Result {
+	/**
+	 * Returns a result of an attempt to solve an MP that did not yield a feasible
+	 * solution.
+	 *
+	 * @param status
+	 *            not <code>null</code>, may be
+	 *            {@link ResultStatus#MEMORY_LIMIT_REACHED MEMORY_LIMIT_REACHED},
+	 *            {@link ResultStatus#TIME_LIMIT_REACHED TIME_LIMIT_REACHED},
+	 *            {@link ResultStatus#INFEASIBLE INFEASIBLE} or
+	 *            {@link ResultStatus#UNBOUNDED UNBOUNDED}, but not
+	 *            {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * @param duration
+	 *            not <code>null</code>, the duration this attempt of solving has
+	 *            taken (before finding an answer or before hitting a limit).
+	 * @param configuration
+	 *            not <code>null</code>, the configuration of the solver used for
+	 *            this attempt.
+	 * @return not <code>null</code>.
+	 */
 	static public Result noSolution(ResultStatus status, ComputationTime duration, Configuration configuration) {
 		return new Result(status, duration, configuration, Optional.empty());
 	}
 
+	/**
+	 * Returns a result of an attempt to solve an MP that found a feasible (and
+	 * possibly optimal) solution.
+	 *
+	 * @param status
+	 *            not <code>null</code>, may be {@link ResultStatus#OPTIMAL
+	 *            OPTIMAL}, {@link ResultStatus#MEMORY_LIMIT_REACHED
+	 *            MEMORY_LIMIT_REACHED}, {@link ResultStatus#TIME_LIMIT_REACHED
+	 *            TIME_LIMIT_REACHED} or {@link ResultStatus#UNBOUNDED UNBOUNDED},
+	 *            but not {@link ResultStatus#INFEASIBLE INFEASIBLE}.
+	 * @param duration
+	 *            not <code>null</code>, the duration this attempt of solving has
+	 *            taken (before finding an answer or before failing).
+	 * @param configuration
+	 *            not <code>null</code>, the configuration of the solver used for
+	 *            this attempt.
+	 * @param solution
+	 *            not <code>null</code>, the feasible solution found.
+	 * @return not <code>null</code>.
+	 */
 	static public Result withSolution(ResultStatus status, ComputationTime duration, Configuration configuration,
 			Solution solution) {
 		return new Result(status, duration, configuration, Optional.of(solution));
@@ -51,15 +94,27 @@ public class Result {
 	 */
 	private final ResultStatus status;
 
+	/**
+	 * This constructor will check the given parameters according to the documented
+	 * semantics of the given status. (Though it does not check that the solution is
+	 * feasible.)
+	 *
+	 * @param status
+	 *            not <code>null</code>.
+	 * @param duration
+	 *            not <code>null</code>.
+	 * @param configuration
+	 *            not <code>null</code>.
+	 * @param solution
+	 *            not <code>null</code>.
+	 * @see ResultStatus
+	 */
 	Result(ResultStatus status, ComputationTime duration, Configuration configuration, Optional<Solution> solution) {
 		this.status = requireNonNull(status);
 		this.duration = requireNonNull(duration);
 		this.configuration = requireNonNull(configuration);
 		this.solution = requireNonNull(solution);
 		switch (status) {
-		case FEASIBLE:
-			checkArgument(solution.isPresent());
-			break;
 		case INFEASIBLE:
 			checkArgument(!solution.isPresent());
 			break;
@@ -70,6 +125,7 @@ public class Result {
 			checkArgument(solution.isPresent());
 			break;
 		case UNBOUNDED:
+			checkArgument(!solution.isPresent() || solution.get().getMP().getObjective() != Objective.ZERO);
 			break;
 		default:
 			throw new IllegalStateException();
@@ -99,14 +155,23 @@ public class Result {
 	 * Returns the status obtained as a result from the solving attempt.
 	 *
 	 * @return not <code>null</code>.
+	 * @see ResultStatus
 	 */
 	public ResultStatus getResultStatus() {
 		return status;
 	}
 
 	/**
-	 * Returns a solution to the mp, if one has been found. If the result of the
-	 * solve is optimal, the returned solution is an optimal solution.
+	 * <p>
+	 * Returns a solution to the MP, if one has been found.
+	 * <p>
+	 * This method is guaranteed to return a non empty optional if the result status
+	 * is {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * </p>
+	 * <p>
+	 * The returned solution is known to be optimal iff the result status is
+	 * {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * </p>
 	 *
 	 * @return not <code>null</code>, a solution if a solution has been found, an
 	 *         empty optional otherwise.

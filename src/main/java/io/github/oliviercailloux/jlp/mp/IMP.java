@@ -107,7 +107,13 @@ public interface IMP {
 	public Optional<Variable> getVariable(String description);
 
 	/**
+	 * <p>
 	 * Returns the variables in this MP.
+	 * </p>
+	 * <p>
+	 * This list contains all variables used in any constraint, and any variables
+	 * used in the objective function (and possibly more).
+	 * </p>
 	 *
 	 * @return not <code>null</code>, may be empty, contains no duplicates.
 	 */

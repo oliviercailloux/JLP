@@ -16,14 +16,13 @@ public class ComputationTime {
 
 	/**
 	 * Returns a computation time containing the two given measures.
-	 *
-	 * @param cpuTime
-	 *            a strictly positive duration.
 	 * @param wallTime
 	 *            a strictly positive duration.
+	 * @param cpuTime
+	 *            a strictly positive duration.
 	 */
-	static public ComputationTime of(Duration cpuTime, Duration wallTime) {
-		return new ComputationTime(Optional.of(cpuTime), wallTime);
+	static public ComputationTime of(Duration wallTime, Duration cpuTime) {
+		return new ComputationTime(wallTime, Optional.of(cpuTime));
 	}
 
 	/**
@@ -33,7 +32,7 @@ public class ComputationTime {
 	 *            a strictly positive duration.
 	 */
 	static public ComputationTime ofWallTime(Duration wallTime) {
-		return new ComputationTime(Optional.empty(), wallTime);
+		return new ComputationTime(wallTime, Optional.empty());
 	}
 
 	private Optional<Duration> cpuTime;
@@ -41,13 +40,13 @@ public class ComputationTime {
 	private Duration wallTime;
 
 	/**
+	 * @param wallTime
+	 *            not <code>null</code>, a strictly positive duration.
 	 * @param cpuTime
 	 *            not <code>null</code>, a strictly positive duration or an empty
 	 *            optional.
-	 * @param wallTime
-	 *            not <code>null</code>, a strictly positive duration.
 	 */
-	private ComputationTime(Optional<Duration> cpuTime, Duration wallTime) {
+	private ComputationTime(Duration wallTime, Optional<Duration> cpuTime) {
 		this.cpuTime = requireNonNull(cpuTime);
 		if (cpuTime.isPresent()) {
 			checkArgument(cpuTime.get().negated().isNegative());

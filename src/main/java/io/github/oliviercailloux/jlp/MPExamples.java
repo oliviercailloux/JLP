@@ -1,4 +1,8 @@
-package io.github.oliviercailloux.jlp.result;
+package io.github.oliviercailloux.jlp;
+
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
 import io.github.oliviercailloux.jlp.elements.Constraint;
@@ -6,6 +10,8 @@ import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.mp.MP;
+import io.github.oliviercailloux.jlp.mp.MPBuilder;
+import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPExamples {
 	/**
@@ -22,8 +28,8 @@ public class MPExamples {
 	 *
 	 * @return a new problem.
 	 */
-	static public MP getIntOneFourThree() {
-		MP problem = MP.create();
+	static public MPBuilder getIntOneFourThree() {
+		MPBuilder problem = MP.builder();
 		problem.setName("OneFourThree");
 		final Variable x = Variable.integer("x");
 		final Variable y = Variable.integer("y");
@@ -38,8 +44,8 @@ public class MPExamples {
 		return problem;
 	}
 
-	public static MP getIntOneFourThreeLowX() {
-		final MP problem = getIntOneFourThree();
+	public static MPBuilder getIntOneFourThreeLowX() {
+		final MPBuilder problem = getIntOneFourThree();
 		final Variable x = problem.getVariable("x").get();
 		problem.add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
 		return problem;
@@ -51,14 +57,15 @@ public class MPExamples {
 	 * @return the solution.
 	 */
 	static public Solution getIntOneFourThreeLowXSolution() {
-		final SolutionImpl solution = new SolutionImpl(getIntOneFourThreeLowX());
-		final Variable x = Variable.integer("x");
-		final Variable y = Variable.integer("y");
-		solution.setObjectiveValue(5828d);
-		solution.putValue(x, 16d);
-		solution.putValue(y, 59d);
-		assert (solution.getComputedObjectiveValue().doubleValue() == solution.getObjectiveValue().doubleValue());
-		return solution;
+		final MPBuilder mp = getIntOneFourThreeLowX();
+		final Variable x = mp.getVariable("x").get();
+		final Variable y = mp.getVariable("y").get();
+
+		final Map<Variable, Double> values = Maps.newLinkedHashMap();
+		final double obj = 5828d;
+		values.put(x, 16d);
+		values.put(y, 59d);
+		return Solution.optimal(mp, obj, values);
 	}
 
 	/**
@@ -67,13 +74,14 @@ public class MPExamples {
 	 * @return the solution.
 	 */
 	static public Solution getIntOneFourThreeSolution() {
-		final SolutionImpl solution = new SolutionImpl(getIntOneFourThree());
-		final Variable x = Variable.integer("x");
-		final Variable y = Variable.integer("y");
-		solution.setObjectiveValue(6266d);
-		solution.putValue(x, 22d);
-		solution.putValue(y, 52d);
-		assert (solution.getComputedObjectiveValue().doubleValue() == solution.getObjectiveValue().doubleValue());
-		return solution;
+		final MPBuilder mp = getIntOneFourThree();
+		final Variable x = mp.getVariable("x").get();
+		final Variable y = mp.getVariable("y").get();
+
+		final Map<Variable, Double> values = Maps.newLinkedHashMap();
+		final double obj = 6266d;
+		values.put(x, 22d);
+		values.put(y, 52d);
+		return Solution.optimal(mp, obj, values);
 	}
 }
