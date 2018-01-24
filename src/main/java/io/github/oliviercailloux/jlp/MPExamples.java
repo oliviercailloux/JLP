@@ -65,7 +65,7 @@ public class MPExamples {
 		final double obj = 5828d;
 		values.put(x, 16d);
 		values.put(y, 59d);
-		return Solution.optimal(mp, obj, values);
+		return Solution.of(mp, obj, values);
 	}
 
 	/**
@@ -82,6 +82,6 @@ public class MPExamples {
 		final double obj = 6266d;
 		values.put(x, 22d);
 		values.put(y, 52d);
-		return Solution.optimal(mp, obj, values);
+		return Solution.of(mp, obj, values);
 	}
 }
