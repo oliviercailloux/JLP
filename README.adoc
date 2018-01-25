@@ -4,9 +4,7 @@ image:https://travis-ci.org/oliviercailloux/JLP.svg?branch=master["Build Status"
 image:https://maven-badges.herokuapp.com/maven-central/io.github.oliviercailloux/jlp/badge.svg["Artifact on Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.oliviercailloux%22%20a%3A%22jlp%22"]
 image:http://www.javadoc.io/badge/io.github.oliviercailloux/jlp.svg["Javadocs", link="http://www.javadoc.io/doc/io.github.oliviercailloux/jlp"]
 
-Java Linear Programming: specify and solve linear programs in object-oriented fashion.
-
-See http://www.javadoc.io/page/io.github.oliviercailloux/jlp/latest/io/github/oliviercailloux/jlp/index.html[Javadoc].
+Java Linear Programming: specify and solve linear programs in object-oriented fashion. (See the Javadoc link in the badge above.)
 
 API is _not_ stable. Comments and bug reports are welcome.
 
