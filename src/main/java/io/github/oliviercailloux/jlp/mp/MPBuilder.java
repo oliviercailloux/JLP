@@ -197,6 +197,12 @@ public class MPBuilder implements IMP {
 		return Optional.ofNullable(descrToVar.get(description));
 	}
 
+	/**
+	 * Returns a writable list of variables in this MP. The returned list will allow
+	 * removal of a variable only if it is not used in any constraint or objective
+	 * function. The returned list reads-through this object, thus it changes for
+	 * example when a constraint is added to this MP.
+	 */
 	@Override
 	public VariablesInMP getVariables() {
 		return variablesFacade;
