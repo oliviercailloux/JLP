@@ -46,7 +46,6 @@ public class Solution {
 	 * @param values
 	 *            not <code>null</code>, the keys must match the variables in the
 	 *            given problem.
-	 * @return
 	 */
 	public static Solution of(IMP mp, double objectiveValue, Map<Variable, Double> values) {
 		return new Solution(mp, objectiveValue, values);

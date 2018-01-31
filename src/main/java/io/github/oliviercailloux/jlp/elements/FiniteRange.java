@@ -13,17 +13,17 @@ import com.google.common.collect.Range;
  * Ranges in this library are expected to hold finite values only. Thus, it is
  * advised to use the constructors of this class rather than the ones provided
  * by {@link Range}. For example, {@link Range#all()} is not considered a valid
- * range by {@link Variable#newVariable} because that range includes infinite
- * double values and NaN. Rather use {@link FiniteRange#ALL_FINITE} if you want
- * to indicate that all finite values are allowed.
+ * range by {@link Variable#of} because that range includes infinite double
+ * values and NaN. Rather use {@link FiniteRange#ALL_FINITE} if you want to
+ * indicate that all finite values are allowed.
  * </p>
  * <p>
  * All ranges provided by this class exclude NaN and infinite values.
  * </p>
  * <p>
  * Documentation in this package use the symbol ∞ to represent Double infinity.
- * Thus this represents a value lower or greater, depending on the sign, than
- * all <em>finite</em> double values, contrary to Guava <a href=
+ * Thus this represents a value strictly lower or strictly greater, depending on
+ * the sign, than all <em>finite</em> double values, contrary to Guava <a href=
  * "https://github.com/google/guava/wiki/RangesExplained">RangesExplained</a>
  * which uses the symbol to indicate something lower or greater than all
  * possible values in a given type.

@@ -110,8 +110,8 @@ public class Variable {
 
 	/**
 	 * Returns a variable of the given name and with the provided references, with
-	 * domain {@link VariableDomain#INT}, bounds set at zero and one, and hence of
-	 * kind {@link VariableKind#BOOL_KIND}.
+	 * domain {@link VariableDomain#INT_DOMAIN}, bounds set at zero and one, and
+	 * hence of kind {@link VariableKind#BOOL_KIND}.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
@@ -152,8 +152,8 @@ public class Variable {
 	}
 
 	/**
-	 * Returns an {@link VariableDomain#INT} variable of the given name and with the
-	 * provided references, with maximal bounds.
+	 * Returns an {@link VariableDomain#INT_DOMAIN} variable of the given name and
+	 * with the provided references, with maximal bounds.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
@@ -168,7 +168,7 @@ public class Variable {
 	/**
 	 * Returns a variable with the given data. The bounds must be set as to contain
 	 * at least one valid value for the variable (see {@link Variable}). Use
-	 * {@link Variable#ALL_FINITE} for the maximal bounds.
+	 * {@link FiniteRange#ALL_FINITE} for the maximal bounds.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
@@ -190,8 +190,8 @@ public class Variable {
 	}
 
 	/**
-	 * Returns a {@link VariableDomain#REAL} variable of the given name and with the
-	 * provided references, with maximal bounds.
+	 * Returns a {@link VariableDomain#REAL_DOMAIN} variable of the given name and
+	 * with the provided references, with maximal bounds.
 	 *
 	 * @param name
 	 *            not <code>null</code>.
@@ -220,7 +220,7 @@ public class Variable {
 	 *
 	 * @param name
 	 *            not <code>null</code>.
-	 * @param domain
+	 * @param domain2
 	 *            not <code>null</code>.
 	 * @param bounds
 	 *            not <code>null</code>, each bound in this range must be of type
@@ -249,9 +249,6 @@ public class Variable {
 		checkArgument(upClosedFinite || upOpenInfinite);
 
 		assert ALL_FINITE.encloses(bounds);
-		/**
-		 * TODO check javadoc warnings, should trigger when type param is unused.
-		 */
 		requireNonNull(references);
 		/** Note ImmutableList is hostile to nulls. */
 		refs = ImmutableList.copyOf(references);

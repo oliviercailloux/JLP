@@ -65,8 +65,8 @@ public class MPDimension {
 	 * @param constraintsCount
 	 *            at least zero.
 	 */
-	static public MPDimension of(Iterable<VariableKind> variablesCounts, int constraintsCount) {
-		return new MPDimension(variablesCounts, constraintsCount);
+	static public MPDimension of(Iterable<VariableKind> variablesKinds, int constraintsCount) {
+		return new MPDimension(variablesKinds, constraintsCount);
 	}
 
 	private final int constraintsCount;
