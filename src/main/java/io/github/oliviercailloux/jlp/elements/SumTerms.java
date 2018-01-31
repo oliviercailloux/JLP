@@ -146,9 +146,7 @@ public class SumTerms extends ForwardingList<Term> {
 	}
 
 	/**
-	 * Returns a string representation of this sum. This should be used for debug
-	 * purposes only as this method gives no control on the number of decimal digits
-	 * shown.
+	 * Returns a string representation of this sum (useful for debug).
 	 *
 	 */
 	@Override

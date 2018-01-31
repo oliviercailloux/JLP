@@ -165,8 +165,8 @@ public class Result {
 	 * <p>
 	 * Returns a solution to the MP, if one has been found.
 	 * <p>
-	 * This method is guaranteed to return a non empty optional if the result status
-	 * is {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * If the result status is {@link ResultStatus#OPTIMAL OPTIMAL}, this method is
+	 * guaranteed to return a non empty optional.
 	 * </p>
 	 * <p>
 	 * The returned solution is known to be optimal iff the result status is

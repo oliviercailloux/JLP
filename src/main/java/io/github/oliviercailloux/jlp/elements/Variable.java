@@ -326,6 +326,11 @@ public class Variable {
 		return Objects.hash(toString(), kind, bounds);
 	}
 
+	/**
+	 * Returns a string representation of this variable (useful for debug).
+	 *
+	 * @see #getDescription()
+	 */
 	@Override
 	public String toString() {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this).add("name", name).add("domain", kind.getDomain())

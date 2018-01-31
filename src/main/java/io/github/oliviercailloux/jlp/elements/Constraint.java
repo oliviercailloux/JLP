@@ -135,10 +135,13 @@ public class Constraint {
 		return Objects.hash(descr, lhs, op, rhs);
 	}
 
+	/**
+	 * Returns a string representation of this constraint (useful for debug).
+	 *
+	 */
 	@Override
 	public String toString() {
 		final String expr = lhs + " " + op + " " + rhs;
-		return MoreObjects.toStringHelper(this).add("description", descr).add("expression", expr)
-				.toString();
+		return MoreObjects.toStringHelper(this).add("description", descr).add("expression", expr).toString();
 	}
 }

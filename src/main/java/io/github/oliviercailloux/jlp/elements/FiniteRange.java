@@ -7,8 +7,7 @@ import com.google.common.collect.Range;
 /**
  * <p>
  * This class provides constructors for obtaining ranges containing finite
- * values only. (The provided ranges are not necessarily finite in the sense of
- * unbounded, however.)
+ * values only. (The provided ranges are not necessarily bounded, however.)
  * </p>
  * <p>
  * Ranges in this library are expected to hold finite values only. Thus, it is

@@ -6,6 +6,8 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * <p>
  * A term in a linear expression in a linear program or mixed integer program,
@@ -94,12 +96,16 @@ public class Term {
 	}
 
 	/**
-	 * Returns a string representation of this term.
+	 * Returns a string representation of this term (useful for debug).
 	 *
-	 * @return not <code>null</code>, not empty
 	 */
 	@Override
 	public String toString() {
+		return MoreObjects.toStringHelper(this).addValue(coefficient).addValue(variable.getDescription()).toString();
+	}
+
+	@SuppressWarnings("unused")
+	private String getFormattedCoef() {
 		final String formattedCoef;
 
 		if (getCoefficient() == 1d) {
@@ -127,7 +133,6 @@ public class Term {
 			final BigDecimal cD = new BigDecimal(coefficient);
 			formattedCoef = cD.round(c).toString() + ' ';
 		}
-
-		return formattedCoef + variable.getDescription();
+		return formattedCoef;
 	}
 }
