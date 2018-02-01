@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.oliviercailloux</groupId>
 	<artifactId>jlp</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>JLP</name>
 	<description>Java Linear Programming: specify and solve linear programs in object-oriented fashion.</description>
 	<url>http://github.com/oliviercailloux/JLP</url>
