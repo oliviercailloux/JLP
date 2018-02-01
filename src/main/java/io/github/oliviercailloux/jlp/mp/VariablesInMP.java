@@ -14,7 +14,8 @@ import com.google.common.collect.ForwardingList;
 import io.github.oliviercailloux.jlp.elements.Variable;
 
 /**
- * A list of variables in an MP. Forbids duplicates.
+ * A list of variables in an MP. Forbids duplicates. Forbids removal of
+ * variables that are used in some constraint or in the objective function.
  *
  * @author Olivier Cailloux
  *
@@ -86,7 +87,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given variable was already in this MP.
 	 */
-	public boolean addOptional(Variable variable) {
+	public boolean addIfNew(Variable variable) {
 		return source.putVariable(delegate.size(), variable, false);
 	}
 

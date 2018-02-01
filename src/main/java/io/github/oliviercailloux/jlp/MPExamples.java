@@ -37,9 +37,9 @@ public class MPExamples {
 		problem.getVariables().add(y);
 
 		problem.setObjective(Objective.max(SumTerms.of(143, x, 60, y)));
-		problem.add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
-		problem.add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
-		problem.add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));
+		problem.getConstraints().add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
+		problem.getConstraints().add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
+		problem.getConstraints().add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));
 
 		return problem;
 	}
@@ -47,7 +47,7 @@ public class MPExamples {
 	public static MPBuilder getIntOneFourThreeLowX() {
 		final MPBuilder problem = getIntOneFourThree();
 		final Variable x = problem.getVariable("x").get();
-		problem.add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
+		problem.getConstraints().add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
 		return problem;
 	}
 

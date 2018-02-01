@@ -1,11 +1,11 @@
 package io.github.oliviercailloux.jlp.mp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkPositionIndex;
 import static io.github.oliviercailloux.jlp.elements.Objective.ZERO;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,9 +58,7 @@ public class MPBuilder implements IMP {
 		mp.setName(source.getName());
 		mp.setObjective(source.getObjective());
 		mp.getVariables().addAll(source.getVariables());
-		for (Constraint constraint : source.getConstraints()) {
-			mp.add(constraint);
-		}
+		mp.getConstraints().addAll(source.getConstraints());
 
 		return mp;
 	}
@@ -75,7 +73,9 @@ public class MPBuilder implements IMP {
 		return new MPBuilder();
 	}
 
-	private final List<Constraint> constraints = new ArrayList<>();
+	private final List<Constraint> constraints;
+
+	private final ConstraintsInMP constraintsFacade;
 
 	private final BiMap<String, Variable> descrToVar = HashBiMap.create();
 
@@ -101,31 +101,9 @@ public class MPBuilder implements IMP {
 		final ArrayList<Variable> variablesArrayList = new ArrayList<>();
 		variables = variablesArrayList;
 		variablesFacade = new VariablesInMP(this, variablesArrayList);
-	}
-
-	/**
-	 * Adds a constraint, or does nothing if the given constraint is already in this
-	 * MP. The variables used in the constraint are added to this MP if not present
-	 * already, in the order they are found in the given constraint.
-	 *
-	 * @param constraint
-	 *            not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff the given constraint was already in this MP.
-	 */
-	public boolean add(Constraint constraint) {
-		requireNonNull(constraint);
-		final SumTerms sumTerms = constraint.getLhs();
-		final boolean addedV = putVariables(sumTerms);
-		final boolean addedC = constraints.add(constraint);
-		/**
-		 * We want to check addedV ⇒ addedC, thus, exclude the contradictory case, where
-		 * addedV but not addedC.
-		 *
-		 * Equiv: addedC iff addedV || addedC.
-		 */
-		assert !(addedV && !addedC);
-		return addedC;
+		final ArrayList<Constraint> constraintsArrayList = new ArrayList<>();
+		constraints = constraintsArrayList;
+		constraintsFacade = new ConstraintsInMP(this, constraintsArrayList);
 	}
 
 	/**
@@ -174,7 +152,7 @@ public class MPBuilder implements IMP {
 
 	@Override
 	public List<Constraint> getConstraints() {
-		return Collections.unmodifiableList(constraints);
+		return constraintsFacade;
 	}
 
 	@Override
@@ -280,6 +258,33 @@ public class MPBuilder implements IMP {
 	}
 
 	/**
+	 * Adds the constraint to this MP.
+	 *
+	 * @param index
+	 *            an appropriate index.
+	 * @param constraint
+	 *            not <code>null</code>.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given constraint was already in this MP.
+	 */
+	boolean putConstraint(int index, Constraint constraint) {
+		checkPositionIndex(index, constraints.size());
+		requireNonNull(constraint);
+
+		final SumTerms sumTerms = constraint.getLhs();
+		final boolean addedV = putVariables(sumTerms);
+		final boolean addedC = constraints.add(constraint);
+		/**
+		 * We want to check addedV ⇒ addedC, thus, exclude the contradictory case, where
+		 * addedV but not addedC.
+		 *
+		 * Equiv: addedC iff addedV || addedC.
+		 */
+		assert !(addedV && !addedC);
+		return addedC;
+	}
+
+	/**
 	 * Adds the variable to this MP if it is not already in.
 	 *
 	 * @param index
@@ -294,6 +299,7 @@ public class MPBuilder implements IMP {
 	 *         <code>false</code> iff the given variable was already in this MP.
 	 */
 	boolean putVariable(int index, Variable variable, boolean expectNew) {
+		checkPositionIndex(index, variables.size());
 		requireNonNull(variable);
 		final String descr = variable.getDescription();
 		requireNonNull(descr);

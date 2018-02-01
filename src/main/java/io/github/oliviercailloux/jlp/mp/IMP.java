@@ -2,6 +2,7 @@ package io.github.oliviercailloux.jlp.mp;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Objective;
@@ -43,6 +44,21 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * Implementations of this interface may be writeable, immutable or be a
  * read-only view.
  * </p>
+ * <p>
+ * As the variables in this MP are not duplicated, the return type of
+ * {@link #getVariables()} could be a {@link Set} rather than a {@link List}.
+ * However, the relative position of a variable in the list, compared to its
+ * peers, will usually be meaningful, as variables are probably to be grouped in
+ * a way that depends on their meaning (variables about the structure come
+ * first, …). Hence, explicitly indexing the variables seems adequate.
+ * </p>
+ * <p>
+ * The list of constraints is a real list in the sense that it allows
+ * duplicates. This permits to really satisfy the constract of {@link List}, and
+ * makes it easily sortable, for example. (The choice is different for the list
+ * of variables because it can’t fulfill entirely the contract of List anyway,
+ * as a variable can’t be removed once it is used.)
+ * </p>
  *
  * @author Olivier Cailloux
  * @see Variable
@@ -64,7 +80,7 @@ public interface IMP {
 	/**
 	 * Returns the constraints in this MP.
 	 *
-	 * @return not <code>null</code>, may be empty, contains no duplicates.
+	 * @return not <code>null</code>, may be empty.
 	 */
 	public List<Constraint> getConstraints();
 
