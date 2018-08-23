@@ -1,6 +1,4 @@
 language: java
-git:
-  depth: 1
 jdk:
   - openjdk8
 dist: trusty
@@ -12,6 +10,5 @@ addons:
   sonarcloud:
     organization: "oliviercailloux-github"
 script:
-#  - sonar-scanner
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 
