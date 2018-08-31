@@ -3,8 +3,7 @@ package io.github.oliviercailloux.jlp.elements;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 
@@ -21,7 +20,7 @@ import com.google.common.base.MoreObjects;
  *
  */
 public class Term {
-	static public Term of(double coefficient, Variable variable) {
+	public static Term of(double coefficient, Variable variable) {
 		return new Term(coefficient, variable);
 	}
 
@@ -30,10 +29,8 @@ public class Term {
 	private final Variable variable;
 
 	/**
-	 * @param coefficient
-	 *            a finite number.
-	 * @param variable
-	 *            not <code>null</code>.
+	 * @param coefficient a finite number.
+	 * @param variable    not <code>null</code>.
 	 */
 	private Term(double coefficient, Variable variable) {
 		checkArgument(Double.isFinite(coefficient));
@@ -42,20 +39,20 @@ public class Term {
 	}
 
 	/**
-	 * A term equals another object <code>obj</code> iff <code>obj</code> is a term
+	 * A term equals another object <code>o2</code> iff <code>o2</code> is a term
 	 * and they have equal coefficient and variable.
 	 *
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o2) {
+		if (this == o2) {
 			return true;
 		}
-		if (!(obj instanceof Term)) {
+		if (!(o2 instanceof Term)) {
 			return false;
 		}
 
-		Term t2 = (Term) obj;
+		Term t2 = (Term) o2;
 		if (coefficient != t2.coefficient) {
 			return false;
 		}
@@ -86,13 +83,7 @@ public class Term {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(coefficient);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + variable.hashCode();
-		return result;
+		return Objects.hash(coefficient, variable);
 	}
 
 	/**

@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -38,14 +37,11 @@ public class Solution {
 	 * Returns a representation of a feasible (and possibly optimal) solution to the
 	 * given MP, with the given values as objective value and variables values.
 	 *
-	 * @param mp
-	 *            not <code>null</code>.
-	 * @param objectiveValue
-	 *            a finite value, must be zero if the given MP has the
-	 *            {@link Objective#ZERO ZERO} objective.
-	 * @param values
-	 *            not <code>null</code>, the keys must match the variables in the
-	 *            given problem.
+	 * @param mp             not <code>null</code>.
+	 * @param objectiveValue a finite value, must be zero if the given MP has the
+	 *                       {@link Objective#ZERO ZERO} objective.
+	 * @param values         not <code>null</code>, the keys must match the
+	 *                       variables in the given problem.
 	 */
 	public static Solution of(IMP mp, double objectiveValue, Map<Variable, Double> values) {
 		return new Solution(mp, objectiveValue, values);
@@ -67,14 +63,11 @@ public class Solution {
 	private final ImmutableMap<Variable, Double> values;
 
 	/**
-	 * @param mp
-	 *            not <code>null</code>.
-	 * @param objectiveValue
-	 *            a finite value, zero if the mp objective is {@link Objective#ZERO
-	 *            ZERO}.
-	 * @param variablesValues
-	 *            not <code>null</code>, must correspond to the variables in the
-	 *            given mp.
+	 * @param mp              not <code>null</code>.
+	 * @param objectiveValue  a finite value, zero if the mp objective is
+	 *                        {@link Objective#ZERO ZERO}.
+	 * @param variablesValues not <code>null</code>, must correspond to the
+	 *                        variables in the given mp.
 	 */
 	private Solution(IMP mp, double objectiveValue, Map<Variable, Double> variablesValues) {
 		this.mp = MP.copyOf(mp);
@@ -88,11 +81,12 @@ public class Solution {
 		 * We must copy to ensure that the identity concept are the same for the
 		 * symmetric difference.
 		 */
-		final Set<Variable> varsFromMap = ImmutableSet.copyOf(requireNonNull(variablesValues).keySet());
+		final ImmutableSet<Variable> varsFromMap = ImmutableSet.copyOf(requireNonNull(variablesValues).keySet());
 		final ImmutableSet<Variable> varsFromMp = ImmutableSet.copyOf(this.mp.getVariables());
 		final SetView<Variable> diff = Sets.symmetricDifference(varsFromMap, varsFromMp);
 		checkArgument(diff.isEmpty(),
-				"The following variable (in total, %s variables) are present in the given variables values and not in the given mp, or conversely: %s.",
+				"The following variable (in total, %s variables) is present in the given variables values "
+						+ "and not in the given mp, or conversely: %s.",
 				diff.size(), diff.iterator().next());
 		this.values = ImmutableMap.copyOf(variablesValues);
 	}
@@ -102,12 +96,12 @@ public class Solution {
 	 * have the same values for the objective value and the variables values.
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Solution)) {
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof Solution)) {
 			return false;
 		}
 
-		final Solution s2 = (Solution) obj;
+		final Solution s2 = (Solution) o2;
 		return objectiveValue == s2.objectiveValue && mp.equals(s2.mp) && values.equals(s2.values);
 	}
 
@@ -133,10 +127,9 @@ public class Solution {
 	/**
 	 * Returns the value associated to the given variable in this solution.
 	 *
-	 * @param variable
-	 *            not <code>null</code>, must be one of the variables in the MP
-	 *            bound to this solution.
-	 * @return <code>null</code> iff the variable has no associated primal value.
+	 * @param variable not <code>null</code>, must be one of the variables in the MP
+	 *                 bound to this solution.
+	 * @return the primal value associated to the given variable.
 	 * @see #getVariables()
 	 */
 	public double getValue(Variable variable) {
@@ -165,6 +158,7 @@ public class Solution {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		helper.add("mp", mp);
 		helper.add("objective value", objectiveValue);
+		helper.add("values", values);
 		return helper.toString();
 	}
 

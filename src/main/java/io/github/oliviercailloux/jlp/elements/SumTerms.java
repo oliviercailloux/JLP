@@ -31,70 +31,57 @@ import com.google.common.collect.ImmutableList;
  * @author Olivier Cailloux
  *
  */
-public class SumTerms extends ForwardingList<Term> {
-	static public SumTermsBuilder builder(Term... terms) {
+public class SumTerms extends ForwardingList<Term> implements List<Term> {
+	public static SumTermsBuilder builder(Term... terms) {
 		return new SumTermsBuilder(Arrays.asList(terms));
 	}
 
 	/**
 	 * Returns a sum containing a single term.
 	 *
-	 * @param c1
-	 *            a finite number.
-	 * @param v1
-	 *            not <code>null</code>.
+	 * @param c1 a finite number.
+	 * @param v1 not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms of(double c1, Variable v1) {
+	public static SumTerms of(double c1, Variable v1) {
 		return new SumTerms(ImmutableList.of(Term.of(c1, v1)));
 	}
 
 	/**
 	 * Returns a sum containing two terms.
 	 *
-	 * @param c1
-	 *            a finite number.
-	 * @param v1
-	 *            not <code>null</code>.
-	 * @param c2
-	 *            a finite number.
-	 * @param v2
-	 *            not <code>null</code>.
+	 * @param c1 a finite number.
+	 * @param v1 not <code>null</code>.
+	 * @param c2 a finite number.
+	 * @param v2 not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms of(double c1, Variable v1, double c2, Variable v2) {
+	public static SumTerms of(double c1, Variable v1, double c2, Variable v2) {
 		return new SumTerms(ImmutableList.of(Term.of(c1, v1), Term.of(c2, v2)));
 	}
 
 	/**
 	 * Returns a sum containing three terms.
 	 *
-	 * @param c1
-	 *            a finite number.
-	 * @param v1
-	 *            not <code>null</code>.
-	 * @param c2
-	 *            a finite number.
-	 * @param v2
-	 *            not <code>null</code>.
-	 * @param c3
-	 *            a finite number.
-	 * @param v3
-	 *            not <code>null</code>.
+	 * @param c1 a finite number.
+	 * @param v1 not <code>null</code>.
+	 * @param c2 a finite number.
+	 * @param v2 not <code>null</code>.
+	 * @param c3 a finite number.
+	 * @param v3 not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms of(double c1, Variable v1, double c2, Variable v2, double c3, Variable v3) {
+	public static SumTerms of(double c1, Variable v1, double c2, Variable v2, double c3, Variable v3) {
 		return new SumTerms(ImmutableList.of(Term.of(c1, v1), Term.of(c2, v2), Term.of(c3, v3)));
 	}
 
 	/**
 	 * Returns a sum containing the given terms.
 	 *
-	 * @param terms
-	 *            not <code>null</code>.
+	 * @param terms not <code>null</code>.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms of(Iterable<Term> terms) {
+	public static SumTerms of(Iterable<Term> terms) {
 		requireNonNull(terms);
 		if (terms instanceof SumTerms) {
 			return (SumTerms) terms;
@@ -105,11 +92,10 @@ public class SumTerms extends ForwardingList<Term> {
 	/**
 	 * Returns a sum containing the given terms.
 	 *
-	 * @param terms
-	 *            the terms.
+	 * @param terms the terms.
 	 * @return not <code>null</code>.
 	 */
-	static public SumTerms of(Term... terms) {
+	public static SumTerms of(Term... terms) {
 		return new SumTerms(Arrays.asList(terms));
 	}
 

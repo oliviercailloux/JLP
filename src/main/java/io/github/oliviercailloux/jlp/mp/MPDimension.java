@@ -34,17 +34,13 @@ public class MPDimension {
 	 * Returns a dimension with the given counts of variables by kind and of
 	 * constraints.
 	 *
-	 * @param boolsCount
-	 *            a non-negative number.
-	 * @param intsNotBoolCount
-	 *            a non-negative number.
-	 * @param realsCount
-	 *            a non-negative number.
-	 * @param constraintsCount
-	 *            a non-negative number.
+	 * @param boolsCount       a non-negative number.
+	 * @param intsNotBoolCount a non-negative number.
+	 * @param realsCount       a non-negative number.
+	 * @param constraintsCount a non-negative number.
 	 * @return not <code>null</code>.
 	 */
-	static public MPDimension of(int boolsCount, int intsNotBoolCount, int realsCount, int constraintsCount) {
+	public static MPDimension of(int boolsCount, int intsNotBoolCount, int realsCount, int constraintsCount) {
 		checkArgument(boolsCount >= 0);
 		checkArgument(intsNotBoolCount >= 0);
 		checkArgument(realsCount >= 0);
@@ -60,12 +56,10 @@ public class MPDimension {
 	 * constraints. This constructor is especially handy when used with a
 	 * {@link EnumMultiset}{@code <VariableKind>} as a first argument.
 	 *
-	 * @param variablesKinds
-	 *            not <code>null</code>.
-	 * @param constraintsCount
-	 *            at least zero.
+	 * @param variablesKinds   not <code>null</code>.
+	 * @param constraintsCount at least zero.
 	 */
-	static public MPDimension of(Iterable<VariableKind> variablesKinds, int constraintsCount) {
+	public static MPDimension of(Iterable<VariableKind> variablesKinds, int constraintsCount) {
 		return new MPDimension(variablesKinds, constraintsCount);
 	}
 
@@ -77,15 +71,13 @@ public class MPDimension {
 	 * Returns a dimension with the given counts of variables by kind and
 	 * constraints.
 	 *
-	 * @param variablesKinds
-	 *            not <code>null</code>.
-	 * @param constraintsCount
-	 *            at least zero.
+	 * @param variablesKinds   not <code>null</code>.
+	 * @param constraintsCount at least zero.
 	 */
 	private MPDimension(Iterable<VariableKind> variablesKinds, int constraintsCount) {
 		if (variablesKinds instanceof SortedMultiset) {
-			final SortedMultiset<VariableKind> sortedVC = (SortedMultiset<VariableKind>) variablesKinds;
-			variablesCounts = ImmutableSortedMultiset.copyOfSorted(sortedVC);
+			final SortedMultiset<VariableKind> sortedVc = (SortedMultiset<VariableKind>) variablesKinds;
+			variablesCounts = ImmutableSortedMultiset.copyOfSorted(sortedVc);
 		} else {
 			final Builder<VariableKind> builder = ImmutableSortedMultiset.naturalOrder();
 			for (VariableKind variableKind : VariableKind.values()) {

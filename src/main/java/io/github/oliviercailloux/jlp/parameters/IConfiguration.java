@@ -30,6 +30,7 @@ interface IConfiguration {
 	 * second, depending on the solver, thus values such as 0.3 seconds may be
 	 * rounded to zero, allowing no time for computation.
 	 * </p>
+	 * <p>
 	 * If the value is zero (or is rounded to zero), any attempt to solve any
 	 * problem will return immediately with a report of no solution found.
 	 * </p>
@@ -48,6 +49,7 @@ interface IConfiguration {
 	 * second, depending on the solver, thus values such as 0.3 seconds may be
 	 * rounded to zero, allowing no time for computation.
 	 * </p>
+	 * <p>
 	 * If the value is zero (or is rounded to zero), any attempt to solve any
 	 * problem will return immediately with a report of no solution found.
 	 * </p>

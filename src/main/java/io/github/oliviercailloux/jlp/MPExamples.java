@@ -15,6 +15,7 @@ import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPExamples {
 	/**
+	 * <p>
 	 * Builds a new problem with integer variables:
 	 * <ul>
 	 * <li>Maximize: 143x+60y Subject to:</li>
@@ -22,13 +23,15 @@ public class MPExamples {
 	 * <li>110x+30y <= 4000</li>
 	 * <li>x+y <= 75</li>
 	 * </ul>
-	 *
+	 * </p>
+	 * <p>
 	 * The problem is named after the coefficient of the x variable in the objective
 	 * function.
+	 * </p>
 	 *
 	 * @return a new problem.
 	 */
-	static public MPBuilder getIntOneFourThree() {
+	public static MPBuilder getIntOneFourThree() {
 		MPBuilder problem = MP.builder();
 		problem.setName("OneFourThree");
 		final Variable x = Variable.integer("x");
@@ -44,6 +47,10 @@ public class MPExamples {
 		return problem;
 	}
 
+	/**
+	 * @return a problem as in {@link #getIntOneFourThree()} with a supplementary
+	 *         constraint: x ≤ 16.
+	 */
 	public static MPBuilder getIntOneFourThreeLowX() {
 		final MPBuilder problem = getIntOneFourThree();
 		final Variable x = problem.getVariable("x").get();
@@ -56,7 +63,7 @@ public class MPExamples {
 	 *
 	 * @return the solution.
 	 */
-	static public Solution getIntOneFourThreeLowXSolution() {
+	public static Solution getIntOneFourThreeLowXSolution() {
 		final MPBuilder mp = getIntOneFourThreeLowX();
 		final Variable x = mp.getVariable("x").get();
 		final Variable y = mp.getVariable("y").get();
@@ -73,7 +80,7 @@ public class MPExamples {
 	 *
 	 * @return the solution.
 	 */
-	static public Solution getIntOneFourThreeSolution() {
+	public static Solution getIntOneFourThreeSolution() {
 		final MPBuilder mp = getIntOneFourThree();
 		final Variable x = mp.getVariable("x").get();
 		final Variable y = mp.getVariable("y").get();

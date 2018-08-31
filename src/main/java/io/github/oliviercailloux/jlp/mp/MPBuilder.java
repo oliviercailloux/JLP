@@ -48,10 +48,9 @@ public class MPBuilder implements IMP {
 	 * modifying the resulting MP will not change the source. (Variables are shared
 	 * however, so this is only true if the variables are immutable.)
 	 *
-	 * @param source
-	 *            not <code>null</code>.
+	 * @param source not <code>null</code>.
 	 */
-	static public MPBuilder copyOf(IMP source) {
+	public static MPBuilder copyOf(IMP source) {
 		requireNonNull(source);
 
 		final MPBuilder mp = new MPBuilder();
@@ -130,12 +129,12 @@ public class MPBuilder implements IMP {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof IMP)) {
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof IMP)) {
 			return false;
 		}
-		final IMP p2 = (IMP) obj;
-		if (p2 == obj) {
+		final IMP p2 = (IMP) o2;
+		if (p2 == o2) {
 			return true;
 		}
 		if (!getName().equals(p2.getName())) {
@@ -194,9 +193,8 @@ public class MPBuilder implements IMP {
 	/**
 	 * Sets or removes the name of this problem.
 	 *
-	 * @param name
-	 *            <code>null</code> or empty string for no name. A <code>null</code>
-	 *            string is converted to an empty string.
+	 * @param name <code>null</code> or empty string for no name. A
+	 *             <code>null</code> string is converted to an empty string.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff this MP name was already equal to the given
 	 *         name.
@@ -222,9 +220,8 @@ public class MPBuilder implements IMP {
 	 * {@link Objective#ZERO ZERO} objective.
 	 * </p>
 	 *
-	 * @param objective
-	 *            <code>null</code> or (preferably) {@link Objective#ZERO ZERO} to
-	 *            remove a possibly set objective.
+	 * @param objective <code>null</code> or (preferably) {@link Objective#ZERO
+	 *                  ZERO} to remove a possibly set objective.
 	 */
 	public void setObjective(Objective objective) {
 		final Objective effObj;
@@ -244,6 +241,8 @@ public class MPBuilder implements IMP {
 		helper.add("name", mpName);
 		helper.addValue(objective);
 		helper.addValue(getDimension());
+		helper.add("variables", variables);
+		helper.add("constraints", constraints);
 		return helper.toString();
 	}
 
@@ -260,10 +259,8 @@ public class MPBuilder implements IMP {
 	/**
 	 * Adds the constraint to this MP.
 	 *
-	 * @param index
-	 *            an appropriate index.
-	 * @param constraint
-	 *            not <code>null</code>.
+	 * @param index      an appropriate index.
+	 * @param constraint not <code>null</code>.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given constraint was already in this MP.
 	 */
@@ -287,14 +284,12 @@ public class MPBuilder implements IMP {
 	/**
 	 * Adds the variable to this MP if it is not already in.
 	 *
-	 * @param index
-	 *            an appropriate index.
-	 * @param variable
-	 *            not <code>null</code>.
-	 * @param expectNew
-	 *            <code>true</code> to ensure that the variable is added (throws an
-	 *            exception if the variable exists already), <code>false</code> to
-	 *            silently do nothing when the variable exists already.
+	 * @param index     an appropriate index.
+	 * @param variable  not <code>null</code>.
+	 * @param expectNew <code>true</code> to ensure that the variable is added
+	 *                  (throws an exception if the variable exists already),
+	 *                  <code>false</code> to silently do nothing when the variable
+	 *                  exists already.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given variable was already in this MP.
 	 */
@@ -332,9 +327,8 @@ public class MPBuilder implements IMP {
 	/**
 	 * Removes the specified variable from this MP, if it is present.
 	 *
-	 * @param variable
-	 *            not <code>null</code>, must not be referred to by any constraint
-	 *            in this MP or by the objective.
+	 * @param variable not <code>null</code>, must not be referred to by any
+	 *                 constraint in this MP or by the objective.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given variable was not in this MP.
 	 */

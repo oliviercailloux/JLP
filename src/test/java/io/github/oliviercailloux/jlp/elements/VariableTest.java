@@ -75,7 +75,7 @@ public class VariableTest {
 	@Test
 	public void testRightBounds() throws Exception {
 		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1));
-		assertEquals("cat1", var.getName());
+		assertEquals("cat1", var.getCategoricalName());
 		assertEquals(ImmutableList.of(), var.getReferences());
 		assertEquals("cat1", var.getDescription());
 	}

@@ -31,10 +31,8 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 
 	/**
 	 *
-	 * @param source
-	 *            will be used to modify the list of variables.
-	 * @param sourceList
-	 *            will be used to read through the list of variables.
+	 * @param source     will be used to modify the list of variables.
+	 * @param sourceList will be used to read through the list of variables.
 	 */
 	<T extends List<Variable> & RandomAccess> VariablesInMP(MPBuilder source, T sourceList) {
 		this.source = requireNonNull(source);
@@ -46,10 +44,8 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 * the element currently at that position (if any) and any subsequent elements
 	 * to the right (adds one to their indices).
 	 *
-	 * @param index
-	 *            index at which the specified element is to be inserted.
-	 * @param variable
-	 *            not <code>null</code>, may not already exist in this list.
+	 * @param index    index at which the specified element is to be inserted.
+	 * @param variable not <code>null</code>, may not already exist in this list.
 	 */
 	@Override
 	public void add(int index, Variable variable) {
@@ -59,8 +55,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	/**
 	 * Appends the specified variable to the end of this list.
 	 *
-	 * @param variable
-	 *            not <code>null</code>, may not already exist in this list.
+	 * @param variable not <code>null</code>, may not already exist in this list.
 	 * @return <code>true</code> (as specified by {@link Collection#add}).
 	 */
 	@Override
@@ -82,8 +77,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 * Appends the specified variable to the end of this list, if it is not already
 	 * in the list.
 	 *
-	 * @param variable
-	 *            not <code>null</code>.
+	 * @param variable not <code>null</code>.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given variable was already in this MP.
 	 */

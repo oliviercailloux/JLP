@@ -43,8 +43,7 @@ public class MP implements IMP {
 	/**
 	 * Returns an immutable MP containing the data in the given source.
 	 *
-	 * @param source
-	 *            not <code>null</code>.
+	 * @param source not <code>null</code>.
 	 */
 	public static MP copyOf(IMP source) {
 		requireNonNull(source);
@@ -70,8 +69,8 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return delegate.equals(obj);
+	public boolean equals(Object o2) {
+		return delegate.equals(o2);
 	}
 
 	@Override

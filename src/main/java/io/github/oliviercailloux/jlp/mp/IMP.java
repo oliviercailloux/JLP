@@ -20,12 +20,12 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * programs that are infeasible, meaning that they have no feasible solutions.
  * </p>
  * <p>
- * A feasible solution is optimal iff it has the best value according to its
- * objective function (best meaning an objective function value higher than or
+ * A feasible solution is optimal iff its objective function value is best (best
+ * meaning a value greater than or equal to the objective function value of any
+ * other feasible solution, for a maximization sense, or a value less than or
  * equal to the objective function value of any other feasible solution, for a
- * maximization sense, or a value lower than or equal to, for a minimization
- * sense). An MP (as representable by this object) has no optimal solutions iff
- * it has no feasible solution or it is unbounded.
+ * minimization sense). An MP (as representable by this object) has no optimal
+ * solutions iff it has no feasible solution or it is unbounded.
  * </p>
  * <p>
  * An MP may have the {@link Objective#ZERO ZERO} objective, which indicates
@@ -34,11 +34,11 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * feasible solutions are optimal.
  * </p>
  * <p>
- * Two MPs are considered equal when they define the same (as per
- * {@link #equals}) name, variables, constraints, and objective. Two equal MPs,
- * as determined by this interface {@link #equals(Object)} contract, have the
- * same set of feasible solutions, although a non equality between two MPs does
- * <em>not</em> imply that they have different sets of feasible solutions.
+ * Two MPs are considered equal when they have the same (as per {@link #equals})
+ * name, variables, constraints, and objective. Two equal MPs, as determined by
+ * this interface {@link #equals(Object)} contract, have the same set of
+ * feasible solutions, although a non equality between two MPs does <em>not</em>
+ * imply that they have different sets of feasible solutions.
  * </p>
  * <p>
  * Implementations of this interface may be writeable, immutable or be a
@@ -46,11 +46,12 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * </p>
  * <p>
  * As the variables in this MP are not duplicated, the return type of
- * {@link #getVariables()} could be a {@link Set} rather than a {@link List}.
- * However, the relative position of a variable in the list, compared to its
- * peers, will usually be meaningful, as variables are probably to be grouped in
- * a way that depends on their meaning (variables about the structure come
- * first, …). Hence, explicitly indexing the variables seems adequate.
+ * {@link #getVariables()} could have chosen to be a {@link Set} rather than a
+ * {@link List}. However, the relative position of a variable in the list,
+ * compared to its peers, will usually be meaningful, as variables are probably
+ * to be grouped in a way that depends on their meaning (variables about the
+ * structure come first, …). Hence, explicitly indexing the variables seems
+ * adequate.
  * </p>
  * <p>
  * The list of constraints is a real list in the sense that it allows
@@ -70,12 +71,11 @@ public interface IMP {
 	 * Two MPs are equal when they have equal name, variables, constraints, and
 	 * objective.
 	 *
-	 * @param obj
-	 *            the reference object with which to compare.
+	 * @param o2 the reference object with which to compare.
 	 * @return <code>true</code> iff this object is the same as the obj argument.
 	 */
 	@Override
-	public boolean equals(Object obj);
+	public boolean equals(Object o2);
 
 	/**
 	 * Returns the constraints in this MP.
@@ -86,7 +86,8 @@ public interface IMP {
 
 	/**
 	 * Returns the dimension of this MP as a number of variables and constraints.
-	 * The variable bounds do not count as constraints.
+	 * The bounds constraining the variables do not count as constraints in this
+	 * count.
 	 *
 	 * @return not <code>null</code>.
 	 */
@@ -110,12 +111,10 @@ public interface IMP {
 
 	/**
 	 * Returns the variable corresponding to the given description, or an empty
-	 * optional if no variable have the given description in this MP. Note that the
-	 * description of a variable generally differs from its name.
+	 * optional if no variable have the given description in this MP.
 	 *
-	 * @param description
-	 *            the description of the variable, as given by
-	 *            {@link Variable#getDescription()}.
+	 * @param description the description of the variable, as given by
+	 *                    {@link Variable#getDescription()}.
 	 * @return an optional containing a variable, if found, otherwise an empty
 	 *         optional.
 	 * @see Variable#getDefaultDescription(String, Iterable) .

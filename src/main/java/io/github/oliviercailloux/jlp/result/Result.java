@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
-import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.mp.IMP;
 import io.github.oliviercailloux.jlp.parameters.Configuration;
 
@@ -30,22 +29,21 @@ public class Result {
 	 * Returns a result of an attempt to solve an MP that did not yield a feasible
 	 * solution.
 	 *
-	 * @param status
-	 *            not <code>null</code>, may be
-	 *            {@link ResultStatus#MEMORY_LIMIT_REACHED MEMORY_LIMIT_REACHED},
-	 *            {@link ResultStatus#TIME_LIMIT_REACHED TIME_LIMIT_REACHED},
-	 *            {@link ResultStatus#INFEASIBLE INFEASIBLE} or
-	 *            {@link ResultStatus#UNBOUNDED UNBOUNDED}, but not
-	 *            {@link ResultStatus#OPTIMAL OPTIMAL}.
-	 * @param duration
-	 *            not <code>null</code>, the duration this attempt of solving has
-	 *            taken (before finding an answer or before hitting a limit).
-	 * @param configuration
-	 *            not <code>null</code>, the configuration of the solver used for
-	 *            this attempt.
+	 * @param status        not <code>null</code>, may be
+	 *                      {@link ResultStatus#MEMORY_LIMIT_REACHED
+	 *                      MEMORY_LIMIT_REACHED},
+	 *                      {@link ResultStatus#TIME_LIMIT_REACHED
+	 *                      TIME_LIMIT_REACHED}, {@link ResultStatus#INFEASIBLE
+	 *                      INFEASIBLE} or {@link ResultStatus#UNBOUNDED UNBOUNDED},
+	 *                      but not {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * @param duration      not <code>null</code>, the duration this attempt of
+	 *                      solving has taken (before finding an answer or before
+	 *                      hitting a limit).
+	 * @param configuration not <code>null</code>, the configuration of the solver
+	 *                      used for this attempt.
 	 * @return not <code>null</code>.
 	 */
-	static public Result noSolution(ResultStatus status, ComputationTime duration, Configuration configuration) {
+	public static Result noSolution(ResultStatus status, ComputationTime duration, Configuration configuration) {
 		return new Result(status, duration, configuration, Optional.empty());
 	}
 
@@ -53,23 +51,23 @@ public class Result {
 	 * Returns a result of an attempt to solve an MP that found a feasible (and
 	 * possibly optimal) solution.
 	 *
-	 * @param status
-	 *            not <code>null</code>, may be {@link ResultStatus#OPTIMAL
-	 *            OPTIMAL}, {@link ResultStatus#MEMORY_LIMIT_REACHED
-	 *            MEMORY_LIMIT_REACHED}, {@link ResultStatus#TIME_LIMIT_REACHED
-	 *            TIME_LIMIT_REACHED} or {@link ResultStatus#UNBOUNDED UNBOUNDED},
-	 *            but not {@link ResultStatus#INFEASIBLE INFEASIBLE}.
-	 * @param duration
-	 *            not <code>null</code>, the duration this attempt of solving has
-	 *            taken (before finding an answer or before failing).
-	 * @param configuration
-	 *            not <code>null</code>, the configuration of the solver used for
-	 *            this attempt.
-	 * @param solution
-	 *            not <code>null</code>, the feasible solution found.
+	 * @param status        not <code>null</code>, may be
+	 *                      {@link ResultStatus#OPTIMAL OPTIMAL},
+	 *                      {@link ResultStatus#MEMORY_LIMIT_REACHED
+	 *                      MEMORY_LIMIT_REACHED},
+	 *                      {@link ResultStatus#TIME_LIMIT_REACHED
+	 *                      TIME_LIMIT_REACHED} or {@link ResultStatus#UNBOUNDED
+	 *                      UNBOUNDED}, but not {@link ResultStatus#INFEASIBLE
+	 *                      INFEASIBLE}.
+	 * @param duration      not <code>null</code>, the duration this attempt of
+	 *                      solving has taken (before finding an answer or before
+	 *                      failing).
+	 * @param configuration not <code>null</code>, the configuration of the solver
+	 *                      used for this attempt.
+	 * @param solution      not <code>null</code>, the feasible solution found.
 	 * @return not <code>null</code>.
 	 */
-	static public Result withSolution(ResultStatus status, ComputationTime duration, Configuration configuration,
+	public static Result withSolution(ResultStatus status, ComputationTime duration, Configuration configuration,
 			Solution solution) {
 		return new Result(status, duration, configuration, Optional.of(solution));
 	}
@@ -99,14 +97,10 @@ public class Result {
 	 * semantics of the given status. (Though it does not check that the solution is
 	 * feasible.)
 	 *
-	 * @param status
-	 *            not <code>null</code>.
-	 * @param duration
-	 *            not <code>null</code>.
-	 * @param configuration
-	 *            not <code>null</code>.
-	 * @param solution
-	 *            not <code>null</code>.
+	 * @param status        not <code>null</code>.
+	 * @param duration      not <code>null</code>.
+	 * @param configuration not <code>null</code>.
+	 * @param solution      not <code>null</code>.
 	 * @see ResultStatus
 	 */
 	Result(ResultStatus status, ComputationTime duration, Configuration configuration, Optional<Solution> solution) {
@@ -125,7 +119,7 @@ public class Result {
 			checkArgument(solution.isPresent());
 			break;
 		case UNBOUNDED:
-			checkArgument(!solution.isPresent() || solution.get().getMP().getObjective() != Objective.ZERO);
+			checkArgument(!solution.isPresent() || !solution.get().getMP().getObjective().isZero());
 			break;
 		default:
 			throw new IllegalStateException();
@@ -166,11 +160,8 @@ public class Result {
 	 * Returns a solution to the MP, if one has been found.
 	 * <p>
 	 * If the result status is {@link ResultStatus#OPTIMAL OPTIMAL}, this method is
-	 * guaranteed to return a non empty optional.
-	 * </p>
-	 * <p>
-	 * The returned solution is known to be optimal iff the result status is
-	 * {@link ResultStatus#OPTIMAL OPTIMAL}.
+	 * guaranteed to return a non empty optional. Otherwise, a feasible solution
+	 * (non necessarily optimal) is returned if one has been found.
 	 * </p>
 	 *
 	 * @return not <code>null</code>, a solution if a solution has been found, an

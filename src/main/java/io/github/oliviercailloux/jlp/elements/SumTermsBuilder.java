@@ -31,10 +31,8 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 	/**
 	 * Adds a term to this linear expression.
 	 *
-	 * @param coefficient
-	 *            a finite number.
-	 * @param variable
-	 *            not <code>null</code>.
+	 * @param coefficient a finite number.
+	 * @param variable    not <code>null</code>.
 	 */
 	public SumTermsBuilder addTerm(double coefficient, Variable variable) {
 		final Term term = Term.of(coefficient, variable);

@@ -85,7 +85,7 @@ public class MPTest {
 		final MPBuilder mp = MPExamples.getIntOneFourThree();
 		final String descr = mp.toString();
 		LOGGER.debug("Descr: {}.", descr);
-		assertTrue(descr.length() < 200);
+		assertTrue(descr.length() > 200);
 	}
 
 }

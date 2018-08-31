@@ -13,7 +13,7 @@ public enum VariableDomain {
 	 */
 	INT_DOMAIN,
 	/**
-	 * Real
+	 * Real domain.
 	 */
 	REAL_DOMAIN;
 }

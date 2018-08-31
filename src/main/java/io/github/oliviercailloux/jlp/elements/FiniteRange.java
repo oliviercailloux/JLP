@@ -48,7 +48,7 @@ public class FiniteRange {
 	 * The range [0, +∞) containing all finite positive double values, including
 	 * (positive) zero.
 	 */
-	static public Range<Double> NON_NEGATIVE = atLeast(0d);
+	public static Range<Double> NON_NEGATIVE = atLeast(0d);
 
 	/**
 	 * The closed [0-1] range.
@@ -59,11 +59,10 @@ public class FiniteRange {
 	 * Returns a range that contains all finite values greater than or equal to
 	 * <code>lower</code>.
 	 *
-	 * @param lower
-	 *            a finite number.
-	 * @return the range [min, +∞).
+	 * @param lower a finite number.
+	 * @return the range [lower, +∞).
 	 */
-	static public Range<Double> atLeast(double lower) {
+	public static Range<Double> atLeast(double lower) {
 		checkArgument(Double.isFinite(lower));
 		return Range.closedOpen(lower, Double.POSITIVE_INFINITY);
 	}
@@ -72,11 +71,10 @@ public class FiniteRange {
 	 * Returns a range that contains all finite values lower than or equal to
 	 * <code>upper</code>.
 	 *
-	 * @param upper
-	 *            a finite number.
+	 * @param upper a finite number.
 	 * @return the range (-∞, upper].
 	 */
-	static public Range<Double> atMost(double upper) {
+	public static Range<Double> atMost(double upper) {
 		checkArgument(Double.isFinite(upper));
 		return Range.openClosed(Double.NEGATIVE_INFINITY, upper);
 	}
@@ -84,16 +82,15 @@ public class FiniteRange {
 	/**
 	 * Returns a range that contains all finite values at least <code>lower</code>
 	 * and at most <code>upper</code>. This has the same effect than
-	 * {@link Range#closed} and is provided for completeness (constructors of this
-	 * class permit to create all possible kinds of finite ranges).
+	 * {@link Range#closed} and is provided for completeness (so that the
+	 * constructors of this class permit to create all possible kinds of finite
+	 * ranges).
 	 *
-	 * @param lower
-	 *            a finite number.
-	 * @param upper
-	 *            a finite number, greater than or equal to <code>lower</code>.
+	 * @param lower a finite number.
+	 * @param upper a finite number, greater than or equal to <code>lower</code>.
 	 * @return the range [lower, upper].
 	 */
-	static public Range<Double> closed(double lower, double upper) {
+	public static Range<Double> closed(double lower, double upper) {
 		checkArgument(Double.isFinite(lower));
 		checkArgument(Double.isFinite(upper));
 		return Range.closed(lower, upper);

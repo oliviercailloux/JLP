@@ -1,7 +1,7 @@
 /**
  * <p>
  * Result and Solution objects for representing the output of an attempt of
- * solving a mathematical program.</em>
+ * solving a mathematical program.
  * </p>
  * <p>
  * A solution object represents a feasible solution to an MP (see

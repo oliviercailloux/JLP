@@ -21,11 +21,9 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 
 	/**
 	 *
-	 * @param source
-	 *            will be used to modify the list of constraints.
-	 * @param sourceList
-	 *            will be used to read through the list of constraints and to remove
-	 *            constraints.
+	 * @param source     will be used to modify the list of constraints.
+	 * @param sourceList will be used to read through the list of constraints and to
+	 *                   remove constraints.
 	 */
 	<T extends List<Constraint> & RandomAccess> ConstraintsInMP(MPBuilder source, T sourceList) {
 		this.source = requireNonNull(source);
@@ -35,8 +33,7 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 	/**
 	 * Appends the specified constraint to the end of this list.
 	 *
-	 * @param constraint
-	 *            not <code>null</code>.
+	 * @param constraint not <code>null</code>.
 	 * @return <code>true</code> (as specified by {@link Collection#add}).
 	 */
 	@Override
@@ -49,10 +46,8 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 	 * Shifts the element currently at that position (if any) and any subsequent
 	 * elements to the right (adds one to their indices).
 	 *
-	 * @param index
-	 *            index at which the specified element is to be inserted.
-	 * @param constraint
-	 *            not <code>null</code>.
+	 * @param index      index at which the specified element is to be inserted.
+	 * @param constraint not <code>null</code>.
 	 */
 	@Override
 	public void add(int index, Constraint constraint) {

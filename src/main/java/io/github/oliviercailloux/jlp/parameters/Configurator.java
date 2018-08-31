@@ -1,5 +1,7 @@
 package io.github.oliviercailloux.jlp.parameters;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.time.Duration;
 import java.util.Objects;
 
@@ -19,11 +21,18 @@ import com.google.common.base.MoreObjects.ToStringHelper;
  *
  */
 public class Configurator implements IConfiguration {
-	public static Configurator copyOf(Configurator configurator) {
+	/**
+	 * Returns a configurator that is a copy of the given source, in the sense that
+	 * it contains the same data, but is not linked to the source: modifying the
+	 * resulting configurator will not change the source.
+	 *
+	 * @param source not <code>null</code>.
+	 */
+	public static Configurator copyOf(Configurator source) {
 		final Configurator newConfigurator = new Configurator();
-		newConfigurator.setForceDeterministic(configurator.getForceDeterministic());
-		newConfigurator.setMaxCpuTime(configurator.getMaxCpuTime());
-		newConfigurator.setMaxWallTime(configurator.getMaxWallTime());
+		newConfigurator.setForceDeterministic(source.getForceDeterministic());
+		newConfigurator.setMaxCpuTime(source.getMaxCpuTime());
+		newConfigurator.setMaxWallTime(source.getMaxWallTime());
 		return newConfigurator;
 	}
 
@@ -43,13 +52,22 @@ public class Configurator implements IConfiguration {
 		clear();
 	}
 
+	/**
+	 * Returns an immutable configuration that contains the data currently in this
+	 * configurator.
+	 *
+	 * @return not <code>null</code>.
+	 */
 	public Configuration build() {
 		return new Configuration(copyOf(this));
 	}
 
+	/**
+	 * Restores the default values.
+	 */
 	public void clear() {
-		maxCpuTime = Configuration.ENOUGH;
-		maxWallTime = Configuration.ENOUGH;
+		maxCpuTime = Configuration.DEFAULT_MAX_CPU_TIME;
+		maxWallTime = Configuration.DEFAULT_MAX_WALL_TIME;
 		forceDeterministic = Configuration.DEFAULT_FORCE_DETERMINISTIC;
 	}
 
@@ -57,16 +75,15 @@ public class Configurator implements IConfiguration {
 	 * Two Configurators are equal when they have equal values for all their
 	 * parameters.
 	 *
-	 * @param obj
-	 *            the reference object with which to compare.
+	 * @param o2 the reference object with which to compare.
 	 * @return <code>true</code> iff this object is the same as the obj argument.
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Configurator)) {
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof Configurator)) {
 			return false;
 		}
-		final Configurator c2 = (Configurator) obj;
+		final Configurator c2 = (Configurator) o2;
 		return this.forceDeterministic == c2.forceDeterministic && this.maxCpuTime.equals(c2.maxCpuTime)
 				&& this.maxWallTime.equals(c2.maxWallTime);
 	}
@@ -93,10 +110,10 @@ public class Configurator implements IConfiguration {
 
 	/**
 	 * If <code>true</code>, forces the solver to behave deterministically, if
-	 * <code>false</code>, let the solver behaves as it considers best.
+	 * <code>false</code>, lets the solver behave as it considers best.
 	 *
-	 * @param forceDeterministic
-	 *            <code>true</code> to force the solve to behave deterministically.
+	 * @param forceDeterministic <code>true</code> to force the solve to behave
+	 *                           deterministically.
 	 */
 	public Configurator setForceDeterministic(boolean forceDeterministic) {
 		this.forceDeterministic = forceDeterministic;
@@ -106,10 +123,10 @@ public class Configurator implements IConfiguration {
 	/**
 	 * Sets the maximal time that the cpu is allowed to spend for solving an mp.
 	 *
-	 * @param maxCpuTime
-	 *            must be strictly positive.
+	 * @param maxCpuTime must be non-negative.
 	 */
 	public Configurator setMaxCpuTime(Duration maxCpuTime) {
+		checkArgument(!maxCpuTime.isNegative());
 		this.maxCpuTime = maxCpuTime;
 		return this;
 	}
@@ -118,10 +135,10 @@ public class Configurator implements IConfiguration {
 	 * Sets the maximal time that computation is allowed to take for solving an mp,
 	 * measured in wall time.
 	 *
-	 * @param maxWallTime
-	 *            must be strictly positive.
+	 * @param maxWallTime must be non-negative.
 	 */
 	public Configurator setMaxWallTime(Duration maxWallTime) {
+		checkArgument(!maxWallTime.isNegative());
 		this.maxWallTime = maxWallTime;
 		return this;
 	}

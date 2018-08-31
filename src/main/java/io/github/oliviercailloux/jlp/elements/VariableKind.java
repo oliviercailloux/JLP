@@ -12,18 +12,22 @@ import static io.github.oliviercailloux.jlp.elements.VariableDomain.REAL_DOMAIN;
 public enum VariableKind {
 
 	/**
-	 * Boolean
+	 * Boolean.
 	 */
 	BOOL_KIND,
 	/**
-	 * Integer non boolean
+	 * Integer non boolean.
 	 */
 	INT_KIND,
 	/**
-	 * Real
+	 * Real.
 	 */
 	REAL_KIND;
 
+	/**
+	 * @return the domain of the variable.
+	 * @see Variable
+	 */
 	public VariableDomain getDomain() {
 		switch (this) {
 		case BOOL_KIND:

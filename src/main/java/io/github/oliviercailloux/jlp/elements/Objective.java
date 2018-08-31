@@ -13,14 +13,14 @@ import com.google.common.base.Objects;
  * An objective function with optimization sense.
  * </p>
  * <p>
- * The objective may be zero, meaning that its objective function is an empty
- * sum of terms. This may be used to indicate that any solution is looked for.
+ * The objective may be {@link Objective#ZERO}, meaning that its objective
+ * function is an empty sum of terms. This may be used to indicate the absence
+ * of an objective function, thus, that any solution is looked for. (This
+ * implements the Null object pattern.)
  * </p>
  * <p>
  * If an objective has an empty sum of terms, then it has sense
- * {@link Sense#MAX}. This ensures there is only one zero objective. (Thus
- * testing equality to ZERO is equivalent to asking whether an objective is
- * zero.)
+ * {@link Sense#MAX}. This ensures there is only one kind of “empty” objective.
  * </p>
  * <p>
  * Immutable (provided variables are immutable).
@@ -39,10 +39,9 @@ public class Objective {
 	/**
 	 * Returns an objective with optimization sense {@link Sense#MAX}.
 	 *
-	 * @param objectiveFunction
-	 *            not <code>null</code>, not empty.
+	 * @param objectiveFunction not <code>null</code>, not empty.
 	 */
-	static public Objective max(SumTerms objectiveFunction) {
+	public static Objective max(SumTerms objectiveFunction) {
 		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, MAX);
 	}
@@ -50,23 +49,20 @@ public class Objective {
 	/**
 	 * Returns an objective with optimization sense {@link Sense#MIN}.
 	 *
-	 * @param objectiveFunction
-	 *            not <code>null</code>, not empty.
+	 * @param objectiveFunction not <code>null</code>, not empty.
 	 */
-	static public Objective min(SumTerms objectiveFunction) {
+	public static Objective min(SumTerms objectiveFunction) {
 		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, Sense.MIN);
 	}
 
 	/**
-	 * Returns an objective with the given function and optimization sense
+	 * Returns an objective with the given function and optimization sense.
 	 *
-	 * @param objectiveFunction
-	 *            not <code>null</code>, not empty.
-	 * @param sense
-	 *            not <code>null</code>.
+	 * @param objectiveFunction not <code>null</code>, not empty.
+	 * @param sense             not <code>null</code>.
 	 */
-	static public Objective of(SumTerms objectiveFunction, Sense sense) {
+	public static Objective of(SumTerms objectiveFunction, Sense sense) {
 		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, sense);
 	}
@@ -74,12 +70,12 @@ public class Objective {
 	/**
 	 * Not <code>null</code>.
 	 */
-	final private SumTerms objectiveFunction;
+	private final SumTerms objectiveFunction;
 
 	/**
 	 * Not <code>null</code>.
 	 */
-	final private Sense sense;
+	private final Sense sense;
 
 	private Objective(SumTerms objectiveFunction, Sense direction) {
 		this.objectiveFunction = requireNonNull(objectiveFunction);
@@ -91,12 +87,12 @@ public class Objective {
 	 *
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Objective)) {
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof Objective)) {
 			return false;
 		}
-		Objective obj2 = (Objective) obj;
-		return (obj == this) || (sense.equals(obj2.sense) && objectiveFunction.equals(obj2.objectiveFunction));
+		Objective obj2 = (Objective) o2;
+		return (o2 == this) || (sense.equals(obj2.sense) && objectiveFunction.equals(obj2.objectiveFunction));
 	}
 
 	/**

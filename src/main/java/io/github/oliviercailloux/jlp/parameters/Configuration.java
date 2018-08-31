@@ -85,8 +85,7 @@ public class Configuration implements IConfiguration {
 	 * Two {@link Configuration} objects are equal when they have equal values for
 	 * all their parameters.
 	 *
-	 * @param obj
-	 *            the reference object with which to compare.
+	 * @param obj the reference object with which to compare.
 	 * @return <code>true</code> iff this object is the same as the obj argument.
 	 */
 	@Override

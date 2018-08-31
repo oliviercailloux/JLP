@@ -10,18 +10,25 @@ package io.github.oliviercailloux.jlp.elements;
 public enum ComparisonOperator {
 
 	/**
-	 * Equal
+	 * Less or equal.
+	 */
+	LE,
+	/**
+	 * Equal.
 	 */
 	EQ,
 	/**
-	 * Greater or equal
+	 * Greater or equal.
 	 */
-	GE,
-	/**
-	 * Less or equal
-	 */
-	LE;
+	GE;
 
+	/**
+	 * Returns a representation of this operator as a string in Ascii: “<=”, “=” or
+	 * “>=”.
+	 *
+	 * @return not <code>null</code>.
+	 * @see #toString()
+	 */
 	public String toAsciiString() {
 		switch (this) {
 		case LE:
@@ -35,6 +42,13 @@ public enum ComparisonOperator {
 		}
 	}
 
+	/**
+	 * Returns a representation of this operator as a one-character string: “≤”, “=”
+	 * or “≥”.
+	 *
+	 * @return not <code>null</code>.
+	 * @see #toAsciiString()
+	 */
 	@Override
 	public String toString() {
 		switch (this) {

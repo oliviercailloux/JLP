@@ -46,7 +46,7 @@ import com.google.common.base.MoreObjects;
  *
  */
 public class Constraint {
-	static public Constraint of(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
+	public static Constraint of(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
 		return new Constraint(descr, lhs, op, rhs);
 	}
 
@@ -62,14 +62,10 @@ public class Constraint {
 	private final double rhs;
 
 	/**
-	 * @param description
-	 *            not <code>null</code>.
-	 * @param lhs
-	 *            not <code>null</code>, not empty.
-	 * @param op
-	 *            not <code>null</code>.
-	 * @param rhs
-	 *            a finite number.
+	 * @param description not <code>null</code>.
+	 * @param lhs         not <code>null</code>, not empty.
+	 * @param op          not <code>null</code>.
+	 * @param rhs         a finite number.
 	 */
 	private Constraint(String description, SumTerms lhs, ComparisonOperator op, double rhs) {
 		this.descr = requireNonNull(description);
