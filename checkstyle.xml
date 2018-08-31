@@ -17,6 +17,7 @@
 	<module name="RegexpSingleline">
 		<!-- \s matches whitespace character, $ matches end of line. -->
 		<property name="format" value="@param [^\s]*\s*$" />
+		<property name="fileExtensions" value="java" />
 		<property name="message"
 			value="Javadoc @ should be directly followed by the corresponding content." />
 	</module>
