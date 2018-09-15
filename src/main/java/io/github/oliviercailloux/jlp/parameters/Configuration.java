@@ -32,23 +32,23 @@ public class Configuration implements IConfiguration {
 	/**
 	 * <code>false</code>.
 	 */
-	public static boolean DEFAULT_FORCE_DETERMINISTIC = false;
+	public static final boolean DEFAULT_FORCE_DETERMINISTIC = false;
 
 	/**
 	 * {@link #ENOUGH}.
 	 */
-	public static Duration DEFAULT_MAX_CPU_TIME;
+	public static final Duration DEFAULT_MAX_CPU_TIME;
 
 	/**
 	 * {@link #ENOUGH}.
 	 */
-	public static Duration DEFAULT_MAX_WALL_TIME;
+	public static final Duration DEFAULT_MAX_WALL_TIME;
 
 	/**
 	 * The maximum value that can be stored in a Duration. Greater than the age of
 	 * the universe.
 	 */
-	public static Duration ENOUGH = Duration.ofNanos(Long.MAX_VALUE);
+	public static final Duration ENOUGH = Duration.ofNanos(Long.MAX_VALUE);
 
 	static {
 		DEFAULT_MAX_CPU_TIME = ENOUGH;
