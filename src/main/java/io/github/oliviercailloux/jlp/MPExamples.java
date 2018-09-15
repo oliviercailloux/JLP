@@ -14,6 +14,10 @@ import io.github.oliviercailloux.jlp.mp.MPBuilder;
 import io.github.oliviercailloux.jlp.result.Solution;
 
 public class MPExamples {
+	private MPExamples() {
+		/** Non instantiable. */
+	}
+
 	/**
 	 * <p>
 	 * Builds a new problem with integer variables:
