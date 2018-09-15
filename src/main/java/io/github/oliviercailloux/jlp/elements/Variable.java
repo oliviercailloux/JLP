@@ -24,11 +24,9 @@ import com.google.common.collect.Range;
  * <p>
  * An object which may be used to refer to a variable in a linear programming
  * context. A variable, as represented by a Variable object, has a categorical
- * name and possibly references. Indeed, a variable in a linear program often
- * refers to other objects from some set. Consider for example the set of
- * variables x_i with i being taken from some set I. The index i may refer to a
- * product, and x refer to the cost of that product. In such a case the variable
- * categorical name would be “x”, and the reference object would be a product.
+ * name and possibly references. For example, a variable x_i referring to the
+ * cost of the product i would have “x” as a categorical name and would have a
+ * reference to the product referred to by the index i.
  * </p>
  * <p>
  * A variable has a description. The description should be unique to that
@@ -87,14 +85,12 @@ import com.google.common.collect.Range;
  * the converse does not hold: a variable of kind integer with bounds [-0.5,
  * 1.5] also has a {0, 1} bounded domain.
  * </p>
- * TODO introduce this; change name to categoricalName.
- *
  * <p>
  * For the curious reader, here is the rationale for the uniqueness constraint
  * of the description: this makes it possible for the user to retrieve the
  * variable knowing only its description, given a problem. We could also have
- * made equality depend on its name and references, to make it possible to
- * retrieve the variable knowing its name and references. But this has no
+ * made equality depend on its categorical name and references, to make it
+ * possible to retrieve the variable knowing those values. But this has no
  * advantage: we would then have to mandate as especially important that the
  * references do not change and identify uniquely the variable, in which case it
  * is anyway probably easy to provide a unique string description; and
@@ -104,32 +100,19 @@ import com.google.common.collect.Range;
  * MP contents clear, and provides for a cleaner interface and concept.
  * Furthermore, the user may with the adopted solution refer to mutable objects,
  * provided that the description itself does not change. And it is probably
- * easier for the user to retrieve the description from the variable name and
- * references than the converse. Finally, we could also rely on default equality
- * implementation (equality as identity), but this would result in two variables
- * being created with Variable.int("x") as being confusingly treated as
- * different variables, and would provide an advantage only if the user does not
- * use descriptions (e.g. uses only empty names and descriptions), which renders
- * any printing of the problem unreadable.
+ * easier for the user to retrieve the description from the variable categorical
+ * name and references than the converse. Finally, we could also rely on default
+ * equality implementation (equality as identity), but this would result in two
+ * variables being created with Variable.int("x") as being confusingly treated
+ * as different variables, and would provide an advantage only if the user does
+ * not use descriptions (e.g. uses only empty categorical names and
+ * descriptions), which renders any printing of the problem unreadable.
  * </p>
  *
  * @author Olivier Cailloux
  *
  */
 public class Variable {
-
-	/**
-	 * Returns a variable of the given name and with the provided references, with
-	 * domain {@link VariableDomain#INT_DOMAIN}, bounds set at zero and one, and
-	 * hence of kind {@link VariableKind#BOOL_KIND}.
-	 *
-	 * @param name       not <code>null</code>.
-	 * @param references not <code>null</code>, no <code>null</code> reference
-	 *                   inside. May be empty.
-	 */
-	public static Variable bool(String name, Object... references) {
-		return new Variable(name, INT_DOMAIN, ZERO_ONE_RANGE, references);
-	}
 
 	/**
 	 * Returns the default description of a variable given its categorical name and
@@ -160,8 +143,21 @@ public class Variable {
 	}
 
 	/**
-	 * Returns an {@link VariableDomain#INT_DOMAIN} variable of the given name and
-	 * with the provided references, with maximal bounds.
+	 * Returns a variable with the given categorical name and references, with
+	 * domain {@link VariableDomain#INT_DOMAIN}, bounds set at zero and one, and
+	 * hence of kind {@link VariableKind#BOOL_KIND}.
+	 *
+	 * @param categoricalName not <code>null</code>.
+	 * @param references      not <code>null</code>, no <code>null</code> reference
+	 *                        inside. May be empty.
+	 */
+	public static Variable bool(String categoricalName, Object... references) {
+		return new Variable(categoricalName, INT_DOMAIN, ZERO_ONE_RANGE, references);
+	}
+
+	/**
+	 * Returns an {@link VariableDomain#INT_DOMAIN} variable with the given
+	 * categorical name and references, with maximal bounds.
 	 *
 	 * @param name       not <code>null</code>.
 	 * @param references not <code>null</code>, no <code>null</code> reference
@@ -172,35 +168,37 @@ public class Variable {
 	}
 
 	/**
+	 * Returns a {@link VariableDomain#REAL_DOMAIN} variable with the given
+	 * categorical name and references, with maximal bounds.
+	 *
+	 * @param categoricalName not <code>null</code>.
+	 * @param references      not <code>null</code>, no <code>null</code> reference
+	 *                        inside. May be empty.
+	 */
+	public static Variable real(String categoricalName, Object... references) {
+		return new Variable(categoricalName, REAL_DOMAIN, ALL_FINITE, references);
+	}
+
+	/**
 	 * Returns a variable with the given data. The bounds must be set as to contain
 	 * at least one valid value for the variable (see {@link Variable}). Use
 	 * {@link FiniteRange#ALL_FINITE} for the maximal bounds.
 	 *
-	 * @param name       not <code>null</code>.
-	 * @param domain     not <code>null</code>.
-	 * @param bounds     not <code>null</code>, each bound in this range must be of
-	 *                   type closed iff it is a finite number different than
-	 *                   (positive or negative) {@link Double#MAX_VALUE}, the lower
-	 *                   bound must be open iff it is negative infinity and the
-	 *                   upper bound must be open iff it is positive infinity.
-	 * @param references not <code>null</code>, no <code>null</code> reference
-	 *                   inside. May be empty.
+	 * @param categoricalName not <code>null</code>.
+	 * @param domain          not <code>null</code>.
+	 * @param bounds          not <code>null</code>, each bound in this range must
+	 *                        be of type closed iff it is a finite number different
+	 *                        than (positive or negative) {@link Double#MAX_VALUE},
+	 *                        the lower bound must be open iff it is negative
+	 *                        infinity and the upper bound must be open iff it is
+	 *                        positive infinity.
+	 * @param references      not <code>null</code>, no <code>null</code> reference
+	 *                        inside. May be empty.
 	 * @see FiniteRange
 	 */
-	public static Variable of(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
-		return new Variable(name, domain, bounds, references);
-	}
-
-	/**
-	 * Returns a {@link VariableDomain#REAL_DOMAIN} variable of the given name and
-	 * with the provided references, with maximal bounds.
-	 *
-	 * @param name       not <code>null</code>.
-	 * @param references not <code>null</code>, no <code>null</code> reference
-	 *                   inside. May be empty.
-	 */
-	public static Variable real(String name, Object... references) {
-		return new Variable(name, REAL_DOMAIN, ALL_FINITE, references);
+	public static Variable of(String categoricalName, VariableDomain domain, Range<Double> bounds,
+			Object... references) {
+		return new Variable(categoricalName, domain, bounds, references);
 	}
 
 	private final Range<Double> bounds;
@@ -208,7 +206,7 @@ public class Variable {
 	/**
 	 * Not <code>null</code>, may be empty.
 	 */
-	private String categoricalName;
+	private final String categoricalName;
 
 	private final VariableKind kind;
 
@@ -216,20 +214,21 @@ public class Variable {
 	private final ImmutableList<Object> refs;
 
 	/**
-	 * Builds a variable of the given name and with the provided references.
+	 * Builds a variable with the given categorical name and references.
 	 *
-	 * @param name       not <code>null</code>.
-	 * @param domain     not <code>null</code>.
-	 * @param bounds     not <code>null</code>, each bound in this range must be of
-	 *                   type closed iff it is a finite number different than
-	 *                   (positive or negative) {@link Double#MAX_VALUE}, the lower
-	 *                   bound must be open iff it is negative infinity and the
-	 *                   upper bound must be open iff it is positive infinity.
-	 * @param references not <code>null</code>, no <code>null</code> reference
-	 *                   inside. May be empty.
+	 * @param categoricalName not <code>null</code>.
+	 * @param domain          not <code>null</code>.
+	 * @param bounds          not <code>null</code>, each bound in this range must
+	 *                        be of type closed iff it is a finite number different
+	 *                        than (positive or negative) {@link Double#MAX_VALUE},
+	 *                        the lower bound must be open iff it is negative
+	 *                        infinity and the upper bound must be open iff it is
+	 *                        positive infinity.
+	 * @param references      not <code>null</code>, no <code>null</code> reference
+	 *                        inside. May be empty.
 	 */
-	private Variable(String name, VariableDomain domain, Range<Double> bounds, Object... references) {
-		this.categoricalName = requireNonNull(name);
+	private Variable(String categoricalName, VariableDomain domain, Range<Double> bounds, Object... references) {
+		this.categoricalName = requireNonNull(categoricalName);
 		requireNonNull(domain);
 		this.bounds = requireNonNull(bounds);
 		final boolean lowClosedFinite = bounds.hasLowerBound() && bounds.lowerBoundType() == BoundType.CLOSED
@@ -246,26 +245,12 @@ public class Variable {
 
 		assert ALL_FINITE.encloses(bounds);
 		requireNonNull(references);
-		/** Note ImmutableList is hostile to nulls. */
+		/** Note that ImmutableList is hostile to nulls. */
 		refs = ImmutableList.copyOf(references);
 
 		kind = domain == INT_DOMAIN ? (bounds.equals(ZERO_ONE_RANGE) ? BOOL_KIND : INT_KIND) : REAL_KIND;
 
 		checkBounds(domain, bounds);
-	}
-
-	/**
-	 * Indicates whether the given object represents the same variable as this one.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		/** Includes null case: if null, is not an instance. */
-		if (!(obj instanceof Variable)) {
-			return false;
-		}
-		final Variable v2 = (Variable) obj;
-		return this == v2
-				|| (getDescription().equals(v2.getDescription()) && kind.equals(v2.kind) && bounds == v2.bounds);
 	}
 
 	/**
@@ -309,10 +294,24 @@ public class Variable {
 	/**
 	 * Returns the references associated to the variable.
 	 *
-	 * @return not <code>null</code>, may be empty
+	 * @return not <code>null</code>, may be empty.
 	 */
 	public ImmutableList<Object> getReferences() {
 		return refs;
+	}
+
+	/**
+	 * Indicates whether the given object represents the same variable as this one.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		/** Includes null case: if null, is not an instance. */
+		if (!(obj instanceof Variable)) {
+			return false;
+		}
+		final Variable v2 = (Variable) obj;
+		return this == v2
+				|| (getDescription().equals(v2.getDescription()) && kind.equals(v2.kind) && bounds == v2.bounds);
 	}
 
 	@Override
