@@ -38,6 +38,10 @@ import com.google.common.collect.Range;
  *
  */
 public class FiniteRange {
+	private FiniteRange() {
+		/** Non instantiable. */
+	}
+
 	/**
 	 * The open range (-∞, +∞) containing all finite double values.
 	 *
