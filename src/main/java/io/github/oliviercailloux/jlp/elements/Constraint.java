@@ -70,7 +70,7 @@ public class Constraint {
 	private Constraint(String description, SumTerms lhs, ComparisonOperator op, double rhs) {
 		this.descr = requireNonNull(description);
 
-		checkArgument(lhs.size() >= 1);
+		checkArgument(!lhs.isEmpty());
 		this.lhs = requireNonNull(lhs);
 
 		this.op = requireNonNull(op);
