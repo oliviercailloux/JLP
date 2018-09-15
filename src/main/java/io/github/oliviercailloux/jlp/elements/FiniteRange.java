@@ -48,7 +48,7 @@ public class FiniteRange {
 	 * The range [0, +∞) containing all finite positive double values, including
 	 * (positive) zero.
 	 */
-	public static Range<Double> NON_NEGATIVE = atLeast(0d);
+	public static final Range<Double> NON_NEGATIVE = atLeast(0d);
 
 	/**
 	 * The closed [0-1] range.
