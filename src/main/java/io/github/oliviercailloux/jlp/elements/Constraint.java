@@ -80,23 +80,6 @@ public class Constraint {
 	}
 
 	/**
-	 * Returns <code>true</code> iff the given object is also a constraint and has
-	 * same description, left hand side, operator, and right hand side as this
-	 * object.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Constraint)) {
-			return false;
-		}
-		final Constraint c2 = (Constraint) obj;
-		if (c2 == this) {
-			return true;
-		}
-		return descr.equals(c2.descr) && lhs.equals(c2.lhs) && op.equals(c2.op) && rhs == c2.rhs;
-	}
-
-	/**
 	 * Retrieves the constraint description.
 	 *
 	 * @return not <code>null</code>.
@@ -124,6 +107,23 @@ public class Constraint {
 	 */
 	public double getRhs() {
 		return rhs;
+	}
+
+	/**
+	 * Returns <code>true</code> iff the given object is also a constraint and has
+	 * same description, left hand side, operator, and right hand side as this
+	 * object.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Constraint)) {
+			return false;
+		}
+		final Constraint c2 = (Constraint) obj;
+		if (c2 == this) {
+			return true;
+		}
+		return descr.equals(c2.descr) && lhs.equals(c2.lhs) && op.equals(c2.op) && rhs == c2.rhs;
 	}
 
 	@Override

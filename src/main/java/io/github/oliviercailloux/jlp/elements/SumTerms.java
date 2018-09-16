@@ -32,6 +32,12 @@ import com.google.common.collect.ImmutableList;
  *
  */
 public class SumTerms extends ForwardingList<Term> implements List<Term> {
+	/**
+	 * Returns a builder initialized with the given terms.
+	 *
+	 * @param terms may be empty.
+	 * @return a builder of {@link SumTerms}.
+	 */
 	public static SumTermsBuilder builder(Term... terms) {
 		return new SumTermsBuilder(Arrays.asList(terms));
 	}
@@ -108,16 +114,14 @@ public class SumTerms extends ForwardingList<Term> implements List<Term> {
 		initVariables();
 	}
 
-	/**
-	 * Returns the terms composing this object. The only reason to use this method
-	 * is to get a reference to a list of terms that is explicitely typed as
-	 * Immutable. The returned list contains the same information as that present in
-	 * this object.
-	 *
-	 * @return not <code>null</code>.
-	 */
-	public ImmutableList<Term> asImmutableList() {
-		return delegate;
+	private void initVariables() {
+		variables = this.stream().map(Term::getVariable)
+				.collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
+	}
+
+	@Override
+	protected List<Term> delegate() {
+		return Collections.unmodifiableList(delegate);
 	}
 
 	/**
@@ -132,6 +136,18 @@ public class SumTerms extends ForwardingList<Term> implements List<Term> {
 	}
 
 	/**
+	 * Returns the terms composing this object. The only reason to use this method
+	 * is to get a reference to a list of terms that is explicitely typed as
+	 * Immutable. The returned list contains the same information as that present in
+	 * this object.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public ImmutableList<Term> asImmutableList() {
+		return delegate;
+	}
+
+	/**
 	 * Returns a string representation of this sum (useful for debug).
 	 *
 	 */
@@ -140,15 +156,5 @@ public class SumTerms extends ForwardingList<Term> implements List<Term> {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		helper.addValue(Joiner.on(" + ").join(this));
 		return helper.toString();
-	}
-
-	private void initVariables() {
-		variables = this.stream().map(Term::getVariable)
-				.collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
-	}
-
-	@Override
-	protected List<Term> delegate() {
-		return Collections.unmodifiableList(delegate);
 	}
 }

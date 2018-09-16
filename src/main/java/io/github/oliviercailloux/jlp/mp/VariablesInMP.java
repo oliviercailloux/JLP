@@ -27,7 +27,7 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	 */
 	private final List<Variable> delegate;
 
-	private MPBuilder source;
+	private final MPBuilder source;
 
 	/**
 	 *
@@ -37,6 +37,18 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	<T extends List<Variable> & RandomAccess> VariablesInMP(MPBuilder source, T sourceList) {
 		this.source = requireNonNull(source);
 		delegate = Collections.unmodifiableList(sourceList);
+	}
+
+	@Override
+	protected List<Variable> delegate() {
+		return delegate;
+	}
+
+	@Override
+	public Variable set(int index, Variable variable) {
+		final Variable removed = remove(index);
+		add(index, variable);
+		return removed;
 	}
 
 	/**
@@ -86,21 +98,6 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	}
 
 	@Override
-	public Iterator<Variable> iterator() {
-		return standardIterator();
-	}
-
-	@Override
-	public ListIterator<Variable> listIterator() {
-		return standardListIterator();
-	}
-
-	@Override
-	public ListIterator<Variable> listIterator(int index) {
-		return standardListIterator(index);
-	}
-
-	@Override
 	public Variable remove(int index) {
 		final Variable variable = get(index);
 		final boolean removed = source.removeVariable(variable);
@@ -124,15 +121,18 @@ public class VariablesInMP extends ForwardingList<Variable> implements List<Vari
 	}
 
 	@Override
-	public Variable set(int index, Variable variable) {
-		final Variable removed = remove(index);
-		add(index, variable);
-		return removed;
+	public Iterator<Variable> iterator() {
+		return standardIterator();
 	}
 
 	@Override
-	protected List<Variable> delegate() {
-		return delegate;
+	public ListIterator<Variable> listIterator() {
+		return standardListIterator();
+	}
+
+	@Override
+	public ListIterator<Variable> listIterator(int index) {
+		return standardListIterator(index);
 	}
 
 }

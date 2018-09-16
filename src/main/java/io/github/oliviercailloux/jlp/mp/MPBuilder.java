@@ -105,68 +105,14 @@ public class MPBuilder implements IMP {
 		constraintsFacade = new ConstraintsInMP(this, constraintsArrayList);
 	}
 
-	/**
-	 * Returns an immutable MP that contains the data currently in this MP.
-	 *
-	 * @return not <code>null</code>.
-	 */
-	public MP build() {
-		return MP.copyOf(this);
-	}
-
-	/**
-	 * Removes all the variables and constraints, objective function, name set in
-	 * this MP. As a result of this call, this MP has the same visible state as a
-	 * newly created, empty MP.
-	 */
-	public void clear() {
-		mpName = "";
-		variables.clear();
-		descrToVar.clear();
-		varCount.clear();
-		constraints.clear();
-		objective = Objective.ZERO;
-	}
-
-	@Override
-	public boolean equals(Object o2) {
-		if (!(o2 instanceof IMP)) {
-			return false;
-		}
-		if (o2 == this) {
-			return true;
-		}
-		final IMP p2 = (IMP) o2;
-		if (!getName().equals(p2.getName())) {
-			return false;
-		}
-		if (!getVariables().equals(p2.getVariables())) {
-			return false;
-		}
-		if (!getConstraints().equals(p2.getConstraints())) {
-			return false;
-		}
-		return getObjective().equals(p2.getObjective());
-	}
-
-	@Override
-	public List<Constraint> getConstraints() {
-		return constraintsFacade;
-	}
-
-	@Override
-	public MPDimension getDimension() {
-		return MPDimension.of(varCount, getConstraints().size());
-	}
-
 	@Override
 	public String getName() {
 		return mpName;
 	}
 
 	@Override
-	public Objective getObjective() {
-		return objective;
+	public List<Constraint> getConstraints() {
+		return constraintsFacade;
 	}
 
 	@Override
@@ -186,8 +132,27 @@ public class MPBuilder implements IMP {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(mpName, getVariables(), getConstraints(), getObjective());
+	public Objective getObjective() {
+		return objective;
+	}
+
+	@Override
+	public MPDimension getDimension() {
+		return MPDimension.of(varCount, getConstraints().size());
+	}
+
+	/**
+	 * Removes all the variables and constraints, objective function, name set in
+	 * this MP. As a result of this call, this MP has the same visible state as a
+	 * newly created, empty MP.
+	 */
+	public void clear() {
+		mpName = "";
+		variables.clear();
+		descrToVar.clear();
+		varCount.clear();
+		constraints.clear();
+		objective = Objective.ZERO;
 	}
 
 	/**
@@ -207,6 +172,121 @@ public class MPBuilder implements IMP {
 		}
 		this.mpName = name;
 		return true;
+	}
+
+	/**
+	 * Removes the specified variable from this MP, if it is present.
+	 *
+	 * @param variable not <code>null</code>, must not be referred to by any
+	 *                 constraint in this MP or by the objective.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given variable was not in this MP.
+	 */
+	boolean removeVariable(Variable variable) {
+		requireNonNull(variable);
+		if (!descrToVar.containsValue(variable)) {
+			return false;
+		}
+	
+		final SumTerms objectiveFunction = objective.getFunction();
+		if (objectiveFunction.getVariables().contains(variable)) {
+			throw new IllegalArgumentException(
+					"Can’t remove " + variable + " used in objective function " + objectiveFunction + ".");
+		}
+		final List<Constraint> constraintsUsingVariable = constraints.stream()
+				.filter(c -> c.getLhs().getVariables().contains(variable)).collect(Collectors.toList());
+		if (!constraintsUsingVariable.isEmpty()) {
+			throw new IllegalArgumentException(
+					"Can’t remove " + variable + " used in constraints: " + constraintsUsingVariable + ".");
+		}
+	
+		final boolean removed = variables.remove(variable);
+		assert removed;
+		final String removedDescr = descrToVar.inverse().remove(variable);
+		assert removedDescr != null;
+		final boolean removedKind = varCount.remove(variable.getKind());
+		assert removedKind;
+		return true;
+	}
+
+	private boolean putVariables(SumTerms sumTerms) {
+		boolean added = false;
+		for (Term term : sumTerms) {
+			final Variable variable = term.getVariable();
+			final boolean nowAdded = putVariable(variables.size(), variable, false);
+			added = added || nowAdded;
+		}
+		return added;
+	}
+
+	/**
+	 * Adds the variable to this MP if it is not already in.
+	 *
+	 * @param index     an appropriate index.
+	 * @param variable  not <code>null</code>.
+	 * @param expectNew <code>true</code> to ensure that the variable is added
+	 *                  (throws an exception if the variable exists already),
+	 *                  <code>false</code> to do nothing when the variable exists
+	 *                  already.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given variable was already in this MP.
+	 */
+	boolean putVariable(int index, Variable variable, boolean expectNew) {
+		checkPositionIndex(index, variables.size());
+		requireNonNull(variable);
+		final String descr = variable.getDescription();
+		requireNonNull(descr);
+	
+		final boolean hasDescr = descrToVar.containsKey(descr);
+		final boolean hasVar = descrToVar.containsValue(variable);
+		/** We know: hasVar ⇒ hasDescr. */
+		assert !hasVar || hasDescr;
+		/**
+		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
+		 * corresponding variable.
+		 */
+		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
+				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
+		assert hasVar == hasDescr;
+	
+		if (hasDescr && !expectNew) {
+			return false;
+		}
+		if (hasDescr) {
+			assert expectNew;
+			throw new IllegalArgumentException("Variable already exists.");
+		}
+	
+		descrToVar.put(descr, variable);
+		varCount.add(variable.getKind());
+		variables.add(index, variable);
+	
+		return true;
+	}
+
+	/**
+	 * Adds the constraint to this MP.
+	 *
+	 * @param index      an appropriate index.
+	 * @param constraint not <code>null</code>.
+	 * @return <code>true</code> iff the call modified the state of this object,
+	 *         <code>false</code> iff the given constraint was already in this MP.
+	 */
+	boolean putConstraint(int index, Constraint constraint) {
+		checkPositionIndex(index, constraints.size());
+		requireNonNull(constraint);
+	
+		final SumTerms sumTerms = constraint.getLhs();
+		final boolean addedV = putVariables(sumTerms);
+		final boolean addedC = constraints.add(constraint);
+		/**
+		 * We want to check addedV ⇒ addedC, thus, exclude the contradictory case, where
+		 * addedV but not addedC.
+		 *
+		 * Equiv: addedC iff addedV || addedC.
+		 */
+		assert !(addedV && !addedC);
+		return addedC;
 	}
 
 	/**
@@ -235,6 +315,41 @@ public class MPBuilder implements IMP {
 		this.objective = effObj;
 	}
 
+	/**
+	 * Returns an immutable MP that contains the data currently in this MP.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public MP build() {
+		return MP.copyOf(this);
+	}
+
+	@Override
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof IMP)) {
+			return false;
+		}
+		if (o2 == this) {
+			return true;
+		}
+		final IMP p2 = (IMP) o2;
+		if (!getName().equals(p2.getName())) {
+			return false;
+		}
+		if (!getVariables().equals(p2.getVariables())) {
+			return false;
+		}
+		if (!getConstraints().equals(p2.getConstraints())) {
+			return false;
+		}
+		return getObjective().equals(p2.getObjective());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(mpName, getVariables(), getConstraints(), getObjective());
+	}
+
 	@Override
 	public String toString() {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
@@ -244,121 +359,6 @@ public class MPBuilder implements IMP {
 		helper.add("variables", variables);
 		helper.add("constraints", constraints);
 		return helper.toString();
-	}
-
-	private boolean putVariables(SumTerms sumTerms) {
-		boolean added = false;
-		for (Term term : sumTerms) {
-			final Variable variable = term.getVariable();
-			final boolean nowAdded = putVariable(variables.size(), variable, false);
-			added = added || nowAdded;
-		}
-		return added;
-	}
-
-	/**
-	 * Adds the constraint to this MP.
-	 *
-	 * @param index      an appropriate index.
-	 * @param constraint not <code>null</code>.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff the given constraint was already in this MP.
-	 */
-	boolean putConstraint(int index, Constraint constraint) {
-		checkPositionIndex(index, constraints.size());
-		requireNonNull(constraint);
-
-		final SumTerms sumTerms = constraint.getLhs();
-		final boolean addedV = putVariables(sumTerms);
-		final boolean addedC = constraints.add(constraint);
-		/**
-		 * We want to check addedV ⇒ addedC, thus, exclude the contradictory case, where
-		 * addedV but not addedC.
-		 *
-		 * Equiv: addedC iff addedV || addedC.
-		 */
-		assert !(addedV && !addedC);
-		return addedC;
-	}
-
-	/**
-	 * Adds the variable to this MP if it is not already in.
-	 *
-	 * @param index     an appropriate index.
-	 * @param variable  not <code>null</code>.
-	 * @param expectNew <code>true</code> to ensure that the variable is added
-	 *                  (throws an exception if the variable exists already),
-	 *                  <code>false</code> to do nothing when the variable exists
-	 *                  already.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff the given variable was already in this MP.
-	 */
-	boolean putVariable(int index, Variable variable, boolean expectNew) {
-		checkPositionIndex(index, variables.size());
-		requireNonNull(variable);
-		final String descr = variable.getDescription();
-		requireNonNull(descr);
-
-		final boolean hasDescr = descrToVar.containsKey(descr);
-		final boolean hasVar = descrToVar.containsValue(variable);
-		/** We know: hasVar ⇒ hasDescr. */
-		assert !hasVar || hasDescr;
-		/**
-		 * We want to check: hasDescr ⇒ hasVar, otherwise, already has descr but no
-		 * corresponding variable.
-		 */
-		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
-				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
-		assert hasVar == hasDescr;
-
-		if (hasDescr && !expectNew) {
-			return false;
-		}
-		if (hasDescr) {
-			assert expectNew;
-			throw new IllegalArgumentException("Variable already exists.");
-		}
-
-		descrToVar.put(descr, variable);
-		varCount.add(variable.getKind());
-		variables.add(index, variable);
-
-		return true;
-	}
-
-	/**
-	 * Removes the specified variable from this MP, if it is present.
-	 *
-	 * @param variable not <code>null</code>, must not be referred to by any
-	 *                 constraint in this MP or by the objective.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff the given variable was not in this MP.
-	 */
-	boolean removeVariable(Variable variable) {
-		requireNonNull(variable);
-		if (!descrToVar.containsValue(variable)) {
-			return false;
-		}
-
-		final SumTerms objectiveFunction = objective.getFunction();
-		if (objectiveFunction.getVariables().contains(variable)) {
-			throw new IllegalArgumentException(
-					"Can’t remove " + variable + " used in objective function " + objectiveFunction + ".");
-		}
-		final List<Constraint> constraintsUsingVariable = constraints.stream()
-				.filter(c -> c.getLhs().getVariables().contains(variable)).collect(Collectors.toList());
-		if (!constraintsUsingVariable.isEmpty()) {
-			throw new IllegalArgumentException(
-					"Can’t remove " + variable + " used in constraints: " + constraintsUsingVariable + ".");
-		}
-
-		final boolean removed = variables.remove(variable);
-		assert removed;
-		final String removedDescr = descrToVar.inverse().remove(variable);
-		assert removedDescr != null;
-		final boolean removedKind = varCount.remove(variable.getKind());
-		assert removedKind;
-		return true;
 	}
 
 }

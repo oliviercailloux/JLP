@@ -201,12 +201,12 @@ public class Variable {
 		return new Variable(categoricalName, domain, bounds, references);
 	}
 
-	private final Range<Double> bounds;
-
 	/**
 	 * Not <code>null</code>, may be empty.
 	 */
 	private final String categoricalName;
+
+	private final Range<Double> bounds;
 
 	private final VariableKind kind;
 
@@ -258,14 +258,21 @@ public class Variable {
 	}
 
 	/**
-	 * Returns the bounds of this variable.
-	 *
-	 * @return not <code>null</code>, a range of finite values.
-	 *
-	 * @see FiniteRange
+	 * Checks that the bounded domain is non empty, thus, that the bounds contain at
+	 * least one number in the domain. (This is only necessary for integer
+	 * variables, given the other checks in this class.)
 	 */
-	public Range<Double> getBounds() {
-		return bounds;
+	private void checkBounds(VariableDomain d, Range<Double> r) throws IllegalArgumentException {
+		if (d == REAL_DOMAIN) {
+			return;
+		}
+		/**
+		 * Example with lowerBound = 3.2, upperBound = 3.4. effUp = 3, effDown = 4,
+		 * crash.
+		 */
+		final double effUp = Math.floor(r.upperEndpoint());
+		final double effDown = Math.ceil(r.lowerEndpoint());
+		checkArgument(effDown <= effUp);
 	}
 
 	/**
@@ -276,15 +283,14 @@ public class Variable {
 	}
 
 	/**
-	 * Returns the default description of this variable, using its name and its
-	 * references.
+	 * Returns the bounds of this variable.
 	 *
-	 * @see #getDefaultDescription(String, Object...)
+	 * @return not <code>null</code>, a range of finite values.
 	 *
-	 * @return not <code>null</code>.
+	 * @see FiniteRange
 	 */
-	public String getDescription() {
-		return getDefaultDescription(categoricalName, refs);
+	public Range<Double> getBounds() {
+		return bounds;
 	}
 
 	public VariableDomain getDomain() {
@@ -302,6 +308,18 @@ public class Variable {
 	 */
 	public ImmutableList<Object> getReferences() {
 		return refs;
+	}
+
+	/**
+	 * Returns the default description of this variable, using its name and its
+	 * references.
+	 *
+	 * @see #getDefaultDescription(String, Object...)
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public String getDescription() {
+		return getDefaultDescription(categoricalName, refs);
 	}
 
 	/**
@@ -335,24 +353,6 @@ public class Variable {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this).add("name", categoricalName)
 				.add("domain", kind.getDomain()).add("bounds", bounds).add("refs", refs);
 		return helper.toString();
-	}
-
-	/**
-	 * Checks that the bounded domain is non empty, thus, that the bounds contain at
-	 * least one number in the domain. (This is only necessary for integer
-	 * variables, given the other checks in this class.)
-	 */
-	private void checkBounds(VariableDomain d, Range<Double> r) throws IllegalArgumentException {
-		if (d == REAL_DOMAIN) {
-			return;
-		}
-		/**
-		 * Example with lowerBound = 3.2, upperBound = 3.4. effUp = 3, effDown = 4,
-		 * crash.
-		 */
-		final double effUp = Math.floor(r.upperEndpoint());
-		final double effDown = Math.ceil(r.lowerEndpoint());
-		checkArgument(effDown <= effUp);
 	}
 
 }

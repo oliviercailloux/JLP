@@ -37,16 +37,6 @@ public class Objective {
 	public static final Objective ZERO = new Objective(SumTerms.of(), MAX);
 
 	/**
-	 * Returns an objective with optimization sense {@link Sense#MAX}.
-	 *
-	 * @param objectiveFunction not <code>null</code>, not empty.
-	 */
-	public static Objective max(SumTerms objectiveFunction) {
-		checkArgument(!objectiveFunction.isEmpty());
-		return new Objective(objectiveFunction, MAX);
-	}
-
-	/**
 	 * Returns an objective with optimization sense {@link Sense#MIN}.
 	 *
 	 * @param objectiveFunction not <code>null</code>, not empty.
@@ -54,6 +44,16 @@ public class Objective {
 	public static Objective min(SumTerms objectiveFunction) {
 		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, Sense.MIN);
+	}
+
+	/**
+	 * Returns an objective with optimization sense {@link Sense#MAX}.
+	 *
+	 * @param objectiveFunction not <code>null</code>, not empty.
+	 */
+	public static Objective max(SumTerms objectiveFunction) {
+		checkArgument(!objectiveFunction.isEmpty());
+		return new Objective(objectiveFunction, MAX);
 	}
 
 	/**
@@ -83,19 +83,6 @@ public class Objective {
 	}
 
 	/**
-	 * Two objectives are equal iff they have equal functions and senses.
-	 *
-	 */
-	@Override
-	public boolean equals(Object o2) {
-		if (!(o2 instanceof Objective)) {
-			return false;
-		}
-		Objective obj2 = (Objective) o2;
-		return (o2 == this) || (sense.equals(obj2.sense) && objectiveFunction.equals(obj2.objectiveFunction));
-	}
-
-	/**
 	 * Retrieves the objective function of this objective.
 	 *
 	 * @return not <code>null</code>, empty iff this objective is {@link #ZERO}.
@@ -113,18 +100,32 @@ public class Objective {
 		return sense;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(sense, objectiveFunction);
-	}
-
 	/**
-	 * Tests whether this objective is zero, i.e. has an empty objective function.
+	 * Tests whether this objective is zero, equivalently, has an empty objective
+	 * function.
 	 *
 	 * @return <code>true</code> iff the objective function is an empty sum.
 	 */
 	public boolean isZero() {
 		return getFunction().isEmpty();
+	}
+
+	/**
+	 * Two objectives are equal iff they have equal functions and senses.
+	 *
+	 */
+	@Override
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof Objective)) {
+			return false;
+		}
+		Objective obj2 = (Objective) o2;
+		return (o2 == this) || (sense.equals(obj2.sense) && objectiveFunction.equals(obj2.objectiveFunction));
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(sense, objectiveFunction);
 	}
 
 	/**

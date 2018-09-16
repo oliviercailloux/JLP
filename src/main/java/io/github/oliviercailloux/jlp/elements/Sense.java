@@ -8,5 +8,5 @@ package io.github.oliviercailloux.jlp.elements;
  *
  */
 public enum Sense {
-	MAX, MIN;
+	MIN, MAX;
 }

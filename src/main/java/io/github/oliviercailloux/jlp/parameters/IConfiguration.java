@@ -22,25 +22,6 @@ interface IConfiguration {
 
 	/**
 	 * <p>
-	 * Retrieves the maximal time that the cpu is allowed to spend for solving an
-	 * mp.
-	 * </p>
-	 * <p>
-	 * This may be rounded (using {@link RoundingMode#HALF_UP}) to the nearest
-	 * second, depending on the solver, thus values such as 0.3 seconds may be
-	 * rounded to zero, allowing no time for computation.
-	 * </p>
-	 * <p>
-	 * If the value is zero (or is rounded to zero), any attempt to solve any
-	 * problem will return immediately with a report of no solution found.
-	 * </p>
-	 *
-	 * @return a non-negative duration, default being {@link Configuration#ENOUGH}.
-	 */
-	public Duration getMaxCpuTime();
-
-	/**
-	 * <p>
 	 * Retrieves the maximal time that computation is allowed to take for solving an
 	 * mp, measured in wall time.
 	 * </p>
@@ -57,5 +38,24 @@ interface IConfiguration {
 	 * @return a non-negative duration, default being {@link Configuration#ENOUGH}.
 	 */
 	public Duration getMaxWallTime();
+
+	/**
+	 * <p>
+	 * Retrieves the maximal time that the cpu is allowed to spend for solving an
+	 * mp.
+	 * </p>
+	 * <p>
+	 * This may be rounded (using {@link RoundingMode#HALF_UP}) to the nearest
+	 * second, depending on the solver, thus values such as 0.3 seconds may be
+	 * rounded to zero, allowing no time for computation.
+	 * </p>
+	 * <p>
+	 * If the value is zero (or is rounded to zero), any attempt to solve any
+	 * problem will return immediately with a report of no solution found.
+	 * </p>
+	 *
+	 * @return a non-negative duration, default being {@link Configuration#ENOUGH}.
+	 */
+	public Duration getMaxCpuTime();
 
 }

@@ -28,6 +28,11 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 		delegate = Lists.newArrayList(terms);
 	}
 
+	@Override
+	protected List<Term> delegate() {
+		return delegate;
+	}
+
 	/**
 	 * Adds a term to this linear expression.
 	 *
@@ -55,11 +60,6 @@ public class SumTermsBuilder extends ForwardingList<Term> implements List<Term> 
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		helper.addValue(Joiner.on(" + ").join(this));
 		return helper.toString();
-	}
-
-	@Override
-	protected List<Term> delegate() {
-		return delegate;
 	}
 
 }

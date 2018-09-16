@@ -41,15 +41,80 @@ public class Configurator implements IConfiguration {
 	/**
 	 * Not <code>null</code>.
 	 */
-	private Duration maxCpuTime;
+	private Duration maxWallTime;
 
 	/**
 	 * Not <code>null</code>.
 	 */
-	private Duration maxWallTime;
+	private Duration maxCpuTime;
 
 	Configurator() {
 		clear();
+	}
+
+	void debugTo(ToStringHelper helper) {
+		helper.add("force deterministic", forceDeterministic);
+		helper.add("max cpu time", maxCpuTime);
+		helper.add("max wall time", maxWallTime);
+	}
+
+	@Override
+	public boolean getForceDeterministic() {
+		return forceDeterministic;
+	}
+
+	@Override
+	public Duration getMaxWallTime() {
+		return maxWallTime;
+	}
+
+	@Override
+	public Duration getMaxCpuTime() {
+		return maxCpuTime;
+	}
+
+	/**
+	 * If <code>true</code>, forces the solver to behave deterministically, if
+	 * <code>false</code>, lets the solver behave as it considers best.
+	 *
+	 * @param forceDeterministic <code>true</code> to force the solve to behave
+	 *                           deterministically.
+	 */
+	public Configurator setForceDeterministic(boolean forceDeterministic) {
+		this.forceDeterministic = forceDeterministic;
+		return this;
+	}
+
+	/**
+	 * Sets the maximal time that computation is allowed to take for solving an mp,
+	 * measured in wall time.
+	 *
+	 * @param maxWallTime must be non-negative.
+	 */
+	public Configurator setMaxWallTime(Duration maxWallTime) {
+		checkArgument(!maxWallTime.isNegative());
+		this.maxWallTime = maxWallTime;
+		return this;
+	}
+
+	/**
+	 * Sets the maximal time that the cpu is allowed to spend for solving an mp.
+	 *
+	 * @param maxCpuTime must be non-negative.
+	 */
+	public Configurator setMaxCpuTime(Duration maxCpuTime) {
+		checkArgument(!maxCpuTime.isNegative());
+		this.maxCpuTime = maxCpuTime;
+		return this;
+	}
+
+	/**
+	 * Restores the default values.
+	 */
+	public void clear() {
+		maxCpuTime = Configuration.DEFAULT_MAX_CPU_TIME;
+		maxWallTime = Configuration.DEFAULT_MAX_WALL_TIME;
+		forceDeterministic = Configuration.DEFAULT_FORCE_DETERMINISTIC;
 	}
 
 	/**
@@ -60,15 +125,6 @@ public class Configurator implements IConfiguration {
 	 */
 	public Configuration build() {
 		return new Configuration(copyOf(this));
-	}
-
-	/**
-	 * Restores the default values.
-	 */
-	public void clear() {
-		maxCpuTime = Configuration.DEFAULT_MAX_CPU_TIME;
-		maxWallTime = Configuration.DEFAULT_MAX_WALL_TIME;
-		forceDeterministic = Configuration.DEFAULT_FORCE_DETERMINISTIC;
 	}
 
 	/**
@@ -89,58 +145,8 @@ public class Configurator implements IConfiguration {
 	}
 
 	@Override
-	public boolean getForceDeterministic() {
-		return forceDeterministic;
-	}
-
-	@Override
-	public Duration getMaxCpuTime() {
-		return maxCpuTime;
-	}
-
-	@Override
-	public Duration getMaxWallTime() {
-		return maxWallTime;
-	}
-
-	@Override
 	public int hashCode() {
 		return Objects.hash(forceDeterministic, maxCpuTime, maxWallTime);
-	}
-
-	/**
-	 * If <code>true</code>, forces the solver to behave deterministically, if
-	 * <code>false</code>, lets the solver behave as it considers best.
-	 *
-	 * @param forceDeterministic <code>true</code> to force the solve to behave
-	 *                           deterministically.
-	 */
-	public Configurator setForceDeterministic(boolean forceDeterministic) {
-		this.forceDeterministic = forceDeterministic;
-		return this;
-	}
-
-	/**
-	 * Sets the maximal time that the cpu is allowed to spend for solving an mp.
-	 *
-	 * @param maxCpuTime must be non-negative.
-	 */
-	public Configurator setMaxCpuTime(Duration maxCpuTime) {
-		checkArgument(!maxCpuTime.isNegative());
-		this.maxCpuTime = maxCpuTime;
-		return this;
-	}
-
-	/**
-	 * Sets the maximal time that computation is allowed to take for solving an mp,
-	 * measured in wall time.
-	 *
-	 * @param maxWallTime must be non-negative.
-	 */
-	public Configurator setMaxWallTime(Duration maxWallTime) {
-		checkArgument(!maxWallTime.isNegative());
-		this.maxWallTime = maxWallTime;
-		return this;
 	}
 
 	@Override
@@ -148,11 +154,5 @@ public class Configurator implements IConfiguration {
 		final ToStringHelper helper = MoreObjects.toStringHelper(this);
 		debugTo(helper);
 		return helper.toString();
-	}
-
-	void debugTo(ToStringHelper helper) {
-		helper.add("force deterministic", forceDeterministic);
-		helper.add("max cpu time", maxCpuTime);
-		helper.add("max wall time", maxWallTime);
 	}
 }

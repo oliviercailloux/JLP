@@ -80,17 +80,17 @@ public class Result {
 	/**
 	 * Not <code>null</code>.
 	 */
+	private final ResultStatus status;
+
+	/**
+	 * Not <code>null</code>.
+	 */
 	private final ComputationTime duration;
 
 	/**
 	 * Not <code>null</code>.
 	 */
 	private final Optional<Solution> solution;
-
-	/**
-	 * Not <code>null</code>.
-	 */
-	private final ResultStatus status;
 
 	/**
 	 * This constructor will check the given parameters according to the documented
@@ -136,16 +136,6 @@ public class Result {
 	}
 
 	/**
-	 * Returns the duration of this attempt to solve the mp. If an error occurred,
-	 * this is the duration until the error.
-	 *
-	 * @return not <code>null</code>.
-	 */
-	public ComputationTime getDuration() {
-		return duration;
-	}
-
-	/**
 	 * Returns the status obtained as a result from the solving attempt.
 	 *
 	 * @return not <code>null</code>.
@@ -153,6 +143,16 @@ public class Result {
 	 */
 	public ResultStatus getResultStatus() {
 		return status;
+	}
+
+	/**
+	 * Returns the duration of this attempt to solve the mp. If an error occurred,
+	 * this is the duration until the error.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public ComputationTime getDuration() {
+		return duration;
 	}
 
 	/**

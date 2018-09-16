@@ -67,23 +67,6 @@ public class MPExamples {
 	 *
 	 * @return the solution.
 	 */
-	public static Solution getIntOneFourThreeLowXSolution() {
-		final MPBuilder mp = getIntOneFourThreeLowX();
-		final Variable x = mp.getVariable("x").get();
-		final Variable y = mp.getVariable("y").get();
-
-		final Map<Variable, Double> values = Maps.newLinkedHashMap();
-		final double obj = 5828d;
-		values.put(x, 16d);
-		values.put(y, 59d);
-		return Solution.of(mp, obj, values);
-	}
-
-	/**
-	 * Retrieves the optimal solution of the problem.
-	 *
-	 * @return the solution.
-	 */
 	public static Solution getIntOneFourThreeSolution() {
 		final MPBuilder mp = getIntOneFourThree();
 		final Variable x = mp.getVariable("x").get();
@@ -93,6 +76,23 @@ public class MPExamples {
 		final double obj = 6266d;
 		values.put(x, 22d);
 		values.put(y, 52d);
+		return Solution.of(mp, obj, values);
+	}
+
+	/**
+	 * Retrieves the optimal solution of the problem.
+	 *
+	 * @return the solution.
+	 */
+	public static Solution getIntOneFourThreeLowXSolution() {
+		final MPBuilder mp = getIntOneFourThreeLowX();
+		final Variable x = mp.getVariable("x").get();
+		final Variable y = mp.getVariable("y").get();
+	
+		final Map<Variable, Double> values = Maps.newLinkedHashMap();
+		final double obj = 5828d;
+		values.put(x, 16d);
+		values.put(y, 59d);
 		return Solution.of(mp, obj, values);
 	}
 }

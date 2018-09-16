@@ -26,30 +26,23 @@ import io.github.oliviercailloux.jlp.mp.IMP;
  */
 public enum ResultStatus {
 	/**
-	 * The solver has determined that the mp is infeasible, no time or memory limit
-	 * have been reached.
-	 */
-	INFEASIBLE,
-	/**
-	 * A user set memory limit, or out-of-memory status, has been reached. A
-	 * feasible solution (not known to be optimal) might be available.
-	 */
-	MEMORY_LIMIT_REACHED,
-	/**
 	 * An optimal solution has been found within the imposed time and memory limits.
 	 * (Recall that for an MP that has the {@link Objective#ZERO ZERO} objective,
 	 * all feasible solutions are optimal.)
 	 */
 	OPTIMAL,
 	/**
-	 * A user set time limit has been reached. A feasible solution (not known to be
-	 * optimal) might be available.
-	 */
-	TIME_LIMIT_REACHED,
-	/**
+	 * The solver has determined that the mp is infeasible, no time or memory limit
+	 * have been reached.
+	 */INFEASIBLE, /**
 	 * Feasible solutions exist but no optimal solution exists, an objective
 	 * function has been given, and no time or memory limit have been reached. A
 	 * feasible, non optimal solution might be available.
-	 */
-	UNBOUNDED
+	 */UNBOUNDED, /**
+	 * A user set time limit has been reached. A feasible solution (not known to be
+	 * optimal) might be available.
+	 */TIME_LIMIT_REACHED, /**
+	 * A user set memory limit, or out-of-memory status, has been reached. A
+	 * feasible solution (not known to be optimal) might be available.
+	 */MEMORY_LIMIT_REACHED
 }

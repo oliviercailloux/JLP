@@ -90,43 +90,12 @@ public class MPDimension {
 	}
 
 	/**
-	 * Indicates whether <code>obj</code> is equal to this one. This object equals
-	 * <code>obj</code> iff <code>obj</code> is an {@link MPDimension} and has the
-	 * same count for all variable kinds and constraints.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof MPDimension)) {
-			return false;
-		}
-
-		final MPDimension d2 = (MPDimension) obj;
-		if (this == d2) {
-			return true;
-		}
-
-		if (!variablesCounts.equals(d2.variablesCounts)) {
-			return false;
-		}
-		return constraintsCount == d2.constraintsCount;
-	}
-
-	/**
 	 * Returns the number of variables of kind {@link VariableKind#BOOL_KIND}.
 	 *
 	 * @return a non-negative number.
 	 */
 	public int getBoolsCount() {
 		return variablesCounts.count(BOOL_KIND);
-	}
-
-	/**
-	 * Returns the number of constraints.
-	 *
-	 * @return a non-negative number.
-	 */
-	public int getConstraintsCount() {
-		return constraintsCount;
 	}
 
 	/**
@@ -169,6 +138,37 @@ public class MPDimension {
 	 */
 	public int getVariablesCount() {
 		return variablesCounts.size();
+	}
+
+	/**
+	 * Returns the number of constraints.
+	 *
+	 * @return a non-negative number.
+	 */
+	public int getConstraintsCount() {
+		return constraintsCount;
+	}
+
+	/**
+	 * Indicates whether <code>obj</code> is equal to this one. This object equals
+	 * <code>obj</code> iff <code>obj</code> is an {@link MPDimension} and has the
+	 * same count for all variable kinds and constraints.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof MPDimension)) {
+			return false;
+		}
+	
+		final MPDimension d2 = (MPDimension) obj;
+		if (this == d2) {
+			return true;
+		}
+	
+		if (!variablesCounts.equals(d2.variablesCounts)) {
+			return false;
+		}
+		return constraintsCount == d2.constraintsCount;
 	}
 
 	@Override

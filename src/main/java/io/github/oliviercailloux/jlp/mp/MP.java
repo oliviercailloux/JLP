@@ -58,7 +58,7 @@ public class MP implements IMP {
 	/**
 	 * Private (not shared).
 	 */
-	private IMP delegate;
+	private final IMP delegate;
 
 	private final ImmutableList<Variable> variablesImmutable;
 
@@ -69,28 +69,8 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public boolean equals(Object o2) {
-		return delegate.equals(o2);
-	}
-
-	@Override
-	public ImmutableList<Constraint> getConstraints() {
-		return constraintsImmutable;
-	}
-
-	@Override
-	public MPDimension getDimension() {
-		return delegate.getDimension();
-	}
-
-	@Override
 	public String getName() {
 		return delegate.getName();
-	}
-
-	@Override
-	public Objective getObjective() {
-		return delegate.getObjective();
 	}
 
 	@Override
@@ -101,6 +81,26 @@ public class MP implements IMP {
 	@Override
 	public ImmutableList<Variable> getVariables() {
 		return variablesImmutable;
+	}
+
+	@Override
+	public ImmutableList<Constraint> getConstraints() {
+		return constraintsImmutable;
+	}
+
+	@Override
+	public Objective getObjective() {
+		return delegate.getObjective();
+	}
+
+	@Override
+	public MPDimension getDimension() {
+		return delegate.getDimension();
+	}
+
+	@Override
+	public boolean equals(Object o2) {
+		return delegate.equals(o2);
 	}
 
 	@Override

@@ -68,46 +68,11 @@ import io.github.oliviercailloux.jlp.elements.Variable;
 public interface IMP {
 
 	/**
-	 * Two MPs are equal when they have equal name, variables, constraints, and
-	 * objective.
-	 *
-	 * @param o2 the reference object with which to compare.
-	 * @return <code>true</code> iff this object is the same as the obj argument.
-	 */
-	@Override
-	public boolean equals(Object o2);
-
-	/**
-	 * Returns the constraints in this MP.
-	 *
-	 * @return not <code>null</code>, may be empty.
-	 */
-	public List<Constraint> getConstraints();
-
-	/**
-	 * Returns the dimension of this MP as a number of variables and constraints.
-	 * The bounds constraining the variables do not count as constraints in this
-	 * count.
-	 *
-	 * @return not <code>null</code>.
-	 */
-	public MPDimension getDimension();
-
-	/**
 	 * Returns the name of this MP.
 	 *
 	 * @return not <code>null</code>, may be empty.
 	 */
 	public String getName();
-
-	/**
-	 * Returns the objective of this MP, which may be the {@link Objective#ZERO
-	 * ZERO} objective to indicate that no objective function is associated to this
-	 * MP.
-	 *
-	 * @return not <code>null</code>.
-	 */
-	public Objective getObjective();
 
 	/**
 	 * Returns the variable corresponding to the given description, or an empty
@@ -133,6 +98,41 @@ public interface IMP {
 	 * @return not <code>null</code>, may be empty, contains no duplicates.
 	 */
 	public List<Variable> getVariables();
+
+	/**
+	 * Returns the constraints in this MP.
+	 *
+	 * @return not <code>null</code>, may be empty.
+	 */
+	public List<Constraint> getConstraints();
+
+	/**
+	 * Returns the objective of this MP, which may be the {@link Objective#ZERO
+	 * ZERO} objective to indicate that no objective function is associated to this
+	 * MP.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public Objective getObjective();
+
+	/**
+	 * Returns the dimension of this MP as a number of variables and constraints.
+	 * The bounds constraining the variables do not count as constraints in this
+	 * count.
+	 *
+	 * @return not <code>null</code>.
+	 */
+	public MPDimension getDimension();
+
+	/**
+	 * Two MPs are equal when they have equal name, variables, constraints, and
+	 * objective.
+	 *
+	 * @param o2 the reference object with which to compare.
+	 * @return <code>true</code> iff this object is the same as the obj argument.
+	 */
+	@Override
+	public boolean equals(Object o2);
 
 	/**
 	 * Returns a (reasonably) short description of this MP.

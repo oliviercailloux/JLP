@@ -30,6 +30,12 @@ import com.google.common.base.MoreObjects.ToStringHelper;
  */
 public class Configuration implements IConfiguration {
 	/**
+	 * The maximum value that can be stored in a Duration. Greater than the age of
+	 * the universe.
+	 */
+	public static final Duration ENOUGH = Duration.ofNanos(Long.MAX_VALUE);
+
+	/**
 	 * <code>false</code>.
 	 */
 	public static final boolean DEFAULT_FORCE_DETERMINISTIC = false;
@@ -37,22 +43,21 @@ public class Configuration implements IConfiguration {
 	/**
 	 * {@link #ENOUGH}.
 	 */
-	public static final Duration DEFAULT_MAX_CPU_TIME;
+	public static final Duration DEFAULT_MAX_WALL_TIME = ENOUGH;
 
 	/**
 	 * {@link #ENOUGH}.
 	 */
-	public static final Duration DEFAULT_MAX_WALL_TIME;
+	public static final Duration DEFAULT_MAX_CPU_TIME = ENOUGH;
 
 	/**
-	 * The maximum value that can be stored in a Duration. Greater than the age of
-	 * the universe.
+	 * Retrieves the default configuration: the one that has all values set to the
+	 * corresponding default for the parameter.
+	 *
+	 * @return the default configuration.
 	 */
-	public static final Duration ENOUGH = Duration.ofNanos(Long.MAX_VALUE);
-
-	static {
-		DEFAULT_MAX_CPU_TIME = ENOUGH;
-		DEFAULT_MAX_WALL_TIME = ENOUGH;
+	public static Configuration defaultConfiguration() {
+		return new Configurator().build();
 	}
 
 	/**
@@ -65,20 +70,25 @@ public class Configuration implements IConfiguration {
 		return new Configurator();
 	}
 
-	/**
-	 * Retrieves the default configuration: the one that has all values set to the
-	 * corresponding default for the parameter.
-	 *
-	 * @return the default configuration.
-	 */
-	public static Configuration defaultConfiguration() {
-		return new Configurator().build();
-	}
-
-	private Configurator delegate;
+	private final Configurator delegate;
 
 	Configuration(Configurator delegate) {
 		this.delegate = requireNonNull(delegate);
+	}
+
+	@Override
+	public boolean getForceDeterministic() {
+		return delegate.getForceDeterministic();
+	}
+
+	@Override
+	public Duration getMaxWallTime() {
+		return delegate.getMaxWallTime();
+	}
+
+	@Override
+	public Duration getMaxCpuTime() {
+		return delegate.getMaxCpuTime();
 	}
 
 	/**
@@ -95,21 +105,6 @@ public class Configuration implements IConfiguration {
 		}
 		final Configuration c2 = (Configuration) obj;
 		return this.delegate.equals(c2.delegate);
-	}
-
-	@Override
-	public boolean getForceDeterministic() {
-		return delegate.getForceDeterministic();
-	}
-
-	@Override
-	public Duration getMaxCpuTime() {
-		return delegate.getMaxCpuTime();
-	}
-
-	@Override
-	public Duration getMaxWallTime() {
-		return delegate.getMaxWallTime();
 	}
 
 	@Override

@@ -17,7 +17,7 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 	 */
 	private final List<Constraint> delegate;
 
-	private MPBuilder source;
+	private final MPBuilder source;
 
 	/**
 	 *
@@ -28,6 +28,11 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 	<T extends List<Constraint> & RandomAccess> ConstraintsInMP(MPBuilder source, T sourceList) {
 		this.source = requireNonNull(source);
 		delegate = sourceList;
+	}
+
+	@Override
+	protected List<Constraint> delegate() {
+		return delegate;
 	}
 
 	/**
@@ -69,10 +74,5 @@ class ConstraintsInMP extends ForwardingList<Constraint> implements List<Constra
 		final Constraint removed = remove(index);
 		add(index, constraint);
 		return removed;
-	}
-
-	@Override
-	protected List<Constraint> delegate() {
-		return delegate;
 	}
 }

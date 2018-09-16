@@ -92,20 +92,6 @@ public class Solution {
 	}
 
 	/**
-	 * Two solutions are equal iff they have equal bound mathematical programs and
-	 * have the same values for the objective value and the variables values.
-	 */
-	@Override
-	public boolean equals(Object o2) {
-		if (!(o2 instanceof Solution)) {
-			return false;
-		}
-
-		final Solution s2 = (Solution) o2;
-		return objectiveValue == s2.objectiveValue && mp.equals(s2.mp) && values.equals(s2.values);
-	}
-
-	/**
 	 * Returns the MP that this solution is about.
 	 *
 	 * @return not <code>null</code>.
@@ -146,6 +132,20 @@ public class Solution {
 	 */
 	public ImmutableList<Variable> getVariables() {
 		return mp.getVariables();
+	}
+
+	/**
+	 * Two solutions are equal iff they have equal bound mathematical programs and
+	 * have the same values for the objective value and the variables values.
+	 */
+	@Override
+	public boolean equals(Object o2) {
+		if (!(o2 instanceof Solution)) {
+			return false;
+		}
+	
+		final Solution s2 = (Solution) o2;
+		return objectiveValue == s2.objectiveValue && mp.equals(s2.mp) && values.equals(s2.values);
 	}
 
 	@Override
