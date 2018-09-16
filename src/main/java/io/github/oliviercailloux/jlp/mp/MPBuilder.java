@@ -187,7 +187,7 @@ public class MPBuilder implements IMP {
 		if (!descrToVar.containsValue(variable)) {
 			return false;
 		}
-	
+
 		final SumTerms objectiveFunction = objective.getFunction();
 		if (objectiveFunction.getVariables().contains(variable)) {
 			throw new IllegalArgumentException(
@@ -199,7 +199,7 @@ public class MPBuilder implements IMP {
 			throw new IllegalArgumentException(
 					"Can’t remove " + variable + " used in constraints: " + constraintsUsingVariable + ".");
 		}
-	
+
 		final boolean removed = variables.remove(variable);
 		assert removed;
 		final String removedDescr = descrToVar.inverse().remove(variable);
@@ -236,7 +236,7 @@ public class MPBuilder implements IMP {
 		requireNonNull(variable);
 		final String descr = variable.getDescription();
 		requireNonNull(descr);
-	
+
 		final boolean hasDescr = descrToVar.containsKey(descr);
 		final boolean hasVar = descrToVar.containsValue(variable);
 		/** We know: hasVar ⇒ hasDescr. */
@@ -248,7 +248,7 @@ public class MPBuilder implements IMP {
 		checkArgument(!hasDescr || hasVar, "This MP already contains the variable '" + descrToVar.get(descr)
 				+ "'. It is forbidden to add a different variable with the same description: '" + variable + "'.");
 		assert hasVar == hasDescr;
-	
+
 		if (hasDescr && !expectNew) {
 			return false;
 		}
@@ -256,11 +256,11 @@ public class MPBuilder implements IMP {
 			assert expectNew;
 			throw new IllegalArgumentException("Variable already exists.");
 		}
-	
+
 		descrToVar.put(descr, variable);
 		varCount.add(variable.getKind());
 		variables.add(index, variable);
-	
+
 		return true;
 	}
 
@@ -275,7 +275,7 @@ public class MPBuilder implements IMP {
 	boolean putConstraint(int index, Constraint constraint) {
 		checkPositionIndex(index, constraints.size());
 		requireNonNull(constraint);
-	
+
 		final SumTerms sumTerms = constraint.getLhs();
 		final boolean addedV = putVariables(sumTerms);
 		final boolean addedC = constraints.add(constraint);

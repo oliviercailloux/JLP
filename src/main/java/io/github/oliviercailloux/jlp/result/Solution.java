@@ -143,7 +143,7 @@ public class Solution {
 		if (!(o2 instanceof Solution)) {
 			return false;
 		}
-	
+
 		final Solution s2 = (Solution) o2;
 		return objectiveValue == s2.objectiveValue && mp.equals(s2.mp) && values.equals(s2.values);
 	}

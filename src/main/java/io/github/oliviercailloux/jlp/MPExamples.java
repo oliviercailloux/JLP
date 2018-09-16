@@ -88,7 +88,7 @@ public class MPExamples {
 		final MPBuilder mp = getIntOneFourThreeLowX();
 		final Variable x = mp.getVariable("x").get();
 		final Variable y = mp.getVariable("y").get();
-	
+
 		final Map<Variable, Double> values = Maps.newLinkedHashMap();
 		final double obj = 5828d;
 		values.put(x, 16d);

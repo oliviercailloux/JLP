@@ -159,12 +159,12 @@ public class MPDimension {
 		if (!(obj instanceof MPDimension)) {
 			return false;
 		}
-	
+
 		final MPDimension d2 = (MPDimension) obj;
 		if (this == d2) {
 			return true;
 		}
-	
+
 		if (!variablesCounts.equals(d2.variablesCounts)) {
 			return false;
 		}

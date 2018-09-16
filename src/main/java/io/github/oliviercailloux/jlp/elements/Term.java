@@ -76,7 +76,7 @@ public class Term {
 		if (!(o2 instanceof Term)) {
 			return false;
 		}
-	
+
 		Term t2 = (Term) o2;
 		if (coefficient != t2.coefficient) {
 			return false;
@@ -84,7 +84,7 @@ public class Term {
 		if (!variable.equals(t2.variable)) {
 			return false;
 		}
-	
+
 		return true;
 	}
 
