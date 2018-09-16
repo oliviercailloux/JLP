@@ -15,6 +15,15 @@ import java.util.Optional;
 public class ComputationTime {
 
 	/**
+	 * Returns a computation time containing the given measure.
+	 *
+	 * @param wallTime a non-negative duration.
+	 */
+	public static ComputationTime ofWallTime(Duration wallTime) {
+		return new ComputationTime(wallTime, Optional.empty());
+	}
+
+	/**
 	 * Returns a computation time containing the two given measures.
 	 *
 	 * @param wallTime a non-negative duration.
@@ -24,18 +33,9 @@ public class ComputationTime {
 		return new ComputationTime(wallTime, Optional.of(cpuTime));
 	}
 
-	/**
-	 * Returns a computation time containing the given measure.
-	 *
-	 * @param wallTime a non-negative duration.
-	 */
-	public static ComputationTime ofWallTime(Duration wallTime) {
-		return new ComputationTime(wallTime, Optional.empty());
-	}
+	private final Duration wallTime;
 
-	private Optional<Duration> cpuTime;
-
-	private Duration wallTime;
+	private final Optional<Duration> cpuTime;
 
 	/**
 	 * @param wallTime not <code>null</code>, a non-negative duration.
@@ -52,6 +52,15 @@ public class ComputationTime {
 	}
 
 	/**
+	 * Returns the wall, or real-time, duration of the computation.
+	 *
+	 * @return a non-negative duration.
+	 */
+	public Duration getWallTime() {
+		return wallTime;
+	}
+
+	/**
 	 * Returns the CPU time, if available, taking into account all the threads the
 	 * solver has used.
 	 *
@@ -60,15 +69,6 @@ public class ComputationTime {
 	 */
 	public Optional<Duration> getCpuTime() {
 		return cpuTime;
-	}
-
-	/**
-	 * Returns the wall, or real-time, duration of the computation.
-	 *
-	 * @return a non-negative duration.
-	 */
-	public Duration getWallTime() {
-		return wallTime;
 	}
 
 }
