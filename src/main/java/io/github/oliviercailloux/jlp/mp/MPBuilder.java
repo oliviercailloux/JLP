@@ -133,10 +133,10 @@ public class MPBuilder implements IMP {
 		if (!(o2 instanceof IMP)) {
 			return false;
 		}
-		final IMP p2 = (IMP) o2;
-		if (p2 == o2) {
+		if (o2 == this) {
 			return true;
 		}
+		final IMP p2 = (IMP) o2;
 		if (!getName().equals(p2.getName())) {
 			return false;
 		}
@@ -288,8 +288,8 @@ public class MPBuilder implements IMP {
 	 * @param variable  not <code>null</code>.
 	 * @param expectNew <code>true</code> to ensure that the variable is added
 	 *                  (throws an exception if the variable exists already),
-	 *                  <code>false</code> to silently do nothing when the variable
-	 *                  exists already.
+	 *                  <code>false</code> to do nothing when the variable exists
+	 *                  already.
 	 * @return <code>true</code> iff the call modified the state of this object,
 	 *         <code>false</code> iff the given variable was already in this MP.
 	 */
@@ -313,7 +313,9 @@ public class MPBuilder implements IMP {
 
 		if (hasDescr && !expectNew) {
 			return false;
-		} else if (hasDescr && expectNew) {
+		}
+		if (hasDescr) {
+			assert expectNew;
 			throw new IllegalArgumentException("Variable already exists.");
 		}
 
@@ -344,7 +346,7 @@ public class MPBuilder implements IMP {
 					"Can’t remove " + variable + " used in objective function " + objectiveFunction + ".");
 		}
 		final List<Constraint> constraintsUsingVariable = constraints.stream()
-				.filter((c) -> c.getLhs().getVariables().contains(variable)).collect(Collectors.toList());
+				.filter(c -> c.getLhs().getVariables().contains(variable)).collect(Collectors.toList());
 		if (!constraintsUsingVariable.isEmpty()) {
 			throw new IllegalArgumentException(
 					"Can’t remove " + variable + " used in constraints: " + constraintsUsingVariable + ".");
