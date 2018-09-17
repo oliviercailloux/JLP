@@ -125,7 +125,7 @@ public class Variable {
 	 *                        <code>null</code>.
 	 * @return the corresponding description, not <code>null</code>, not empty.
 	 */
-	public static String getDefaultDescription(String categoricalName, Iterable<Object> references) {
+	public static String getDefaultDescription(String categoricalName, Iterable<?> references) {
 		checkArgument(!categoricalName.isEmpty() || references.iterator().hasNext());
 		final String suff = Joiner.on('-').join(references);
 		final String sep = suff.isEmpty() ? "" : "_";
@@ -159,7 +159,7 @@ public class Variable {
 	 *                        <code>null</code>.
 	 */
 	public static Variable bool(String categoricalName, Object... references) {
-		return new Variable(categoricalName, INT_DOMAIN, ZERO_ONE_RANGE, references);
+		return new Variable(categoricalName, INT_DOMAIN, ZERO_ONE_RANGE, ImmutableList.copyOf(references));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class Variable {
 	 *                        <code>null</code>.
 	 */
 	public static Variable integer(String name, Object... references) {
-		return new Variable(name, INT_DOMAIN, ALL_FINITE, references);
+		return new Variable(name, INT_DOMAIN, ALL_FINITE, ImmutableList.copyOf(references));
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class Variable {
 	 *                        <code>null</code>.
 	 */
 	public static Variable real(String categoricalName, Object... references) {
-		return new Variable(categoricalName, REAL_DOMAIN, ALL_FINITE, references);
+		return new Variable(categoricalName, REAL_DOMAIN, ALL_FINITE, ImmutableList.copyOf(references));
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class Variable {
 	 * @see FiniteRange
 	 */
 	public static Variable of(String categoricalName, VariableDomain domain, Range<Double> bounds,
-			Object... references) {
+			Iterable<?> references) {
 		return new Variable(categoricalName, domain, bounds, references);
 	}
 
@@ -242,7 +242,7 @@ public class Variable {
 	 *                        categoricalName is not empty, may not contain
 	 *                        <code>null</code>.
 	 */
-	private Variable(String categoricalName, VariableDomain domain, Range<Double> bounds, Object... references) {
+	private Variable(String categoricalName, VariableDomain domain, Range<Double> bounds, Iterable<?> references) {
 		this.categoricalName = requireNonNull(categoricalName);
 		requireNonNull(domain);
 		this.bounds = requireNonNull(bounds);

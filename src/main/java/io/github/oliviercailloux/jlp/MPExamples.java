@@ -2,6 +2,7 @@ package io.github.oliviercailloux.jlp;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
@@ -88,6 +89,9 @@ public class MPExamples {
 		final MPBuilder mp = getIntOneFourThreeLowX();
 		final Variable x = mp.getVariable("x");
 		final Variable y = mp.getVariable("y");
+
+		Iterable<? extends String> refs = ImmutableList.of("", "a");
+		Variable.getDefaultDescription("", refs);
 
 		final Map<Variable, Double> values = Maps.newLinkedHashMap();
 		final double obj = 5828d;
