@@ -172,8 +172,8 @@ public class Variable {
 	 *                        categoricalName is not empty, may not contain
 	 *                        <code>null</code>.
 	 */
-	public static Variable integer(String name, Object... references) {
-		return new Variable(name, INT_DOMAIN, ALL_FINITE, ImmutableList.copyOf(references));
+	public static Variable integer(String categoricalName, Object... references) {
+		return new Variable(categoricalName, INT_DOMAIN, ALL_FINITE, ImmutableList.copyOf(references));
 	}
 
 	/**
