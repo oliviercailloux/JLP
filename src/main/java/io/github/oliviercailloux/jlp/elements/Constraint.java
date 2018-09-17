@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 
@@ -47,18 +46,27 @@ import com.google.common.base.MoreObjects;
  *
  */
 public class Constraint {
+	/**
+	 * Returns a constraint with the given data.
+	 *
+	 * @param description not <code>null</code>, may be empty.
+	 * @param lhs         not <code>null</code>, not empty.
+	 * @param op          not <code>null</code>.
+	 * @param rhs         a finite number.
+	 */
 	public static Constraint of(String description, SumTerms lhs, ComparisonOperator op, double rhs) {
 		return new Constraint(description, lhs, op, rhs);
 	}
 
-	public static Constraint noDescription(SumTerms lhs, ComparisonOperator op, double rhs) {
+	/**
+	 * Returns a constraint with the given data and an empty description.
+	 *
+	 * @param lhs not <code>null</code>, not empty.
+	 * @param op  not <code>null</code>.
+	 * @param rhs a finite number.
+	 */
+	public static Constraint of(SumTerms lhs, ComparisonOperator op, double rhs) {
 		return new Constraint("", lhs, op, rhs);
-	}
-
-	public static Constraint autoDescribed(SumTerms lhs, ComparisonOperator op, double rhs) {
-		final String descriptionLhs = lhs.stream().map(t -> t.getCoefficient() + " " + t.getVariable().getDescription())
-				.collect(Collectors.joining(" + "));
-		return new Constraint(descriptionLhs + op.toString() + rhs, lhs, op, rhs);
 	}
 
 	/**
