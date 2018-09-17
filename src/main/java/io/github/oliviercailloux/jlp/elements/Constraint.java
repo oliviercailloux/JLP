@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
 
@@ -46,8 +47,18 @@ import com.google.common.base.MoreObjects;
  *
  */
 public class Constraint {
-	public static Constraint of(String descr, SumTerms lhs, ComparisonOperator op, double rhs) {
-		return new Constraint(descr, lhs, op, rhs);
+	public static Constraint of(String description, SumTerms lhs, ComparisonOperator op, double rhs) {
+		return new Constraint(description, lhs, op, rhs);
+	}
+
+	public static Constraint noDescription(SumTerms lhs, ComparisonOperator op, double rhs) {
+		return new Constraint("", lhs, op, rhs);
+	}
+
+	public static Constraint autoDescribed(SumTerms lhs, ComparisonOperator op, double rhs) {
+		final String descriptionLhs = lhs.stream().map(t -> t.getCoefficient() + " " + t.getVariable().getDescription())
+				.collect(Collectors.joining(" + "));
+		return new Constraint(descriptionLhs + op.toString() + rhs, lhs, op, rhs);
 	}
 
 	/**
