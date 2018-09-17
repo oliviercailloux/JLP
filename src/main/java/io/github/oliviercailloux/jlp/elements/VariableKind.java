@@ -31,13 +31,12 @@ public enum VariableKind {
 	public VariableDomain getDomain() {
 		switch (this) {
 		case BOOL_KIND:
-			return INT_DOMAIN;
 		case INT_KIND:
 			return INT_DOMAIN;
 		case REAL_KIND:
 			return REAL_DOMAIN;
 		default:
-			throw new IllegalStateException();
+			throw new AssertionError();
 		}
 	}
 }

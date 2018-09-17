@@ -248,10 +248,15 @@ public class Variable {
 		/** Note that ImmutableList is hostile to nulls. */
 		refs = ImmutableList.copyOf(references);
 
-		if (domain == VariableDomain.INT_DOMAIN) {
+		switch (domain) {
+		case INT_DOMAIN:
 			kind = bounds.equals(ZERO_ONE_RANGE) ? BOOL_KIND : INT_KIND;
-		} else {
+			break;
+		case REAL_DOMAIN:
 			kind = REAL_KIND;
+			break;
+		default:
+			throw new AssertionError();
 		}
 
 		checkBounds(domain, bounds);

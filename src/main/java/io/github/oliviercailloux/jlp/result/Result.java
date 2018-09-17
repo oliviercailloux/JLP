@@ -122,7 +122,7 @@ public class Result {
 			checkArgument(!solution.isPresent() || !solution.get().getMP().getObjective().isZero());
 			break;
 		default:
-			throw new IllegalStateException();
+			throw new AssertionError();
 		}
 	}
 

@@ -38,7 +38,7 @@ public enum ComparisonOperator {
 		case EQ:
 			return "=";
 		default:
-			throw new IllegalStateException("Unknown operator.");
+			throw new AssertionError("Unknown operator.");
 		}
 	}
 
@@ -59,7 +59,7 @@ public enum ComparisonOperator {
 		case EQ:
 			return "=";
 		default:
-			throw new IllegalStateException("Unknown operator.");
+			throw new AssertionError("Unknown operator.");
 		}
 	}
 
