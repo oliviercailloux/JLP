@@ -14,7 +14,8 @@ import com.google.common.collect.Range;
 public class VariableTest {
 	@Test
 	public void testBadBounds() throws Exception {
-		assertThrows(IllegalArgumentException.class, () -> Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1)));
+		assertThrows(IllegalArgumentException.class,
+				() -> Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1), ImmutableList.of()));
 	}
 
 	@Test
@@ -74,7 +75,7 @@ public class VariableTest {
 
 	@Test
 	public void testRightBounds() throws Exception {
-		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1));
+		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1), ImmutableList.of());
 		assertEquals("cat1", var.getCategoricalName());
 		assertEquals(ImmutableList.of(), var.getReferences());
 		assertEquals("cat1", var.getDescription());
