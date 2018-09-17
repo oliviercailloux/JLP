@@ -29,8 +29,8 @@ import com.google.common.collect.Range;
  * reference to the product referred to by the index i.
  * </p>
  * <p>
- * A variable has a description. The description should be unique to that
- * variable (in objects in which the variable will appear). The default
+ * A variable has a (non-empty) description. The description should be unique to
+ * that variable (in objects in which the variable will appear). The default
  * description provided by this object uses its categorical name and its
  * references (by calling {@link #toString()} on the references). To use other
  * descriptions, you are advised to create classes extending {@link Variable}
@@ -64,9 +64,9 @@ import com.google.common.collect.Range;
  * <p>
  * It is expected that this object be immutable. In particular, it is important
  * that its equality status does not change once a variable has been added to a
- * constraint, or a problem. (This is because hashcode, or equality status viz
+ * constraint, or to an MP. (This is because hashcode, or equality status viz
  * other variables, should not change once objects are stored in collections,
- * and because it will also be referred to in solutions of problems.) Hence, the
+ * and because it will also be referred to in solutions of MPs.) Hence, the
  * description, bounds and domain of this variable should be considered as
  * structural properties of the variable, meaning, a property that will never
  * change.
@@ -88,25 +88,25 @@ import com.google.common.collect.Range;
  * <p>
  * For the curious reader, here is the rationale for the uniqueness constraint
  * of the description: this makes it possible for the user to retrieve the
- * variable knowing only its description, given a problem. We could also have
- * made equality depend on its categorical name and references, to make it
- * possible to retrieve the variable knowing those values. But this has no
- * advantage: we would then have to mandate as especially important that the
- * references do not change and identify uniquely the variable, in which case it
- * is anyway probably easy to provide a unique string description; and
- * furthermore the user would have to hold a reference equal to the original
- * reference in order to retrieve the variable, not just a description of it. In
- * any case, ensuring uniqueness of the description is a good idea to make the
- * MP contents clear, and provides for a cleaner interface and concept.
- * Furthermore, the user may with the adopted solution refer to mutable objects,
- * provided that the description itself does not change. And it is probably
- * easier for the user to retrieve the description from the variable categorical
- * name and references than the converse. Finally, we could also rely on default
- * equality implementation (equality as identity), but this would result in two
- * variables being created with Variable.int("x") as being confusingly treated
- * as different variables, and would provide an advantage only if the user does
- * not use descriptions (e.g. uses only empty categorical names and
- * descriptions), which renders any printing of the problem unreadable.
+ * variable knowing only its description, given an MP. We could also have made
+ * equality depend on its categorical name and references, to make it possible
+ * to retrieve the variable knowing those values. But this has no advantage: we
+ * would then have to mandate as especially important that the references do not
+ * change and identify uniquely the variable, in which case it is anyway
+ * probably easy to provide a unique string description; and furthermore the
+ * user would have to hold a reference equal to the original reference in order
+ * to retrieve the variable, not just a description of it. In any case, ensuring
+ * uniqueness of the description is a good idea to make the MP contents clear,
+ * and provides for a cleaner interface and concept. Furthermore, the user may
+ * with the adopted solution refer to mutable objects, provided that the
+ * description itself does not change. And it is probably easier for the user to
+ * retrieve the description from the variable categorical name and references
+ * than the converse. Finally, we could also rely on default equality
+ * implementation (equality as identity), but this would result in two variables
+ * being created with Variable.int("x") as being confusingly treated as
+ * different variables, and would provide an advantage only if the user does not
+ * use descriptions (e.g. uses only empty categorical names and descriptions),
+ * which renders any printing of the MP unreadable.
  * </p>
  *
  * @author Olivier Cailloux
@@ -118,12 +118,15 @@ public class Variable {
 	 * Returns the default description of a variable given its categorical name and
 	 * references.
 	 *
-	 * @param categoricalName not <code>null</code>.
-	 * @param references      not <code>null</code>, may be empty.
-	 * @return the corresponding description, not <code>null</code>, empty iff the
-	 *         given categorical name is empty and no references are given.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
+	 * @return the corresponding description, not <code>null</code>, not empty.
 	 */
 	public static String getDefaultDescription(String categoricalName, Iterable<Object> references) {
+		checkArgument(!categoricalName.isEmpty() || references.iterator().hasNext());
 		final String suff = Joiner.on('-').join(references);
 		final String sep = suff.isEmpty() ? "" : "_";
 		return categoricalName + sep + suff;
@@ -133,10 +136,12 @@ public class Variable {
 	 * Returns the default description of a variable given its categorical name and
 	 * references.
 	 *
-	 * @param categoricalName not <code>null</code>.
-	 * @param references      not <code>null</code>, may be empty.
-	 * @return the corresponding description, not <code>null</code>, empty iff the
-	 *         given categorical name is empty and no references are given.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
+	 * @return the corresponding description, not <code>null</code>, not empty.
 	 */
 	public static String getDefaultDescription(String categoricalName, Object... references) {
 		return getDefaultDescription(categoricalName, Arrays.asList(references));
@@ -147,9 +152,11 @@ public class Variable {
 	 * domain {@link VariableDomain#INT_DOMAIN}, bounds set at zero and one, and
 	 * hence of kind {@link VariableKind#BOOL_KIND}.
 	 *
-	 * @param categoricalName not <code>null</code>.
-	 * @param references      not <code>null</code>, no <code>null</code> reference
-	 *                        inside. May be empty.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
 	 */
 	public static Variable bool(String categoricalName, Object... references) {
 		return new Variable(categoricalName, INT_DOMAIN, ZERO_ONE_RANGE, references);
@@ -159,9 +166,11 @@ public class Variable {
 	 * Returns an {@link VariableDomain#INT_DOMAIN} variable with the given
 	 * categorical name and references, with maximal bounds.
 	 *
-	 * @param name       not <code>null</code>.
-	 * @param references not <code>null</code>, no <code>null</code> reference
-	 *                   inside. May be empty.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
 	 */
 	public static Variable integer(String name, Object... references) {
 		return new Variable(name, INT_DOMAIN, ALL_FINITE, references);
@@ -171,9 +180,11 @@ public class Variable {
 	 * Returns a {@link VariableDomain#REAL_DOMAIN} variable with the given
 	 * categorical name and references, with maximal bounds.
 	 *
-	 * @param categoricalName not <code>null</code>.
-	 * @param references      not <code>null</code>, no <code>null</code> reference
-	 *                        inside. May be empty.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
 	 */
 	public static Variable real(String categoricalName, Object... references) {
 		return new Variable(categoricalName, REAL_DOMAIN, ALL_FINITE, references);
@@ -184,7 +195,8 @@ public class Variable {
 	 * at least one valid value for the variable (see {@link Variable}). Use
 	 * {@link FiniteRange#ALL_FINITE} for the maximal bounds.
 	 *
-	 * @param categoricalName not <code>null</code>.
+	 * @param categoricalName not <code>null</code>, may be empty only if at least
+	 *                        one reference is given.
 	 * @param domain          not <code>null</code>.
 	 * @param bounds          not <code>null</code>, each bound in this range must
 	 *                        be of type closed iff it is a finite number different
@@ -192,8 +204,9 @@ public class Variable {
 	 *                        the lower bound must be open iff it is negative
 	 *                        infinity and the upper bound must be open iff it is
 	 *                        positive infinity.
-	 * @param references      not <code>null</code>, no <code>null</code> reference
-	 *                        inside. May be empty.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
 	 * @see FiniteRange
 	 */
 	public static Variable of(String categoricalName, VariableDomain domain, Range<Double> bounds,
@@ -216,7 +229,8 @@ public class Variable {
 	/**
 	 * Builds a variable with the given categorical name and references.
 	 *
-	 * @param categoricalName not <code>null</code>.
+	 * @param categoricalName not <code>null</code>, may be empty only if references
+	 *                        is not empty.
 	 * @param domain          not <code>null</code>.
 	 * @param bounds          not <code>null</code>, each bound in this range must
 	 *                        be of type closed iff it is a finite number different
@@ -224,8 +238,9 @@ public class Variable {
 	 *                        the lower bound must be open iff it is negative
 	 *                        infinity and the upper bound must be open iff it is
 	 *                        positive infinity.
-	 * @param references      not <code>null</code>, no <code>null</code> reference
-	 *                        inside. May be empty.
+	 * @param references      not <code>null</code>, may be empty only if
+	 *                        categoricalName is not empty, may not contain
+	 *                        <code>null</code>.
 	 */
 	private Variable(String categoricalName, VariableDomain domain, Range<Double> bounds, Object... references) {
 		this.categoricalName = requireNonNull(categoricalName);
@@ -321,7 +336,7 @@ public class Variable {
 	 *
 	 * @see #getDefaultDescription(String, Object...)
 	 *
-	 * @return not <code>null</code>.
+	 * @return not <code>null</code>, not empty.
 	 */
 	public String getDescription() {
 		return getDefaultDescription(categoricalName, refs);

@@ -10,8 +10,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 /**
  * <p>
  * A configuration is a set of parameter values associated to their respective
- * parameters. It can be used to tweak the way a problem will be solved. To
- * obtain such a configuration, use {@link Configuration#configurator()} (or
+ * parameters. It can be used to tweak the way an MP will be solved. To obtain
+ * such a configuration, use {@link Configuration#configurator()} (or
  * {@link Configuration#defaultConfiguration()} to obtain a default
  * configuration).
  * </p>

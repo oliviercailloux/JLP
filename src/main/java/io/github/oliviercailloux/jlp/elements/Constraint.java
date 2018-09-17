@@ -34,12 +34,12 @@ import com.google.common.base.MoreObjects;
  * descriptions, by choosing (for example) an empty description for every
  * constraints. Hence, equality has to rely on the rest of the attributes at
  * least. But we also want to permit for the following case. Constraint
- * “structural x”: x < y. Constraint “conjonctural x”: x < y. The second
+ * “structural x”: x ≤ y. Constraint “conjonctural x”: x ≤ y. The second
  * constraint might be perceived as different than the first one, and the user
  * might genuinely want both of them to appear in the MP, because the second
- * constraint might have a general form x < C×y, with a value C depending on
- * some data of the problem, with C=1 being one possibility. In such a case,
- * only the description would permit to distinguish both constraints.
+ * constraint might have a general form x ≤ C×y, with a value C depending on
+ * some data of the MP, with C=1 being one possibility. In such a case, only the
+ * description would permit to distinguish both constraints.
  * </p>
  *
  * @author Olivier Cailloux

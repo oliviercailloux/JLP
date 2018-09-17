@@ -8,7 +8,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
@@ -116,8 +115,14 @@ public class MPBuilder implements IMP {
 	}
 
 	@Override
-	public Optional<Variable> getVariable(String description) {
-		return Optional.ofNullable(descrToVar.get(description));
+	public boolean containsVariable(String description) {
+		return descrToVar.containsKey(description);
+	}
+
+	@Override
+	public Variable getVariable(String description) {
+		checkArgument(descrToVar.containsKey(description));
+		return descrToVar.get(description);
 	}
 
 	/**
@@ -156,22 +161,29 @@ public class MPBuilder implements IMP {
 	}
 
 	/**
-	 * Sets or removes the name of this problem.
+	 * Sets or removes the name of this MP.
 	 *
 	 * @param name <code>null</code> or empty string for no name. A
 	 *             <code>null</code> string is converted to an empty string.
-	 * @return <code>true</code> iff the call modified the state of this object,
-	 *         <code>false</code> iff this MP name was already equal to the given
-	 *         name.
+	 * @return this object.
 	 *
 	 */
-	public boolean setName(String name) {
+	public MPBuilder setName(String name) {
 		final String newName = Strings.nullToEmpty(name);
-		if (mpName.equals(newName)) {
-			return false;
-		}
-		this.mpName = name;
-		return true;
+		this.mpName = newName;
+		return this;
+	}
+
+	/**
+	 * Appends the specified variable to the end of the list of variables contained
+	 * in this MP.
+	 *
+	 * @param variable not <code>null</code>, may not already exist in this list.
+	 * @return this object.
+	 */
+	public MPBuilder addVariable(Variable variable) {
+		getVariables().add(variable);
+		return this;
 	}
 
 	/**
@@ -265,6 +277,18 @@ public class MPBuilder implements IMP {
 	}
 
 	/**
+	 * Appends the specified constraint to the end of the list of constraints
+	 * contained in this MP.
+	 *
+	 * @param constraint not <code>null</code>.
+	 * @return this object.
+	 */
+	public MPBuilder addConstraint(Constraint constraint) {
+		getConstraints().add(constraint);
+		return this;
+	}
+
+	/**
 	 * Adds the constraint to this MP.
 	 *
 	 * @param index      an appropriate index.
@@ -291,9 +315,9 @@ public class MPBuilder implements IMP {
 
 	/**
 	 * <p>
-	 * Sets or removes the objective bound to this problem. The variables used in
-	 * the objective function are added to this MP, if not present already, in the
-	 * order they are found in the given objective function.
+	 * Sets or removes the objective bound to this MP. The variables used in the
+	 * objective function are added to this MP, if not present already, in the order
+	 * they are found in the given objective function.
 	 * </p>
 	 * <p>
 	 * If set to <code>null</code>, the objective of this MP is replaced by the

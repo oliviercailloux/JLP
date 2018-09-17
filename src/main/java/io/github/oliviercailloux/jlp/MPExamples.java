@@ -20,7 +20,7 @@ public class MPExamples {
 
 	/**
 	 * <p>
-	 * Builds a new problem with integer variables:
+	 * Builds a new MP with integer variables:
 	 * <ul>
 	 * <li>Maximize: 143x+60y Subject to:</li>
 	 * <li>120x+210y <= 15000</li>
@@ -29,48 +29,48 @@ public class MPExamples {
 	 * </ul>
 	 * </p>
 	 * <p>
-	 * The problem is named after the coefficient of the x variable in the objective
+	 * The MP is named after the coefficient of the x variable in the objective
 	 * function.
 	 * </p>
 	 *
-	 * @return a new problem.
+	 * @return a new MP.
 	 */
 	public static MPBuilder getIntOneFourThree() {
-		MPBuilder problem = MP.builder();
-		problem.setName("OneFourThree");
+		MPBuilder mp = MP.builder();
+		mp.setName("OneFourThree");
 		final Variable x = Variable.integer("x");
 		final Variable y = Variable.integer("y");
-		problem.getVariables().add(x);
-		problem.getVariables().add(y);
+		mp.addVariable(x);
+		mp.addVariable(y);
 
-		problem.setObjective(Objective.max(SumTerms.of(143, x, 60, y)));
-		problem.getConstraints().add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
-		problem.getConstraints().add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
-		problem.getConstraints().add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));
+		mp.setObjective(Objective.max(SumTerms.of(143, x, 60, y)));
+		mp.getConstraints().add(Constraint.of("c1", SumTerms.of(120, x, 210, y), ComparisonOperator.LE, 15000));
+		mp.getConstraints().add(Constraint.of("c2", SumTerms.of(110, x, 30, y), ComparisonOperator.LE, 4000));
+		mp.getConstraints().add(Constraint.of("c3", SumTerms.of(1, x, 1, y), ComparisonOperator.LE, 75));
 
-		return problem;
+		return mp;
 	}
 
 	/**
-	 * @return a problem as in {@link #getIntOneFourThree()} with a supplementary
+	 * @return an MP as in {@link #getIntOneFourThree()} with a supplementary
 	 *         constraint: x ≤ 16.
 	 */
 	public static MPBuilder getIntOneFourThreeLowX() {
-		final MPBuilder problem = getIntOneFourThree();
-		final Variable x = problem.getVariable("x").get();
-		problem.getConstraints().add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
-		return problem;
+		final MPBuilder mp = getIntOneFourThree();
+		final Variable x = mp.getVariable("x");
+		mp.getConstraints().add(Constraint.of("low x", SumTerms.of(1, x), ComparisonOperator.LE, 16d));
+		return mp;
 	}
 
 	/**
-	 * Retrieves the optimal solution of the problem.
+	 * Retrieves the optimal solution of the corresponding MP.
 	 *
 	 * @return the solution.
 	 */
 	public static Solution getIntOneFourThreeSolution() {
 		final MPBuilder mp = getIntOneFourThree();
-		final Variable x = mp.getVariable("x").get();
-		final Variable y = mp.getVariable("y").get();
+		final Variable x = mp.getVariable("x");
+		final Variable y = mp.getVariable("y");
 
 		final Map<Variable, Double> values = Maps.newLinkedHashMap();
 		final double obj = 6266d;
@@ -80,14 +80,14 @@ public class MPExamples {
 	}
 
 	/**
-	 * Retrieves the optimal solution of the problem.
+	 * Retrieves the optimal solution of the corresponding mp.
 	 *
 	 * @return the solution.
 	 */
 	public static Solution getIntOneFourThreeLowXSolution() {
 		final MPBuilder mp = getIntOneFourThreeLowX();
-		final Variable x = mp.getVariable("x").get();
-		final Variable y = mp.getVariable("y").get();
+		final Variable x = mp.getVariable("x");
+		final Variable y = mp.getVariable("y");
 
 		final Map<Variable, Double> values = Maps.newLinkedHashMap();
 		final double obj = 5828d;

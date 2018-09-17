@@ -41,7 +41,7 @@ public class Solution {
 	 * @param objectiveValue a finite value, must be zero if the given MP has the
 	 *                       {@link Objective#ZERO ZERO} objective.
 	 * @param values         not <code>null</code>, the keys must match the
-	 *                       variables in the given problem.
+	 *                       variables in the given MP.
 	 */
 	public static Solution of(IMP mp, double objectiveValue, Map<Variable, Double> values) {
 		return new Solution(mp, objectiveValue, values);
@@ -102,7 +102,7 @@ public class Solution {
 
 	/**
 	 * Returns the value of the objective function with the solution found. Returns
-	 * zero if the bound problem has the {@link Objective#ZERO ZERO} objective.
+	 * zero if the bound MP has the {@link Objective#ZERO ZERO} objective.
 	 *
 	 * @return a finite value.
 	 */

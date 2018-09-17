@@ -1,7 +1,6 @@
 package io.github.oliviercailloux.jlp.mp;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import io.github.oliviercailloux.jlp.elements.Constraint;
@@ -20,12 +19,14 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * programs that are infeasible, meaning that they have no feasible solutions.
  * </p>
  * <p>
- * A feasible solution is optimal iff its objective function value is best (best
- * meaning a value greater than or equal to the objective function value of any
- * other feasible solution, for a maximization sense, or a value less than or
- * equal to the objective function value of any other feasible solution, for a
- * minimization sense). An MP (as representable by this object) has no optimal
- * solutions iff it has no feasible solution or it is unbounded.
+ * Such an MP may have an objective function, in which case the following
+ * definitions apply. A feasible solution is optimal iff its objective function
+ * value is best (best meaning a value greater than or equal to the objective
+ * function value of any other feasible solution, for a maximization sense, or a
+ * value less than or equal to the objective function value of any other
+ * feasible solution, for a minimization sense). An MP (as representable by this
+ * object) has no optimal solutions iff it has no feasible solution or is
+ * unbounded.
  * </p>
  * <p>
  * An MP may have the {@link Objective#ZERO ZERO} objective, which indicates
@@ -57,8 +58,8 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * The list of constraints is a real list in the sense that it allows
  * duplicates. This permits to really satisfy the constract of {@link List}, and
  * makes it easily sortable, for example. (The choice is different for the list
- * of variables because it can’t fulfill entirely the contract of List anyway,
- * as a variable can’t be removed once it is used.)
+ * of variables because it can’t fulfill entirely the contract of
+ * <code>List</code> anyway, as a variable can’t be removed once it is used.)
  * </p>
  *
  * @author Olivier Cailloux
@@ -75,16 +76,27 @@ public interface IMP {
 	public String getName();
 
 	/**
-	 * Returns the variable corresponding to the given description, or an empty
-	 * optional if no variable have the given description in this MP.
+	 * Returns <code>true</code> iff the given description corresponds to a variable
+	 * in this MP.
+	 *
+	 * @param description not <code>null</code>, not empty.
+	 * @return <code>true</code> iff some variable in this MP has a corresponding
+	 *         description.
+	 */
+	public boolean containsVariable(String description);
+
+	/**
+	 * Returns the variable corresponding to the given description.
 	 *
 	 * @param description the description of the variable, as given by
-	 *                    {@link Variable#getDescription()}.
+	 *                    {@link Variable#getDescription()}; must correspond to a
+	 *                    variable in this MP.
 	 * @return an optional containing a variable, if found, otherwise an empty
 	 *         optional.
-	 * @see Variable#getDefaultDescription(String, Iterable) .
+	 * @see Variable#getDefaultDescription(String, Iterable)
+	 * @see #containsVariable(String)
 	 */
-	public Optional<Variable> getVariable(String description);
+	public Variable getVariable(String description);
 
 	/**
 	 * <p>

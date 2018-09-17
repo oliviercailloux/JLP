@@ -31,8 +31,8 @@ interface IConfiguration {
 	 * rounded to zero, allowing no time for computation.
 	 * </p>
 	 * <p>
-	 * If the value is zero (or is rounded to zero), any attempt to solve any
-	 * problem will return immediately with a report of no solution found.
+	 * If the value is zero (or is rounded to zero), any attempt to solve any MP
+	 * will return immediately with a report of no solution found.
 	 * </p>
 	 *
 	 * @return a non-negative duration, default being {@link Configuration#ENOUGH}.
@@ -50,8 +50,8 @@ interface IConfiguration {
 	 * rounded to zero, allowing no time for computation.
 	 * </p>
 	 * <p>
-	 * If the value is zero (or is rounded to zero), any attempt to solve any
-	 * problem will return immediately with a report of no solution found.
+	 * If the value is zero (or is rounded to zero), any attempt to solve any MP
+	 * will return immediately with a report of no solution found.
 	 * </p>
 	 *
 	 * @return a non-negative duration, default being {@link Configuration#ENOUGH}.

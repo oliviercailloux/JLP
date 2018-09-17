@@ -2,8 +2,6 @@ package io.github.oliviercailloux.jlp.mp;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Optional;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
@@ -17,7 +15,7 @@ import io.github.oliviercailloux.jlp.elements.Variable;
  * An immutable MP.
  * </p>
  * <p>
- * To obtain such a problem, use {@link MP#builder()}, populate the MP, then use
+ * To obtain such an MP, use {@link MP#builder()}, populate the MP, then use
  * {@link MPBuilder#build()}.
  * </p>
  * <p>
@@ -74,7 +72,12 @@ public class MP implements IMP {
 	}
 
 	@Override
-	public Optional<Variable> getVariable(String description) {
+	public boolean containsVariable(String description) {
+		return delegate.containsVariable(description);
+	}
+
+	@Override
+	public Variable getVariable(String description) {
 		return delegate.getVariable(description);
 	}
 
