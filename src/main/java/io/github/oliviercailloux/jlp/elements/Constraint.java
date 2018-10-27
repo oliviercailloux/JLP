@@ -70,6 +70,42 @@ public class Constraint {
 	}
 
 	/**
+	 * Returns a constraint with the given data, the {@link ComparisonOperator#LE}
+	 * operator and an empty description.
+	 *
+	 * @param lhs not <code>null</code>, not empty.
+	 * @param rhs a finite number.
+	 * @return the constraint <code>lhs</code> ≤ <code>rhs</code>.
+	 */
+	public static Constraint LE(SumTerms lhs, double rhs) {
+		return new Constraint("", lhs, ComparisonOperator.LE, rhs);
+	}
+
+	/**
+	 * Returns a constraint with the given data, the {@link ComparisonOperator#EQ}
+	 * operator and an empty description.
+	 *
+	 * @param lhs not <code>null</code>, not empty.
+	 * @param rhs a finite number.
+	 * @return the constraint <code>lhs</code> = <code>rhs</code>.
+	 */
+	public static Constraint EQ(SumTerms lhs, double rhs) {
+		return new Constraint("", lhs, ComparisonOperator.EQ, rhs);
+	}
+
+	/**
+	 * Returns a constraint with the given data, the {@link ComparisonOperator#GE}
+	 * operator and an empty description.
+	 *
+	 * @param lhs not <code>null</code>, not empty.
+	 * @param rhs a finite number.
+	 * @return the constraint <code>lhs</code> ≥ <code>rhs</code>.
+	 */
+	public static Constraint GE(SumTerms lhs, double rhs) {
+		return new Constraint("", lhs, ComparisonOperator.GE, rhs);
+	}
+
+	/**
 	 * Not <code>null</code>.
 	 */
 	private final String descr;

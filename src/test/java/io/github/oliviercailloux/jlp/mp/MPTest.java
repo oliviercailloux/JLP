@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.jlp.MPExamples;
-import io.github.oliviercailloux.jlp.elements.ComparisonOperator;
 import io.github.oliviercailloux.jlp.elements.Constraint;
 import io.github.oliviercailloux.jlp.elements.Objective;
 import io.github.oliviercailloux.jlp.elements.SumTerms;
@@ -26,8 +25,7 @@ public class MPTest {
 	public void testDuplicateDescr() {
 		final MPBuilder mp = MPBuilder.create();
 		mp.getVariables().add(Variable.bool("b"));
-		final Constraint intBEqZero = Constraint.of("int-b=0", SumTerms.of(1d, Variable.integer("b")),
-				ComparisonOperator.EQ, 0d);
+		final Constraint intBEqZero = Constraint.EQ(SumTerms.of(1d, Variable.integer("b")), 0d);
 		final IllegalArgumentException exc = assertThrows(IllegalArgumentException.class,
 				() -> mp.getConstraints().add(intBEqZero));
 		LOGGER.debug(exc.getMessage());
@@ -43,8 +41,8 @@ public class MPTest {
 		mp.getVariables().addAll(ImmutableList.of(b1, b2, b3));
 		assertEquals(3, mp.getVariables().size());
 		mp.setObjective(Objective.max(SumTerms.of(1d, b1)));
-		mp.getConstraints().add(Constraint.of("c2", SumTerms.of(2d, b2), ComparisonOperator.LE, 2d));
-		mp.getConstraints().add(Constraint.of("c3", SumTerms.of(3d, b3), ComparisonOperator.LE, 3d));
+		mp.getConstraints().add(Constraint.LE(SumTerms.of(2d, b2), 2d));
+		mp.getConstraints().add(Constraint.LE(SumTerms.of(3d, b3), 3d));
 		final IllegalArgumentException exc = assertThrows(IllegalArgumentException.class,
 				() -> mp.getVariables().remove(b3));
 		LOGGER.debug(exc.getMessage());
@@ -72,8 +70,8 @@ public class MPTest {
 		final Variable b4 = Variable.bool("b4");
 		mp.getVariables().addAll(ImmutableList.of(b1, b2, b3, b4));
 		mp.setObjective(Objective.max(SumTerms.of(1d, b2)));
-		mp.getConstraints().add(Constraint.of("c2", SumTerms.of(2d, b2), ComparisonOperator.LE, 2d));
-		mp.getConstraints().add(Constraint.of("c3", SumTerms.of(3d, b2), ComparisonOperator.LE, 3d));
+		mp.getConstraints().add(Constraint.LE(SumTerms.of(2d, b2), 2d));
+		mp.getConstraints().add(Constraint.LE(SumTerms.of(3d, b2), 3d));
 		mp.getVariables().retainAll(ImmutableList.of(b1, b2, b3, b4));
 		assertEquals(4, mp.getVariables().size());
 		mp.getVariables().retainAll(ImmutableList.of(b2, b4));

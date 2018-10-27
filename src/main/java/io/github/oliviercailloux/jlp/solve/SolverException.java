@@ -1,4 +1,4 @@
-package io.github.oliviercailloux.jlp;
+package io.github.oliviercailloux.jlp.solve;
 
 public class SolverException extends Exception {
 
