@@ -133,21 +133,6 @@ public class Variable {
 	}
 
 	/**
-	 * Returns the default description of a variable given its categorical name and
-	 * references.
-	 *
-	 * @param categoricalName not <code>null</code>, may be empty only if at least
-	 *                        one reference is given.
-	 * @param references      not <code>null</code>, may be empty only if
-	 *                        categoricalName is not empty, may not contain
-	 *                        <code>null</code>.
-	 * @return the corresponding description, not <code>null</code>, not empty.
-	 */
-	public static String getDefaultDescription(String categoricalName, Object... references) {
-		return getDefaultDescription(categoricalName, Arrays.asList(references));
-	}
-
-	/**
 	 * Returns a variable with the given categorical name and references, with
 	 * domain {@link VariableDomain#INT_DOMAIN}, bounds set at zero and one, and
 	 * hence of kind {@link VariableKind#BOOL_KIND}.

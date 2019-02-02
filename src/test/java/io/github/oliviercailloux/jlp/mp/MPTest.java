@@ -86,4 +86,17 @@ public class MPTest {
 		assertTrue(descr.length() > 200);
 	}
 
+	@Test
+	public void testClear() throws Exception {
+		final MPBuilder mp = MPExamples.getIntOneFourThree();
+		mp.clear();
+	}
+
+	@Test
+	public void testBuild() throws Exception {
+		final MPBuilder mp = MPExamples.getIntOneFourThree();
+		final MP built = mp.build();
+		assertEquals(mp, built);
+	}
+
 }

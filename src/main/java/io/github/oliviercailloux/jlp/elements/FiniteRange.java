@@ -7,7 +7,11 @@ import com.google.common.collect.Range;
 /**
  * <p>
  * This class provides constructors for obtaining ranges containing finite
- * values only. (The provided ranges are not necessarily bounded, however.)
+ * values only. The provided ranges are not necessarily bounded in the
+ * mathematical sense, for example, the one that contains all finite values is
+ * not bounded in the mathematical sense. All ranges are bounded in the Guava
+ * sense, as they all contain their lower endpoint, which can be minus infinity
+ * (a valid double value in Java), and similarly for the upper endpoint.
  * </p>
  * <p>
  * Ranges in this library are expected to hold finite values only. Thus, it is
@@ -29,9 +33,10 @@ import com.google.common.collect.Range;
  * possible values in a given type.
  * </p>
  * <p>
- * There are two ways of representing all finite values as a range: (-∞, +∞) or
- * [-max, max], where max = {@link Double#MAX_VALUE}. This library favors the
- * first one, for clarity and in order to ensure uniqueness of representation.
+ * There are two ways of representing all finite double values as a range: (-∞,
+ * +∞) or [-max, max], where max = {@link Double#MAX_VALUE}. This library favors
+ * the first one, for clarity and in order to ensure uniqueness of
+ * representation.
  * </p>
  *
  * @author Olivier Cailloux
@@ -43,7 +48,7 @@ public class FiniteRange {
 	}
 
 	/**
-	 * The open range (-∞, +∞) containing all finite double values.
+	 * The open range (−∞, +∞) containing all finite double values.
 	 *
 	 */
 	public static final Range<Double> ALL_FINITE = Range.open(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -55,7 +60,7 @@ public class FiniteRange {
 	public static final Range<Double> NON_NEGATIVE = atLeast(0d);
 
 	/**
-	 * The closed [0-1] range.
+	 * The closed [0, 1] range.
 	 */
 	public static final Range<Double> ZERO_ONE_RANGE = closed(0d, 1d);
 
@@ -98,5 +103,59 @@ public class FiniteRange {
 		checkArgument(Double.isFinite(lower));
 		checkArgument(Double.isFinite(upper));
 		return Range.closed(lower, upper);
+	}
+
+	/**
+	 * <p>
+	 * A string representation of this range as a range of finite values adopting
+	 * the conventions of this class, rather than the conventions of
+	 * <a href= "https://github.com/google/guava/wiki/RangesExplained">Guava</a>
+	 * (for the latter, use {@link Range#toString()}). The difference is mainly that
+	 * for this method, the symbol ∞ represents a double infinite value.
+	 * </p>
+	 * <p>
+	 * For example, given {@link #ALL_FINITE}, this method returns “(−∞..+∞)”
+	 * whereas {@link Range#toString()} returns “(-Infinity..Infinity)”.
+	 * </p>
+	 *
+	 * @param range a range as produced by this class.
+	 * @return a string representation of the given range.
+	 */
+	public static String toString(Range<Double> range) {
+		assert range.hasLowerBound();
+		assert range.hasUpperBound();
+		assert range.lowerEndpoint().equals(Double.NEGATIVE_INFINITY) || Double.isFinite(range.lowerEndpoint());
+		assert range.upperEndpoint().equals(Double.POSITIVE_INFINITY) || Double.isFinite(range.upperEndpoint());
+
+		final String start;
+		switch (range.lowerBoundType()) {
+		case CLOSED:
+			start = "[";
+			break;
+		case OPEN:
+			start = "(";
+			break;
+		default:
+			throw new AssertionError();
+		}
+
+		final Double dbl1 = range.lowerEndpoint();
+		final String val1 = dbl1.equals(Double.NEGATIVE_INFINITY) ? "−∞" : dbl1.toString();
+		final Double dbl2 = range.upperEndpoint();
+		final String val2 = dbl2.equals(Double.POSITIVE_INFINITY) ? "+∞" : dbl2.toString();
+
+		final String end;
+		switch (range.upperBoundType()) {
+		case CLOSED:
+			end = "]";
+			break;
+		case OPEN:
+			end = ")";
+			break;
+		default:
+			throw new AssertionError();
+		}
+
+		return String.format("%s%s..%s%s", start, val1, val2, end);
 	}
 }

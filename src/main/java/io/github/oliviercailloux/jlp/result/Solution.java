@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -24,6 +23,10 @@ import io.github.oliviercailloux.jlp.mp.MP;
  * A feasible, but not necessarily optimal, solution to a mathematical program.
  * The MP is bound to this solution.
  * </p>
+ * <p>
+ * In general, and depending on the solver, values associated to variables with
+ * integer domains may not necessarily be assumed to be integers. See “Slightly
+ * infeasible integer variables” in CPLEX help for an example.
  * <p>
  * Immutable (provided variables are immutable).
  * </p>
@@ -76,19 +79,23 @@ public class Solution {
 		checkArgument(!mp.getObjective().isZero() || objectiveValue == 0d);
 		/** We make sure that zero is a positive zero. */
 		this.objectiveValue = objectiveValue == 0d ? 0d : objectiveValue;
+		this.values = ImmutableMap.copyOf(variablesValues);
 
 		/**
-		 * We must copy to ensure that the identity concept are the same for the
-		 * symmetric difference.
+		 * We should ideally copy to new ImmutableSets to ensure that the underlying
+		 * equivalence relations are the same for the symmetric difference. (Otherwise,
+		 * one could be an ImmutableSortedSet for example.)
 		 */
-		final ImmutableSet<Variable> varsFromMap = ImmutableSet.copyOf(requireNonNull(variablesValues).keySet());
+		final ImmutableSet<Variable> varsFromMap = values.keySet();
 		final ImmutableSet<Variable> varsFromMp = ImmutableSet.copyOf(this.mp.getVariables());
 		final SetView<Variable> diff = Sets.symmetricDifference(varsFromMap, varsFromMp);
-		checkArgument(diff.isEmpty(),
-				"The following variable (in total, %s variables) is present in the given variables values "
-						+ "and not in the given mp, or conversely: %s.",
-				diff.size(), diff.iterator().next());
-		this.values = ImmutableMap.copyOf(variablesValues);
+		if (!diff.isEmpty()) {
+			throw new IllegalArgumentException(
+					String.format(
+							"The following variable (in total, %s variables) is present in the given variables values "
+									+ "and not in the given mp, or conversely: %s.",
+							diff.size(), diff.iterator().next()));
+		}
 	}
 
 	/**
@@ -120,18 +127,20 @@ public class Solution {
 	 */
 	public double getValue(Variable variable) {
 		checkArgument(mp.getVariables().contains(requireNonNull(variable)));
+		assert values.containsKey(variable);
 		return values.get(variable);
 	}
 
 	/**
-	 * Returns the variables of the MP bound to this solution. The returned list
-	 * equals the list returned by {@link MP#getVariables()} when called on
-	 * {@link #getMP()}.
+	 * Returns the variables of the MP bound to this solution and their values. The
+	 * returned key set contains the same variables in the same order than the list
+	 * returned by {@link MP#getVariables()} when called on {@link #getMP()}.
 	 *
 	 * @return not <code>null</code>.
 	 */
-	public ImmutableList<Variable> getVariables() {
-		return mp.getVariables();
+	public ImmutableMap<Variable, Double> getVariableValues() {
+		assert getMP().getVariables().equals(values.keySet().asList());
+		return values;
 	}
 
 	/**

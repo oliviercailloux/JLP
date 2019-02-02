@@ -13,38 +13,37 @@ import com.google.common.collect.Range;
 
 public class VariableTest {
 	@Test
-	public void testBadBounds() throws Exception {
+	void testBadBounds() throws Exception {
 		assertThrows(IllegalArgumentException.class,
 				() -> Variable.of("cat1", INT_DOMAIN, Range.closed(-0.2, -0.1), ImmutableList.of()));
 	}
 
 	@Test
-	public void testDefaultDescription() throws Exception {
-		assertEquals("x", Variable.getDefaultDescription("x"));
+	void testDefaultDescription() throws Exception {
 		assertEquals("x", Variable.getDefaultDescription("x", ImmutableList.of()));
-		assertEquals("x_1", Variable.getDefaultDescription("x", "1"));
+		assertEquals("x_1", Variable.getDefaultDescription("x", ImmutableList.of("1")));
 	}
 
 	@Test
-	public void testNullReferenceInside() throws Exception {
+	void testNullReferenceInside() throws Exception {
 		Object[] refs = new Object[] { "ref1", null, "ref2" };
 		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
 	@Test
-	public void testNullReferences() throws Exception {
+	void testNullReferences() throws Exception {
 		Object[] refs = null;
 		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
 	@Test
-	public void testNullReferencesObj() throws Exception {
+	void testNullReferencesObj() throws Exception {
 		Object refs = null;
 		assertThrows(NullPointerException.class, () -> Variable.real("cat1", refs));
 	}
 
 	@Test
-	public void testRanges() throws Exception {
+	void testRanges() throws Exception {
 		final double min = -Double.MAX_VALUE;
 		final double max = Double.MAX_VALUE;
 		final Range<Double> allFinCl = Range.closed(min, max);
@@ -74,7 +73,7 @@ public class VariableTest {
 	}
 
 	@Test
-	public void testRightBounds() throws Exception {
+	void testRightBounds() throws Exception {
 		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1), ImmutableList.of());
 		assertEquals("cat1", var.getCategoricalName());
 		assertEquals(ImmutableList.of(), var.getReferences());

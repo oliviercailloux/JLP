@@ -1,7 +1,10 @@
 package io.github.oliviercailloux.jlp.solve;
 
-public class SolverException extends Exception {
+public class SolverException extends RuntimeException {
 
+	/**
+	 * TODO think about this.
+	 */
 	private static final long serialVersionUID = 1L;
 
 	public SolverException() {

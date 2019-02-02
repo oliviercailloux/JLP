@@ -31,7 +31,7 @@ import io.github.oliviercailloux.jlp.elements.VariableKind;
  * </p>
  * <p>
  * This object forbids adding two different variables with the same description
- * (e.g., "x" int and "x" real).
+ * (e.g., "x" int and "x" real). TODO even twice same?
  * </p>
  *
  * @author Olivier Cailloux
@@ -54,8 +54,12 @@ public class MPBuilder implements IMP {
 
 		final MPBuilder mp = new MPBuilder();
 		mp.setName(source.getName());
-		mp.setObjective(source.getObjective());
+		/**
+		 * Add variables first! Otherwise, some may already exist, and add will fail.
+		 * Or, we could use addIfNew.
+		 */
 		mp.getVariables().addAll(source.getVariables());
+		mp.setObjective(source.getObjective());
 		mp.getConstraints().addAll(source.getConstraints());
 
 		return mp;
@@ -266,7 +270,7 @@ public class MPBuilder implements IMP {
 		}
 		if (hasDescr) {
 			assert expectNew;
-			throw new IllegalArgumentException("Variable already exists.");
+			throw new IllegalArgumentException(String.format("Variable %s already exists.", descr));
 		}
 
 		descrToVar.put(descr, variable);
