@@ -7,22 +7,20 @@ import com.google.common.collect.Range;
 /**
  * <p>
  * This class provides constructors for obtaining ranges containing finite
- * values only. The provided ranges are not necessarily bounded in the
- * mathematical sense, for example, the one that contains all finite values is
- * not bounded in the mathematical sense. All ranges are bounded in the Guava
- * sense, as they all contain their lower endpoint, which can be minus infinity
- * (a valid double value in Java), and similarly for the upper endpoint.
+ * values only. In other words, all ranges provided by this class exclude NaN
+ * and infinite values.
  * </p>
  * <p>
  * Ranges in this library are expected to hold finite values only. Thus, it is
  * advised to use the constructors of this class rather than the ones provided
  * by {@link Range}. For example, {@link Range#all()} is not considered a valid
  * range by {@link Variable#of} because that range includes infinite double
- * values and NaN. Rather use {@link FiniteRange#ALL_FINITE} if you want to
+ * values and NaN. Rather use {@link RangeOfDouble#ALL_FINITE} if you want to
  * indicate that all finite values are allowed.
  * </p>
  * <p>
- * All ranges provided by this class exclude NaN and infinite values.
+ * The provided ranges are not necessarily bounded, for example,
+ * {@link #ALL_FINITE} is (conceptually) not bounded.
  * </p>
  * <p>
  * Documentation in this package use the symbol ∞ to represent Double infinity.
@@ -38,12 +36,19 @@ import com.google.common.collect.Range;
  * the first one, for clarity and in order to ensure uniqueness of
  * representation.
  * </p>
+ * <p>
+ * This class permits to create closed ranges only, in the mathematical sense
+ * that they contain the limits of internal sequences, but not in the Guava
+ * sense of the range including both its endpoints. For example,
+ * {@link #ALL_FINITE} is a range that is closed mathematically, but that does
+ * not enclose its endpoints, which are infinite values.
+ * </p>
  *
  * @author Olivier Cailloux
  *
  */
-public class FiniteRange {
-	private FiniteRange() {
+public class RangeOfDouble {
+	private RangeOfDouble() {
 		/** Non instantiable. */
 	}
 
@@ -65,7 +70,7 @@ public class FiniteRange {
 	public static final Range<Double> ZERO_ONE_RANGE = closed(0d, 1d);
 
 	/**
-	 * Returns a range that contains all finite values greater than or equal to
+	 * Returns a range that contains all finite values equal to or greater than
 	 * <code>lower</code>.
 	 *
 	 * @param lower a finite number.
@@ -86,6 +91,30 @@ public class FiniteRange {
 	public static Range<Double> atMost(double upper) {
 		checkArgument(Double.isFinite(upper));
 		return Range.openClosed(Double.NEGATIVE_INFINITY, upper);
+	}
+
+	/**
+	 * Returns a range that is partly open, open, or closed, depending on the
+	 * arguments.
+	 *
+	 * @param lower {@link Double#NEGATIVE_INFINITY} or a finite number.
+	 * @param upper {@link Double#POSITIVE_INFINITY} or a finite number.
+	 * @return the corresponding range.
+	 */
+	public static Range<Double> using(double lower, double upper) {
+		if (lower == Double.NEGATIVE_INFINITY && upper == Double.POSITIVE_INFINITY) {
+			return ALL_FINITE;
+		}
+		if (lower == Double.NEGATIVE_INFINITY && Double.isFinite(upper)) {
+			return atMost(upper);
+		}
+		if (Double.isFinite(lower) && upper == Double.POSITIVE_INFINITY) {
+			return atLeast(lower);
+		}
+		if (Double.isFinite(lower) && Double.isFinite(upper)) {
+			return closed(lower, upper);
+		}
+		throw new IllegalArgumentException();
 	}
 
 	/**
@@ -110,8 +139,8 @@ public class FiniteRange {
 	 * A string representation of this range as a range of finite values adopting
 	 * the conventions of this class, rather than the conventions of
 	 * <a href= "https://github.com/google/guava/wiki/RangesExplained">Guava</a>
-	 * (for the latter, use {@link Range#toString()}). The difference is mainly that
-	 * for this method, the symbol ∞ represents a double infinite value.
+	 * (for the latter, use {@link Range#toString()}). The difference is that for
+	 * this method, the symbol ∞ represents a double infinite value.
 	 * </p>
 	 * <p>
 	 * For example, given {@link #ALL_FINITE}, this method returns “(−∞..+∞)”

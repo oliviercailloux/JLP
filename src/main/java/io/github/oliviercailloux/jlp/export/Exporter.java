@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableMap;
 
-import io.github.oliviercailloux.jlp.elements.FiniteRange;
+import io.github.oliviercailloux.jlp.elements.RangeOfDouble;
 import io.github.oliviercailloux.jlp.elements.Variable;
 import io.github.oliviercailloux.jlp.result.Solution;
 
@@ -30,10 +30,10 @@ public class Exporter {
 			break;
 		case INT_KIND:
 			str = String.format("%s ∈ %s ∩ ℕ: %g", variable.getDescription(),
-					FiniteRange.toString(variable.getBounds()), e.getValue());
+					RangeOfDouble.toString(variable.getBounds()), e.getValue());
 			break;
 		case REAL_KIND:
-			str = String.format("%s ∈ %s: %g", variable.getDescription(), FiniteRange.toString(variable.getBounds()),
+			str = String.format("%s ∈ %s: %g", variable.getDescription(), RangeOfDouble.toString(variable.getBounds()),
 					e.getValue());
 			break;
 		default:

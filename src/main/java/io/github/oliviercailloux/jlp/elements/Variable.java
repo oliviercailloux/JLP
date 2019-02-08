@@ -1,8 +1,8 @@
 package io.github.oliviercailloux.jlp.elements;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.github.oliviercailloux.jlp.elements.FiniteRange.ALL_FINITE;
-import static io.github.oliviercailloux.jlp.elements.FiniteRange.ZERO_ONE_RANGE;
+import static io.github.oliviercailloux.jlp.elements.RangeOfDouble.ALL_FINITE;
+import static io.github.oliviercailloux.jlp.elements.RangeOfDouble.ZERO_ONE_RANGE;
 import static io.github.oliviercailloux.jlp.elements.VariableDomain.INT_DOMAIN;
 import static io.github.oliviercailloux.jlp.elements.VariableDomain.REAL_DOMAIN;
 import static io.github.oliviercailloux.jlp.elements.VariableKind.BOOL_KIND;
@@ -178,7 +178,7 @@ public class Variable {
 	/**
 	 * Returns a variable with the given data. The bounds must be set as to contain
 	 * at least one valid value for the variable (see {@link Variable}). Use
-	 * {@link FiniteRange#ALL_FINITE} for the maximal bounds.
+	 * {@link RangeOfDouble#ALL_FINITE} for the maximal bounds.
 	 *
 	 * @param categoricalName not <code>null</code>, may be empty only if at least
 	 *                        one reference is given.
@@ -192,7 +192,7 @@ public class Variable {
 	 * @param references      not <code>null</code>, may be empty only if
 	 *                        categoricalName is not empty, may not contain
 	 *                        <code>null</code>.
-	 * @see FiniteRange
+	 * @see RangeOfDouble
 	 */
 	public static Variable of(String categoricalName, VariableDomain domain, Range<Double> bounds,
 			Iterable<?> references) {
@@ -292,7 +292,7 @@ public class Variable {
 	 *
 	 * @return not <code>null</code>, a range of finite values.
 	 *
-	 * @see FiniteRange
+	 * @see RangeOfDouble
 	 */
 	public Range<Double> getBounds() {
 		return bounds;

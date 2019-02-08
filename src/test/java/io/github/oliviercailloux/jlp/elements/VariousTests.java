@@ -10,8 +10,8 @@ class VariousTests {
 
 	@Test
 	void testRangeToString() {
-		assertEquals("(−∞..+∞)", FiniteRange.toString(FiniteRange.ALL_FINITE));
-		assertEquals("(-Infinity..Infinity)", FiniteRange.ALL_FINITE.toString());
+		assertEquals("(−∞..+∞)", RangeOfDouble.toString(RangeOfDouble.ALL_FINITE));
+		assertEquals("(-Infinity..Infinity)", RangeOfDouble.ALL_FINITE.toString());
 		assertEquals("(-∞..+∞)", Range.all().toString());
 	}
 

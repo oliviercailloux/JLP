@@ -65,7 +65,7 @@ public class VariableTest {
 		assertTrue(pos.contains(Double.POSITIVE_INFINITY));
 		assertTrue(pos.contains(Double.NaN));
 
-		final Range<Double> posFinite = FiniteRange.NON_NEGATIVE;
+		final Range<Double> posFinite = RangeOfDouble.NON_NEGATIVE;
 		assertFalse(posFinite.contains(Double.POSITIVE_INFINITY));
 		assertFalse(posFinite.contains(Double.NaN));
 		assertFalse(posFinite.contains(-0d));
@@ -74,7 +74,7 @@ public class VariableTest {
 
 	@Test
 	void testRightBounds() throws Exception {
-		final Variable var = Variable.of("cat1", INT_DOMAIN, FiniteRange.closed(-0.2, 0.1), ImmutableList.of());
+		final Variable var = Variable.of("cat1", INT_DOMAIN, RangeOfDouble.closed(-0.2, 0.1), ImmutableList.of());
 		assertEquals("cat1", var.getCategoricalName());
 		assertEquals(ImmutableList.of(), var.getReferences());
 		assertEquals("cat1", var.getDescription());
