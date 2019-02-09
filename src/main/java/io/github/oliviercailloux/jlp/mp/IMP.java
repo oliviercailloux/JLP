@@ -91,8 +91,7 @@ public interface IMP {
 	 * @param description the description of the variable, as given by
 	 *                    {@link Variable#getDescription()}; must correspond to a
 	 *                    variable in this MP.
-	 * @return an optional containing a variable, if found, otherwise an empty
-	 *         optional.
+	 * @return the variable, not <code>null</code>.
 	 * @see Variable#getDefaultDescription(String, Iterable)
 	 * @see #containsVariable(String)
 	 */
