@@ -1,16 +1,19 @@
 = JLP
+:groupId: io.github.oliviercailloux
+:artifactId: jlp
+:repository: JLP
 
-image:https://travis-ci.org/oliviercailloux/JLP.svg?branch=master["Build Status", link="https://travis-ci.org/oliviercailloux/JLP"]
-image:https://maven-badges.herokuapp.com/maven-central/io.github.oliviercailloux/jlp/badge.svg["Artifact on Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.oliviercailloux%22%20a%3A%22jlp%22"]
-image:http://www.javadoc.io/badge/io.github.oliviercailloux/jlp.svg["Javadocs", link="http://www.javadoc.io/doc/io.github.oliviercailloux/jlp"]
-image:https://sonarcloud.io/api/project_badges/measure?project=io.github.oliviercailloux%3Ajlp&metric=alert_status["SonarCloud Status", link="https://sonarcloud.io/dashboard?id=io.github.oliviercailloux%3Ajlp"]
+image:https://travis-ci.com/oliviercailloux/{repository}.svg?branch=master["Build Status", link="https://travis-ci.com/oliviercailloux/{repository}"]
+image:https://maven-badges.herokuapp.com/maven-central/{groupId}/{artifactId}/badge.svg["Artifact on Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22{groupId}%22%20a%3A%22{artifactId}%22"]
+image:http://www.javadoc.io/badge/{groupId}/{artifactId}.svg["Javadocs", link="http://www.javadoc.io/doc/{groupId}/{artifactId}"]
+image:https://sonarcloud.io/api/project_badges/measure?project={groupId}%3A{artifactId}&metric=alert_status["SonarCloud Status", link="https://sonarcloud.io/dashboard?id={groupId}%3A{artifactId}"]
 
 Java Linear Programming: specify and solve linear programs in object-oriented fashion. (See the Javadoc link in the badge above.)
 
 API is _not_ stable. Comments and bug reports are welcome.
 
 == Access
-Releases are published to http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.oliviercailloux%22%20a%3A%22jlp%22[Maven Central].
+Releases are published to http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22{groupId}%22%20a%3A%22{artifactId}%22[Maven Central].
 
 Snapshots are published to http://oss.sonatype.org/content/repositories/snapshots/io/github/oliviercailloux/jlp[OSSRH]. To access SNAPSHOT versions, add this to your POM. 
 
