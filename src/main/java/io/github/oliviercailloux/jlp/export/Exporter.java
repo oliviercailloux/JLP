@@ -12,9 +12,13 @@ import io.github.oliviercailloux.jlp.result.Solution;
 
 public class Exporter {
 	/**
-	 * TODO improve.
+	 * Returns a reasonably compact description of the given solution, useful for
+	 * manual inspection. All variables are printed, with their defined range and
+	 * description, and with their value given by this solution; and the objective
+	 * value is printed as well. The lines are '\n' separated, and the last
+	 * character is not a '\n'.
 	 */
-	public static String exportSolution(Solution solution) {
+	public static String solutionToString(Solution solution) {
 		final ImmutableMap<Variable, Double> variableValues = solution.getVariableValues();
 		final Stream<String> strings = variableValues.entrySet().stream().map((e) -> format(e));
 		final String values = strings.collect(Collectors.joining("\n"));
