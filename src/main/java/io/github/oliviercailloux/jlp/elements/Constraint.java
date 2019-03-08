@@ -17,10 +17,10 @@ import com.google.common.base.MoreObjects;
  * <p>
  * A constraint has a description. It is recommended for clarity (but not
  * mandatory) to use descriptions that identify with no ambiguity one
- * constraint. Thus, two constraints should be equal, as judged per
- * {@link #equals(Object)}, iff they have the same descriptions. (This object
- * guarantees anyway that equality implies same description, the other direction
- * is up to the user.)
+ * constraint. Thus, it is recommended that two constraints be equal, as judged
+ * per {@link #equals(Object)}, iff they have the same descriptions. (This
+ * object guarantees anyway that equality implies same description, the other
+ * direction is up to the user.)
  * </p>
  * <p>
  * A constraint {@link #equals(Object)} an other constraint iff they have the
