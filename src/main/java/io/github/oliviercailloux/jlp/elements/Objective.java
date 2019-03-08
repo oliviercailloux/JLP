@@ -47,12 +47,12 @@ public class Objective {
 	}
 
 	/**
-	 * Returns an objective with optimization sense {@link Sense#MAX}.
+	 * Returns an objective with optimization sense {@link Sense#MAX}. Returns the
+	 * objective {@link Objective#ZERO} iff the given objectiveFunction is empty.
 	 *
-	 * @param objectiveFunction not <code>null</code>, not empty.
+	 * @param objectiveFunction not <code>null</code>, may be empty.
 	 */
 	public static Objective max(SumTerms objectiveFunction) {
-		checkArgument(!objectiveFunction.isEmpty());
 		return new Objective(objectiveFunction, MAX);
 	}
 
