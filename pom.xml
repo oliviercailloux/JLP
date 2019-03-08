@@ -8,7 +8,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>jlp</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>JLP</name>
 	<description>Java Linear Programming: specify and solve linear programs in object-oriented fashion.</description>
 	<url>http://github.com/oliviercailloux/JLP</url>
