@@ -30,8 +30,8 @@ import io.github.oliviercailloux.jlp.elements.VariableKind;
  * A modifiable mathematical program.
  * </p>
  * <p>
- * This object forbids adding two different variables with the same description
- * (e.g., "x" int and "x" real). TODO even twice same?
+ * This object forbids adding two variables with the same description (e.g., "x"
+ * int and "x" real).
  * </p>
  *
  * @author Olivier Cailloux

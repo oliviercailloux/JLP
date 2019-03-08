@@ -113,7 +113,7 @@ public interface IMP {
 	/**
 	 * Returns the constraints in this MP.
 	 *
-	 * @return not <code>null</code>, may be empty.
+	 * @return not <code>null</code>, may be empty, may contain duplicates.
 	 */
 	public List<Constraint> getConstraints();
 
